@@ -14,29 +14,65 @@ This notebook explores the Welsh schools funding data.
 library(dplyr)
 library(ggplot2)
 library(googlesheets)
+library(knitr)
 library(scales)
 library(stringr)
 library(tidyr)
 
-# Load school data from google sheets
-gs_auth() # authorize with google
-schools_raw <- gs_title("Torfaen Primary Schools") %>%
-  gs_read(ws = "Sheet1", skip = 1)
+source('schools.R')
 
+#schools_raw <- load_local_authority_sheet("Torfaen")
+#schools_tidy <- load_all()
 ```
 
 ```{r message=FALSE, warning=FALSE}
-# Tidy data
+la_report = "Torfaen"
+```
 
-schools_tidy <- schools_raw %>%
-  rename(school = `Name of school`) %>%
-  filter(!is.na(school)) %>% # drop rows with no school name
-  select(-c(`2018`, `Yes/No`)) %>% # drop FSM and Welsh medium columns for the moment 
-  rename_all(gsub, pattern = '^(20.+)_1$', replacement = 'total_school_delegated_budget#\\1') %>%
-  rename_all(gsub, pattern = '^(20.+)_2$', replacement = 'per_pupil_funding#\\1') %>%
-  rename_all(gsub, pattern = '^(20.+)_3$', replacement = 'budget_outturn#\\1') %>%
-  rename_all(gsub, pattern = '^(20.+)$', replacement = 'num_pupils#\\1') %>%
-  gather(element_year, value, -school) %>%
-  separate(element_year, c("element", "year"), sep = "#") %>%
-  spread(element, value)
+## Summary
+
+Primary school sizes
+
+```{r}
+kable(schools_tidy %>%
+  filter(!is.na(local_authority)) %>%
+  filter(!is.na(num_pupils)) %>%
+  group_by(local_authority, year) %>%
+  summarize(schools=n(), total_pupils=sum(num_pupils), smallest=min(num_pupils), largest=max(num_pupils), mean=round(mean(num_pupils), 0), median=round(median(num_pupils), 0)) %>%
+  rename("Local authority" = local_authority, "Year" = year, "Schools" = schools, "Total pupils" = total_pupils, "Smallest" = smallest, "Largest" = largest, "Mean" = mean, "Median" = median))
+```
+
+Size distribution
+
+```{r}
+schools_tidy %>%
+  filter(!is.na(local_authority)) %>%
+  filter(year == '2018-19') %>%
+  ggplot(aes(num_pupils)) +
+  geom_histogram(binwidth=25, colour="black", fill="white") +
+  facet_wrap(~ local_authority, ncol=2)
+```
+
+## Pupil funding vs. year
+
+```{r}
+plot_pupil_funding_vs_year(schools_tidy, la_report, save_to_file = TRUE)
+```
+
+## Total school delegated funding vs. number of pupils per school
+
+```{r}
+plot_school_funding_vs_size(schools_tidy, la_report, save_to_file = TRUE)
+```
+
+## Surplus and deficit vs. year
+
+```{r}
+plot_pupil_funding_vs_outturn(schools_tidy, la_report, save_to_file = TRUE)
+```
+
+## Pupil funding vs. free school meals
+
+```{r}
+plot_pupil_funding_vs_fsm(schools_tidy, la_report, save_to_file = TRUE)
 ```

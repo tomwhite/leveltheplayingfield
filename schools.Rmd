@@ -1,0 +1,42 @@
+---
+title: "Welsh School Funding"
+output: html_document
+---
+
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+This notebook explores the Welsh schools funding data.
+
+```{r message=FALSE, warning=FALSE}
+
+library(dplyr)
+library(ggplot2)
+library(googlesheets)
+library(scales)
+library(stringr)
+library(tidyr)
+
+# Load school data from google sheets
+gs_auth() # authorize with google
+schools_raw <- gs_title("Torfaen Primary Schools") %>%
+  gs_read(ws = "Sheet1", skip = 1)
+
+```
+
+```{r message=FALSE, warning=FALSE}
+# Tidy data
+
+schools_tidy <- schools_raw %>%
+  rename(school = `Name of school`) %>%
+  filter(!is.na(school)) %>% # drop rows with no school name
+  select(-c(`2018`, `Yes/No`)) %>% # drop FSM and Welsh medium columns for the moment 
+  rename_all(gsub, pattern = '^(20.+)_1$', replacement = 'total_school_delegated_budget#\\1') %>%
+  rename_all(gsub, pattern = '^(20.+)_2$', replacement = 'per_pupil_funding#\\1') %>%
+  rename_all(gsub, pattern = '^(20.+)_3$', replacement = 'budget_outturn#\\1') %>%
+  rename_all(gsub, pattern = '^(20.+)$', replacement = 'num_pupils#\\1') %>%
+  gather(element_year, value, -school) %>%
+  separate(element_year, c("element", "year"), sep = "#") %>%
+  spread(element, value)
+```

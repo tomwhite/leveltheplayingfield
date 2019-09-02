@@ -4,14 +4,14 @@ def pretty(name):
     return string.capwords(name.replace('_', ' '))
 
 las = []
-for f in os.listdir('reports'):
+for f in os.listdir('docs'):
     if f.endswith('.html') or f.endswith('summary'):
         continue
     las.append(f)
 las.sort()
 
 for la in las:
-    index_filename = "reports/{}/index.html".format(la)
+    index_filename = "docs/{}/index.html".format(la)
     with open(index_filename, "w") as index_file:
         index_file.write("""<html>
 <head>
@@ -29,7 +29,7 @@ for la in las:
 </body>
 """)
 
-with open("reports/la_table.html", "w") as la_table:
+with open("docs/la_table.html", "w") as la_table:
     la_table.write("""<html>
 <head>
     <title>Level The Playing Field</title>

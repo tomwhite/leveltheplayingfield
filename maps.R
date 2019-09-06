@@ -23,17 +23,17 @@ surplus_or_deficit_icons <- iconList(
   Red = makeColouredIcon('red')
 )
 
-map_support_categories <- function(secondaries_tidy_geo, la = NULL, save_to_file=FALSE) {
+map_support_categories <- function(secondaries_tidy_geo, la = NULL, school_type, save_to_file=FALSE) {
   map <- leaflet(data = secondaries_tidy_geo) %>%
     addTiles() %>%
     addMarkers(~Longitude, ~Latitude, popup = ~school, label=~school, icon=~support_category_icons[support_category])
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, "secondary", "support_category", ".html"))
+    saveWidget(map, report_file_name(la, school_type, "support_category", ".html"))
   }
   map
 }
 
-map_support_categories_by_local_authority <- function(secondaries_tidy_geo, save_to_file=FALSE) {
+map_support_categories_by_local_authority <- function(secondaries_tidy_geo, school_type, save_to_file=FALSE) {
   las <- as.character(unique(secondaries_tidy_geo$local_authority))
   map <- leaflet(data = secondaries_tidy_geo) %>% addTiles()
   for (la in las) {
@@ -45,12 +45,12 @@ map_support_categories_by_local_authority <- function(secondaries_tidy_geo, save
     options = layersControlOptions(collapsed = FALSE)
   )
   if (save_to_file) {
-    saveWidget(map, report_file_name(NULL, "secondary", "support_category_with_la", ".html"))
+    saveWidget(map, report_file_name(NULL, school_type, "support_category_with_la", ".html"))
   }
   map
 }
 
-map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_years, la = NULL, save_to_file=FALSE) {
+map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_years, la = NULL, school_type, save_to_file=FALSE) {
   years <- unique(secondaries_tidy_geo_all_years$year)
   map <- leaflet(data = secondaries_tidy_geo_all_years) %>% addTiles()
   for (year in years) {
@@ -62,7 +62,7 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
     options = layersControlOptions(collapsed = FALSE)
   )
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, "secondary", "outturn_surplus_or_deficit", ".html"))
+    saveWidget(map, report_file_name(la, school_type, "outturn_surplus_or_deficit", ".html"))
   }
   map
 }

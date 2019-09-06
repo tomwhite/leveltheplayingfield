@@ -7,7 +7,29 @@ library(stringr)
 library(tidyr)
 library(DT)
 
-REPORTS_DIR = "~/projects-workspace/leveltheplayingfield/reports/"
+REPORTS_DIR = "~/projects-workspace/leveltheplayingfield/docs/"
+LOCAL_AUTHORITIES = c("Anglesey",
+                      "Blaenau Gwent",
+                      "Bridgend",
+                      "Caerphilly",
+                      "Cardiff",
+                      "Carmarthenshire",
+                      "Ceredigion",
+                      "Conwy",
+                      "Denbighshire",
+                      "Flintshire",
+                      "Glamorgan",
+                      "Gwynedd",
+                      "Merthyr Tydfil",
+                      "Monmouthshire",
+                      "Neath Port Talbot",
+                      "Newport",
+                      "Pembrokeshire",
+                      "Powys",
+                      "Rhondda Cynon Taf",
+                      "Swansea",
+                      "Torfaen",
+                      "Wrexham")
 SCHOOL_SIZE_COLOURS = c("<50" = "#F8766D", "50-100" = "#A3A500", "100-200" = "#00BF7D", "200-400" = "#00B0F6", ">400" = "#E76BF3")
 
 round_df <- function(x, digits) {
@@ -43,6 +65,7 @@ tidy_raw_data <- function(schools_raw) {
     rename(lea_code = `LEA Code`) %>%
     rename(school = `Name of school`) %>%
     filter(!is.na(school)) %>% # drop rows with no school name
+    filter(!is.na(lea_code)) %>% # and no LEA code
     select(-c(`Yes/No`)) %>% # drop Welsh medium column for the moment 
     rename_all(gsub, pattern = '^2018$', replacement = 'fsm_rate#2018-19') %>% # only have FSM for 2018-19
     rename_all(gsub, pattern = '^(20.+)_1$', replacement = 'total_school_delegated_budget#\\1') %>%
@@ -65,7 +88,7 @@ tidy_raw_data <- function(schools_raw) {
 load_all <- function() {
   school_spreadsheets = list()
   i <- 1
-  for (local_authority in c("Blaenau Gwent", "Ceredigion", "Glamorgan", "Monmouthshire", "Powys", "Rhondda Cynon Taf", "Torfaen", "Wrexham")) {
+  for (local_authority in LOCAL_AUTHORITIES) {
     school_spreadsheets[[i]] <- tidy_raw_data(load_local_authority_sheet(local_authority))
     i <- i + 1
   }
@@ -90,15 +113,15 @@ report_file_name <- function(la, school_type, report_name, extension) {
   }
 }
 
-plot_summary_size_distribution <- function(schools_tidy, save_to_file=FALSE) {
+plot_summary_size_distribution <- function(schools_tidy, school_type, save_to_file=FALSE) {
   plot = schools_tidy %>%
     filter(!is.na(local_authority)) %>%
     filter(year == '2018-19') %>%
     ggplot(aes(num_pupils)) +
     geom_histogram(binwidth=25, colour="black", fill="white") +
-    facet_wrap(~ local_authority, ncol=2)
+    facet_wrap(~ local_authority, ncol=4)
   if (save_to_file) {
-    ggsave(report_file_name(NULL, "primary", "size_distribution", ".png"))
+    ggsave(report_file_name(NULL, school_type, "size_distribution", ".png"))
   }
   plot
 }
@@ -171,7 +194,7 @@ plot_pupil_funding_vs_fsm <- function(schools_tidy, la, save_to_file=FALSE) {
   plot
 }
 
-tabulate_num_pupils_summary <- function(schools_tidy, save_to_file=FALSE) {
+tabulate_num_pupils_summary <- function(schools_tidy, school_type, save_to_file=FALSE) {
   # summary of min, max, mean, median number of pupils per LA per year
   table <- schools_tidy %>%
     filter(!is.na(local_authority)) %>%
@@ -184,12 +207,12 @@ tabulate_num_pupils_summary <- function(schools_tidy, save_to_file=FALSE) {
     order = list(list(0, 'asc'))
   ))
   if (save_to_file) {
-    saveWidget(dt, report_file_name(NULL, "secondary", "num_pupils_summary", ".html"))
+    saveWidget(dt, report_file_name(NULL, school_type, "num_pupils_summary", ".html"))
   }
   dt
 }
 
-tabulate_support_category_summary <- function(schools_tidy, save_to_file=FALSE) {
+tabulate_support_category_summary <- function(schools_tidy, school_type, save_to_file=FALSE) {
   # ranking of support category per LA for 2018-19
   table <- schools_tidy %>%
     filter(year == '2018-19') %>%
@@ -206,7 +229,7 @@ tabulate_support_category_summary <- function(schools_tidy, save_to_file=FALSE) 
     order = list(list(2, 'asc'))
   ))
   if (save_to_file) {
-    saveWidget(dt, report_file_name(NULL, "secondary", "support_category_summary", ".html"))
+    saveWidget(dt, report_file_name(NULL, school_type, "support_category_summary", ".html"))
   }
   dt
 }

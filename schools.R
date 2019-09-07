@@ -85,6 +85,12 @@ tidy_raw_data <- function(schools_raw) {
     filter(!is.na(year) & year != '2020-21' & year != '2021-22') # drop blank years and years with no data
 }
 
+add_school_locations <- function(schools_tidy) {
+  school_locations <- load_school_locations()
+  schools_tidy %>%
+    left_join(school_locations, by = c("lea_code" = "School.Number"))
+}
+
 load_all <- function() {
   school_spreadsheets = list()
   i <- 1

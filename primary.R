@@ -3,6 +3,7 @@ source('schools.R')
 
 # Load and tidy primary school data
 schools_tidy <- load_all()
+schools_tidy <- add_school_locations(schools_tidy)
 save(schools_tidy, file="data/schools_tidy.Rda")
 #load("data/schools_tidy.Rda")
 
@@ -29,30 +30,16 @@ for (la in LOCAL_AUTHORITIES) {
 
 # Maps
 
-# Load location data
-# This was batch geocoded using https://www.doogal.co.uk/BatchGeocoding.php
-school_locations <- load_school_locations()
-
-# Join location data with schools (2018-19)
-primaries_tidy_geo <- schools_tidy %>%
-  filter(year == '2018-19') %>%
-  left_join(school_locations, by = c("lea_code" = "School.Number"))
-
-# Join location data with schools (all years)
-primaries_tidy_geo_all_years <- schools_tidy %>%
-  left_join(school_locations, by = c("lea_code" = "School.Number"))
-
-primaries_tidy_geo_all_years <- primaries_tidy_geo_all_years %>% filter(!is.na(budget_outturn)) # drop rows with no budget_outturn
-primaries_tidy_geo_all_years$surplus_or_deficit <- if_else(primaries_tidy_geo_all_years$budget_outturn >= 0, "Black", "Red")
-
-# Find unmatched schools
-primaries_tidy_geo %>% filter(is.na(Longitude))
+# Find schools with no location
+schools_tidy %>% filter(year == '2018-19') %>% filter(is.na(Longitude))
 
 # Support category
-# A single LA
-map_support_categories(primaries_tidy_geo %>% filter(local_authority == 'Powys'), 'Powys', 'primary', save_to_file=TRUE)
+# A single LA for a single year
+map_support_categories(schools_tidy %>% filter(year == '2018-19') %>% filter(local_authority == 'Powys'), 'Powys', 'primary', save_to_file=TRUE)
 
 # Outturn - surplus or deficit
 # A single LA
+primaries_tidy_geo_all_years <- schools_tidy %>% filter(!is.na(budget_outturn)) # drop rows with no budget_outturn
+primaries_tidy_geo_all_years$surplus_or_deficit <- if_else(primaries_tidy_geo_all_years$budget_outturn >= 0, "Black", "Red")
 map_outturn_surplus_or_deficit_by_year(primaries_tidy_geo_all_years %>% filter(local_authority == 'Powys'), 'Powys', 'primary', save_to_file=TRUE)
 

@@ -32,7 +32,7 @@ secondaries_tidy_geo_all_years$surplus_or_deficit <- if_else(secondaries_tidy_ge
 
 # Support category
 # All of Wales
-map_support_categories(secondaries_tidy_geo, 'secondary', save_to_file=TRUE)
+map_support_categories(secondaries_tidy_geo, school_type='secondary', save_to_file=TRUE)
 # A single LA
 map_support_categories(secondaries_tidy_geo %>% filter(local_authority == 'Powys'), 'Powys', 'secondary', save_to_file=TRUE)
 # Per LA controls
@@ -40,7 +40,7 @@ map_support_categories_by_local_authority(secondaries_tidy_geo, 'secondary', sav
 
 # Outturn - surplus or deficit
 # All of Wales - probably don't want this
-map_outturn_surplus_or_deficit_by_year(secondaries_tidy_geo_all_years, 'secondary', save_to_file=TRUE)
+map_outturn_surplus_or_deficit_by_year(secondaries_tidy_geo_all_years, school_type='secondary', save_to_file=TRUE)
 # A single LA
 map_outturn_surplus_or_deficit_by_year(secondaries_tidy_geo_all_years %>% filter(local_authority == 'Powys'), 'Powys', 'secondary', save_to_file=TRUE)
 

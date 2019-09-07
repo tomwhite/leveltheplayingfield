@@ -8,7 +8,7 @@ save(schools_tidy, file="data/schools_tidy.Rda")
 
 # Quality control
 
-# Should give 5 rows
+# Should give 5 rows - new schools that don't have a support category from My Local Schools
 schools_tidy %>%
   filter(year == '2018-19') %>%
   filter(is.na(support_category))

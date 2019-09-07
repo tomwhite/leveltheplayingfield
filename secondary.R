@@ -35,9 +35,6 @@ secondaries_tidy %>%
 
 # Outturn - surplus or deficit
 
-secondaries_tidy_geo_all_years <- secondaries_tidy %>% filter(!is.na(budget_outturn)) # drop rows with no budget_outturn
-secondaries_tidy_geo_all_years$surplus_or_deficit <- if_else(secondaries_tidy_geo_all_years$budget_outturn >= 0, "Black", "Red")
-
 # All of Wales
 secondaries_tidy %>%
   filter(!is.na(budget_outturn)) %>% # drop rows with no budget_outturn

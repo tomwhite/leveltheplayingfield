@@ -35,11 +35,15 @@ schools_tidy %>% filter(year == '2018-19') %>% filter(is.na(Longitude))
 
 # Support category
 # A single LA for a single year
-map_support_categories(schools_tidy %>% filter(year == '2018-19') %>% filter(local_authority == 'Powys'), 'Powys', 'primary', save_to_file=TRUE)
+schools_tidy %>%
+  filter(year == '2018-19') %>%
+  filter(local_authority == 'Powys') %>%
+  map_support_categories('Powys', 'primary', save_to_file=TRUE)
 
 # Outturn - surplus or deficit
 # A single LA
-primaries_tidy_geo_all_years <- schools_tidy %>% filter(!is.na(budget_outturn)) # drop rows with no budget_outturn
-primaries_tidy_geo_all_years$surplus_or_deficit <- if_else(primaries_tidy_geo_all_years$budget_outturn >= 0, "Black", "Red")
-map_outturn_surplus_or_deficit_by_year(primaries_tidy_geo_all_years %>% filter(local_authority == 'Powys'), 'Powys', 'primary', save_to_file=TRUE)
-
+schools_tidy %>%
+  filter(!is.na(budget_outturn)) %>% # drop rows with no budget_outturn
+  mutate(surplus_or_deficit = if_else(budget_outturn >= 0, "Black", "Red")) %>%
+  filter(local_authority == 'Powys') %>%
+  map_outturn_surplus_or_deficit_by_year('Powys', 'primary', save_to_file=TRUE)

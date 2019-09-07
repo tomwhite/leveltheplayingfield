@@ -11,7 +11,7 @@ tabulate_num_pupils_summary(secondaries_tidy, "secondary", save_to_file=TRUE)
 tabulate_support_category_summary(secondaries_tidy, "secondary", save_to_file=TRUE)
 
 # Charts
-plot_summary_size_distribution(schools_tidy, "secondary", save_to_file = TRUE)
+plot_summary_size_distribution(secondaries_tidy, "secondary", save_to_file = TRUE)
 
 # Maps
 

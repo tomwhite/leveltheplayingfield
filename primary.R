@@ -2,7 +2,7 @@ source('maps.R')
 source('schools.R')
 
 # Load and tidy primary school data
-schools_tidy <- load_all()
+schools_tidy <- load_primaries()
 schools_tidy <- add_school_locations(schools_tidy)
 save(schools_tidy, file="data/schools_tidy.Rda")
 #load("data/schools_tidy.Rda")

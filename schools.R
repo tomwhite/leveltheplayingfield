@@ -47,6 +47,16 @@ load_local_authority_sheet <- function(local_authority) {
   gs_title(paste(local_authority, "Primary Schools")) %>%  gs_read(ws = "Sheet1", skip = 1)
 }
 
+load_primaries <- function() {
+  school_spreadsheets = list()
+  i <- 1
+  for (local_authority in LOCAL_AUTHORITIES) {
+    school_spreadsheets[[i]] <- tidy_raw_data(load_local_authority_sheet(local_authority))
+    i <- i + 1
+  }
+  bind_rows(school_spreadsheets)
+}
+
 load_secondary_schools_sheet <- function() {
   gs_auth() # authorize with google
   gs_title("Wales Secondary Schools") %>%  gs_read(ws = "Sheet1", skip = 1)
@@ -89,16 +99,6 @@ add_school_locations <- function(schools_tidy) {
   school_locations <- load_school_locations()
   schools_tidy %>%
     left_join(school_locations, by = c("lea_code" = "School.Number"))
-}
-
-load_all <- function() {
-  school_spreadsheets = list()
-  i <- 1
-  for (local_authority in LOCAL_AUTHORITIES) {
-    school_spreadsheets[[i]] <- tidy_raw_data(load_local_authority_sheet(local_authority))
-    i <- i + 1
-  }
-  bind_rows(school_spreadsheets)
 }
 
 standardise_la_name <- function(la) {

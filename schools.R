@@ -87,6 +87,30 @@ load_secondaries <- function() {
   secondaries_tidy
 }
 
+load_special_schools <- function() {
+  schools <- tidy_raw_data(load_google_sheet("Wales Special Schools")) %>%
+    add_school_locations() %>%
+    mutate(school_type = 'through')
+  
+  # QC
+  # Find schools with no location
+  schools %>% filter(year == '2018-19') %>% filter(is.na(longitude)) %>% print()
+  
+  schools
+}
+
+load_through_schools <- function() {
+  schools <- tidy_raw_data(load_google_sheet("Wales Through Schools")) %>%
+    add_school_locations() %>%
+    mutate(school_type = 'through')
+  
+  # QC
+  # Find schools with no location
+  schools %>% filter(year == '2018-19') %>% filter(is.na(longitude)) %>% print()
+  
+  schools
+}
+
 load_school_locations <- function() {
   # This was batch geocoded using https://www.doogal.co.uk/BatchGeocoding.php
   read_csv("data/geo/school-number-postcodes-geocoded.csv",

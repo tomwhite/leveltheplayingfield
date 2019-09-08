@@ -69,20 +69,20 @@ load_school_locations <- function() {
 
 tidy_raw_data <- function(schools_raw) {
   schools_raw %>%
-    rename(local_authority = `Local authority`) %>%
-    rename(lea_code = `LEA Code`) %>%
-    rename(school = `Name of school`) %>%
-    filter(!is.na(school)) %>% # drop rows with no school name
-    filter(!is.na(lea_code)) %>% # and no LEA code
-    select(-c(`Yes/No`)) %>% # drop Welsh medium column for the moment 
+    rename(local_authority = `Local authority`,
+           lea_code = `LEA Code`,
+           school = `Name of school`) %>%
     rename_all(gsub, pattern = '^2018$', replacement = 'fsm_rate#2018-19') %>% # only have FSM for 2018-19
     rename_all(gsub, pattern = '^(20.+)_1$', replacement = 'total_school_delegated_budget#\\1') %>%
     rename_all(gsub, pattern = '^(20.+)_2$', replacement = 'per_pupil_funding#\\1') %>%
     rename_all(gsub, pattern = '^(20.+)_3$', replacement = 'budget_outturn#\\1') %>%
     rename_all(gsub, pattern = '^(20.+)$', replacement = 'num_pupils#\\1') %>%
-    na_if('.') %>% # dots are NA
     mutate_at(vars(contains("#")), as.numeric) %>%
     rename('support_category#2018-19' = `X30`) %>% # only have support category for 2018-19
+    select(-c(`Yes/No`)) %>% # drop Welsh medium column for the moment 
+    filter(!is.na(school)) %>% # drop rows with no school name
+    filter(!is.na(lea_code)) %>% # and no LEA code
+    na_if('.') %>% # dots are NA
     gather(element_year, value, -c(local_authority, lea_code, school)) %>%
     separate(element_year, c("element", "year"), sep = "#") %>%
     spread(element, value) %>%

@@ -90,7 +90,7 @@ load_secondaries <- function() {
 load_special_schools <- function() {
   schools <- tidy_raw_data(load_google_sheet("Wales Special Schools")) %>%
     add_school_locations() %>%
-    mutate(school_type = 'through')
+    mutate(school_type = 'special')
   
   # QC
   # Find schools with no location
@@ -109,6 +109,13 @@ load_through_schools <- function() {
   schools %>% filter(year == '2018-19') %>% filter(is.na(longitude)) %>% print()
   
   schools
+}
+
+load_all_schools <- function() {
+  load_secondaries() %>%
+    union_all(load_special_schools()) %>%
+    union_all(load_through_schools()) %>%
+    mutate_at(c('support_category'), as.factor)
 }
 
 load_school_locations <- function() {
@@ -131,7 +138,8 @@ tidy_raw_data <- function(schools_raw) {
     rename_all(gsub, pattern = '^(20.+)$', replacement = 'num_pupils#\\1') %>%
     mutate_at(vars(contains("#")), as.numeric) %>%
     rename('support_category#2018-19' = `X30`) %>% # only have support category for 2018-19
-    select(-c(`Yes/No`)) %>% # drop Welsh medium column for the moment 
+    select(-c(`Yes/No`)) %>% # drop Welsh medium column for the moment
+    select(-starts_with('X')) %>% # drop any extra X columns
     filter(!is.na(school)) %>% # drop rows with no school name
     filter(!is.na(lea_code)) %>% # and no LEA code
     na_if('.') %>% # dots are NA

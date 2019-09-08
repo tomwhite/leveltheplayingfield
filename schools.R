@@ -3,6 +3,7 @@ library(googlesheets)
 library(knitr)
 library(scales)
 library(DT)
+library(htmlTable)
 
 REPORTS_DIR = "~/projects-workspace/leveltheplayingfield/docs/"
 LOCAL_AUTHORITIES = c("Anglesey",
@@ -288,12 +289,14 @@ tabulate_support_category_summary <- function(schools_tidy, school_type, save_to
     group_by(local_authority) %>%
     summarize(schools=n(), mean_support_category=mean(support_category_number)) %>%
     round_df(2)
-  dt <- datatable(table, rownames= FALSE, options = list(
-    pageLength = 30,
-    order = list(list(2, 'asc'))
-  ))
+  #dt <- datatable(table, rownames= FALSE, options = list(
+  #  pageLength = 30,
+  #  order = list(list(2, 'asc'))
+  #))
+  ht <- htmlTable(table %>% arrange(mean_support_category),
+                  header = c("Local authority", "Num schools", "Mean support category"))
   if (save_to_file) {
-    saveWidget(dt, report_file_name(NULL, school_type, "support_category_summary", ".html"))
+    ht %>% cat(., file = report_file_name(NULL, school_type, "support_category_summary", ".html"))
   }
-  dt
+  ht
 }

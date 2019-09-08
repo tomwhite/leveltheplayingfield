@@ -59,7 +59,8 @@ load_primaries <- function() {
     school_spreadsheets[[i]] <- tidy_raw_data(load_local_authority_sheet(local_authority))
     i <- i + 1
   }
-  schools_tidy <- add_school_locations(bind_rows(school_spreadsheets))
+  schools_tidy <- add_school_locations(bind_rows(school_spreadsheets)) %>%
+    mutate(school_type = 'primary')
   
   # QC
   # Should give 5 rows - new schools that don't have a support category from My Local Schools
@@ -75,9 +76,9 @@ load_primaries <- function() {
 }
 
 load_secondaries <- function() {
-  secondaries_raw <- load_secondary_schools_sheet()
-  secondaries_tidy <- tidy_raw_data(secondaries_raw)
-  secondaries_tidy <- add_school_locations(secondaries_tidy)
+  secondaries_tidy <- tidy_raw_data(load_secondary_schools_sheet()) %>%
+    add_school_locations() %>%
+    mutate(school_type = 'secondary')
   
   # QC
   # Find schools with no location (should be none)

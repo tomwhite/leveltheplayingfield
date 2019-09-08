@@ -24,7 +24,10 @@ surplus_or_deficit_icons <- iconList(
 )
 
 map_support_categories <- function(secondaries_tidy_geo, la = NULL, school_type, save_to_file=FALSE) {
-  map <- leaflet(data = secondaries_tidy_geo) %>%
+  map <- secondaries_tidy_geo %>%
+    filter(year == '2018-19') %>%
+    filter(if (!is.null(la)) local_authority == la else TRUE) %>%
+    leaflet() %>%
     addTiles() %>%
     addMarkers(~longitude, ~latitude, popup = ~school, label=~school, icon=~support_category_icons[support_category])
   if (save_to_file) {
@@ -35,9 +38,13 @@ map_support_categories <- function(secondaries_tidy_geo, la = NULL, school_type,
 
 map_support_categories_by_local_authority <- function(secondaries_tidy_geo, school_type, save_to_file=FALSE) {
   las <- as.character(unique(secondaries_tidy_geo$local_authority))
-  map <- leaflet(data = secondaries_tidy_geo) %>% addTiles()
+  secondaries_tidy_geo_filtered = secondaries_tidy_geo %>%
+    filter(year == '2018-19')
+  map <- secondaries_tidy_geo_filtered %>%
+    leaflet() %>%
+    addTiles()
   for (la in las) {
-    d = secondaries_tidy_geo[secondaries_tidy_geo$local_authority == la,]
+    d = secondaries_tidy_geo_filtered[secondaries_tidy_geo_filtered$local_authority == la,]
     map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~school, icon=~support_category_icons[support_category], group=la)
   }
   map <- map %>% addLayersControl(

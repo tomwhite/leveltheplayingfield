@@ -21,16 +21,12 @@ secondaries_tidy %>% filter(year == '2018-19') %>% filter(is.na(longitude))
 # Support category
 # All of Wales
 secondaries_tidy %>%
-  filter(year == '2018-19') %>%
   map_support_categories(school_type='secondary', save_to_file=TRUE)
 # A single LA
 secondaries_tidy %>%
-  filter(year == '2018-19') %>%
-  filter(local_authority == 'Powys') %>%
   map_support_categories('Powys', 'secondary', save_to_file=TRUE)
 # Per LA controls
 secondaries_tidy %>%
-  filter(year == '2018-19') %>%
   map_support_categories_by_local_authority('secondary', save_to_file=TRUE)
 
 # Outturn - surplus or deficit

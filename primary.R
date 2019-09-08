@@ -36,8 +36,6 @@ schools_tidy %>% filter(year == '2018-19') %>% filter(is.na(longitude))
 # Support category
 # A single LA for a single year
 schools_tidy %>%
-  filter(year == '2018-19') %>%
-  filter(local_authority == 'Powys') %>%
   map_support_categories('Powys', 'primary', save_to_file=TRUE)
 
 # Outturn - surplus or deficit

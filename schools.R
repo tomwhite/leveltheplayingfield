@@ -59,7 +59,31 @@ load_primaries <- function() {
     school_spreadsheets[[i]] <- tidy_raw_data(load_local_authority_sheet(local_authority))
     i <- i + 1
   }
-  bind_rows(school_spreadsheets)
+  schools_tidy <- add_school_locations(bind_rows(school_spreadsheets))
+  
+  # QC
+  # Should give 5 rows - new schools that don't have a support category from My Local Schools
+  schools_tidy %>%
+    filter(year == '2018-19') %>%
+    filter(is.na(support_category)) %>%
+    print()
+  
+  # Find schools with no location
+  schools_tidy %>% filter(year == '2018-19') %>% filter(is.na(longitude)) %>% print()
+  
+  schools_tidy
+}
+
+load_secondaries <- function() {
+  secondaries_raw <- load_secondary_schools_sheet()
+  secondaries_tidy <- tidy_raw_data(secondaries_raw)
+  secondaries_tidy <- add_school_locations(secondaries_tidy)
+  
+  # QC
+  # Find schools with no location (should be none)
+  secondaries_tidy %>% filter(year == '2018-19') %>% filter(is.na(longitude)) %>% print()
+  
+  secondaries_tidy
 }
 
 load_school_locations <- function() {

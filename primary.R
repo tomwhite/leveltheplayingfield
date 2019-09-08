@@ -3,16 +3,8 @@ source('schools.R')
 
 # Load and tidy primary school data
 schools_tidy <- load_primaries()
-schools_tidy <- add_school_locations(schools_tidy)
 save(schools_tidy, file="data/schools_tidy.Rda")
 #load("data/schools_tidy.Rda")
-
-# Quality control
-
-# Should give 5 rows - new schools that don't have a support category from My Local Schools
-schools_tidy %>%
-  filter(year == '2018-19') %>%
-  filter(is.na(support_category))
 
 # Summary tables
 tabulate_num_pupils_summary(schools_tidy, "primary", save_to_file=TRUE)
@@ -29,9 +21,6 @@ for (la in LOCAL_AUTHORITIES) {
 }
 
 # Maps
-
-# Find schools with no location
-schools_tidy %>% filter(year == '2018-19') %>% filter(is.na(longitude))
 
 # Support category
 # A single LA for a single year

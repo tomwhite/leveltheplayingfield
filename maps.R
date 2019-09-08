@@ -59,9 +59,15 @@ map_support_categories_by_local_authority <- function(secondaries_tidy_geo, scho
 
 map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_years, la = NULL, school_type, save_to_file=FALSE) {
   years <- unique(secondaries_tidy_geo_all_years$year)
-  map <- leaflet(data = secondaries_tidy_geo_all_years) %>% addTiles()
+  secondaries_tidy_geo_all_years_filtered <- secondaries_tidy_geo_all_years %>%
+    filter(if (!is.null(la)) local_authority == la else TRUE) %>%
+    filter(!is.na(budget_outturn)) %>% # drop rows with no budget_outturn
+    mutate(surplus_or_deficit = if_else(budget_outturn >= 0, "Black", "Red"))
+  map <- secondaries_tidy_geo_all_years_filtered %>%
+    leaflet() %>%
+    addTiles()
   for (year in years) {
-    d = secondaries_tidy_geo_all_years[secondaries_tidy_geo_all_years$year == year,]
+    d = secondaries_tidy_geo_all_years_filtered[secondaries_tidy_geo_all_years_filtered$year == year,]
     map <- map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste(school, ',', budget_outturn), icon=~surplus_or_deficit_icons[surplus_or_deficit], group = year)
   }
   map <- map %>% addLayersControl(

@@ -20,25 +20,15 @@ secondaries_tidy %>% filter(year == '2018-19') %>% filter(is.na(longitude))
 
 # Support category
 # All of Wales
-secondaries_tidy %>%
-  map_support_categories(school_type='secondary', save_to_file=TRUE)
+map_support_categories(secondaries_tidy, school_type='secondary', save_to_file=TRUE)
 # A single LA
-secondaries_tidy %>%
-  map_support_categories('Powys', 'secondary', save_to_file=TRUE)
+map_support_categories(secondaries_tidy, 'Powys', 'secondary', save_to_file=TRUE)
 # Per LA controls
-secondaries_tidy %>%
-  map_support_categories_by_local_authority('secondary', save_to_file=TRUE)
+map_support_categories_by_local_authority(secondaries_tidy, 'secondary', save_to_file=TRUE)
 
 # Outturn - surplus or deficit
 
 # All of Wales
-secondaries_tidy %>%
-  filter(!is.na(budget_outturn)) %>% # drop rows with no budget_outturn
-  mutate(surplus_or_deficit = if_else(budget_outturn >= 0, "Black", "Red")) %>%
-  map_outturn_surplus_or_deficit_by_year(school_type='secondary', save_to_file=TRUE)
+map_outturn_surplus_or_deficit_by_year(secondaries_tidy, school_type='secondary', save_to_file=TRUE)
 # A single LA
-secondaries_tidy %>%
-  filter(!is.na(budget_outturn)) %>% # drop rows with no budget_outturn
-  mutate(surplus_or_deficit = if_else(budget_outturn >= 0, "Black", "Red")) %>%
-  filter(local_authority == 'Powys') %>%
-  map_outturn_surplus_or_deficit_by_year('Powys', 'secondary', save_to_file=TRUE)
+map_outturn_surplus_or_deficit_by_year(secondaries_tidy, 'Powys', 'secondary', save_to_file=TRUE)

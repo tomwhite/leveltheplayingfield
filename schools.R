@@ -61,9 +61,10 @@ load_secondary_schools_sheet <- function() {
 
 load_school_locations <- function() {
   # This was batch geocoded using https://www.doogal.co.uk/BatchGeocoding.php
-  read.csv("data/geo/school-number-postcodes-geocoded.csv", header=TRUE, stringsAsFactors = FALSE, strip.white=TRUE) %>%
-    mutate_at("Latitude", as.numeric) %>%
-    mutate_at("Longitude", as.numeric)
+  read_csv("data/geo/school-number-postcodes-geocoded.csv",
+           skip = 1,
+           col_names = c('lea_code', 'latitude', 'longitude', 'easting', 'northing')) %>%
+    select(c('lea_code', 'latitude', 'longitude'))
 }
 
 tidy_raw_data <- function(schools_raw) {
@@ -95,7 +96,7 @@ tidy_raw_data <- function(schools_raw) {
 add_school_locations <- function(schools_tidy) {
   school_locations <- load_school_locations()
   schools_tidy %>%
-    left_join(school_locations, by = c("lea_code" = "School.Number"))
+    left_join(school_locations)
 }
 
 standardise_la_name <- function(la) {

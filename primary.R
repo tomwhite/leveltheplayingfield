@@ -31,7 +31,7 @@ for (la in LOCAL_AUTHORITIES) {
 # Maps
 
 # Find schools with no location
-schools_tidy %>% filter(year == '2018-19') %>% filter(is.na(Longitude))
+schools_tidy %>% filter(year == '2018-19') %>% filter(is.na(longitude))
 
 # Support category
 # A single LA for a single year

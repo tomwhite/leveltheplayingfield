@@ -16,7 +16,7 @@ plot_summary_size_distribution(secondaries_tidy, "secondary", save_to_file = TRU
 # Maps
 
 # Find schools with no location (should be none)
-secondaries_tidy %>% filter(year == '2018-19') %>% filter(is.na(Longitude))
+secondaries_tidy %>% filter(year == '2018-19') %>% filter(is.na(longitude))
 
 # Support category
 # All of Wales
@@ -46,4 +46,3 @@ secondaries_tidy %>%
   mutate(surplus_or_deficit = if_else(budget_outturn >= 0, "Black", "Red")) %>%
   filter(local_authority == 'Powys') %>%
   map_outturn_surplus_or_deficit_by_year('Powys', 'secondary', save_to_file=TRUE)
-

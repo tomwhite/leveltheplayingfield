@@ -26,7 +26,7 @@ surplus_or_deficit_icons <- iconList(
 map_support_categories <- function(secondaries_tidy_geo, la = NULL, school_type, save_to_file=FALSE) {
   map <- leaflet(data = secondaries_tidy_geo) %>%
     addTiles() %>%
-    addMarkers(~Longitude, ~Latitude, popup = ~school, label=~school, icon=~support_category_icons[support_category])
+    addMarkers(~longitude, ~latitude, popup = ~school, label=~school, icon=~support_category_icons[support_category])
   if (save_to_file) {
     saveWidget(map, report_file_name(la, school_type, "support_category", ".html"))
   }
@@ -38,7 +38,7 @@ map_support_categories_by_local_authority <- function(secondaries_tidy_geo, scho
   map <- leaflet(data = secondaries_tidy_geo) %>% addTiles()
   for (la in las) {
     d = secondaries_tidy_geo[secondaries_tidy_geo$local_authority == la,]
-    map = map %>% addMarkers(data = d, ~Longitude, ~Latitude, popup = ~school, label=~school, icon=~support_category_icons[support_category], group=la)
+    map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~school, icon=~support_category_icons[support_category], group=la)
   }
   map <- map %>% addLayersControl(
     overlayGroups = las,
@@ -55,7 +55,7 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
   map <- leaflet(data = secondaries_tidy_geo_all_years) %>% addTiles()
   for (year in years) {
     d = secondaries_tidy_geo_all_years[secondaries_tidy_geo_all_years$year == year,]
-    map <- map %>% addMarkers(data = d, ~Longitude, ~Latitude, popup = ~school, label=~paste(school, ',', budget_outturn), icon=~surplus_or_deficit_icons[surplus_or_deficit], group = year)
+    map <- map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste(school, ',', budget_outturn), icon=~surplus_or_deficit_icons[surplus_or_deficit], group = year)
   }
   map <- map %>% addLayersControl(
     baseGroups = years,

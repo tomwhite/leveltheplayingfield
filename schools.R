@@ -39,9 +39,17 @@ round_df <- function(x, digits) {
   x
 }
 
-load_local_authority_sheet <- function(local_authority) {
+load_google_sheet <- function(title) {
   gs_auth() # authorize with google
-  gs_title(paste(local_authority, "Primary Schools")) %>%  gs_read(ws = "Sheet1", skip = 1)
+  gs_title(title) %>% gs_read(ws = "Sheet1", skip = 1)
+}
+
+load_local_authority_sheet <- function(local_authority) {
+  load_google_sheet(paste(local_authority, "Primary Schools"))
+}
+
+load_secondary_schools_sheet <- function() {
+  load_google_sheet("Wales Secondary Schools")
 }
 
 load_primaries <- function() {
@@ -52,11 +60,6 @@ load_primaries <- function() {
     i <- i + 1
   }
   bind_rows(school_spreadsheets)
-}
-
-load_secondary_schools_sheet <- function() {
-  gs_auth() # authorize with google
-  gs_title("Wales Secondary Schools") %>%  gs_read(ws = "Sheet1", skip = 1)
 }
 
 load_school_locations <- function() {

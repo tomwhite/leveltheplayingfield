@@ -1,10 +1,7 @@
-library(dplyr)
-library(ggplot2)
+library(tidyverse)
 library(googlesheets)
 library(knitr)
 library(scales)
-library(stringr)
-library(tidyr)
 library(DT)
 
 REPORTS_DIR = "~/projects-workspace/leveltheplayingfield/docs/"

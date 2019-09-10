@@ -2,7 +2,7 @@ library(htmlwidgets)
 library(leaflet)
 
 # Colours must be restricted to those at https://github.com/pointhi/leaflet-color-markers
-makeColouredIcon <- function(colour) {
+make_coloured_icon <- function(colour) {
   paste0('https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-', colour, '.png')
   makeIcon(paste0('https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-', colour, '.png'),
            paste0('https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-', colour, '.png'),
@@ -11,16 +11,16 @@ makeColouredIcon <- function(colour) {
 
 # Support category colours
 support_category_icons <- iconList(
-  Green = makeColouredIcon('green'),
-  Yellow = makeColouredIcon('yellow'),
-  Amber = makeColouredIcon('orange'),
-  Red = makeColouredIcon('red')
+  Green = make_coloured_icon('green'),
+  Yellow = make_coloured_icon('yellow'),
+  Amber = make_coloured_icon('orange'),
+  Red = make_coloured_icon('red')
 )
 
 # Surplace = black, deficit = red
 surplus_or_deficit_icons <- iconList(
-  Black = makeColouredIcon('black'),
-  Red = makeColouredIcon('red')
+  Black = make_coloured_icon('black'),
+  Red = make_coloured_icon('red')
 )
 
 map_support_categories <- function(secondaries_tidy_geo, la = NULL, school_type, save_to_file=FALSE) {

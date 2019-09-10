@@ -201,8 +201,7 @@ plot_pupil_funding_vs_year <- function(schools_tidy, la, save_to_file=FALSE) {
     theme(axis.title.x=element_blank()) +
     scale_colour_manual(values = SCHOOL_SIZE_COLOURS)
   if (save_to_file) {
-    dir.create(file.path(REPORTS_DIR, standardise_la_name(la)), showWarnings = FALSE)
-    ggsave(paste0(REPORTS_DIR, standardise_la_name(la), "/", standardise_la_name(la), "_pupil_funding_vs_year.png"))
+    ggsave(report_file_name(la, "primary", "pupil_funding_vs_year", ".png"))
   }
   plot
 }
@@ -216,8 +215,7 @@ plot_school_funding_vs_size <- function(schools_tidy, la, save_to_file=FALSE) {
     xlab("Number of pupils") +
     ylab("Total school delegated funding (£)")
   if (save_to_file) {
-    dir.create(file.path(REPORTS_DIR, standardise_la_name(la)), showWarnings = FALSE)
-    ggsave(paste0(REPORTS_DIR, standardise_la_name(la), "/", standardise_la_name(la), "_school_funding_vs_size.png"))
+    ggsave(report_file_name(la, "primary", "school_funding_vs_size", ".png"))
   }
   plot
 }
@@ -235,8 +233,7 @@ plot_pupil_funding_vs_outturn <- function(schools_tidy, la, save_to_file=FALSE) 
     ylab("Per-pupil funding (£)") +
     scale_colour_manual(values = SCHOOL_SIZE_COLOURS)
   if (save_to_file) {
-    dir.create(file.path(REPORTS_DIR, standardise_la_name(la)), showWarnings = FALSE)
-    ggsave(paste0(REPORTS_DIR, standardise_la_name(la), "/", standardise_la_name(la), "_pupil_funding_vs_outturn.png"))
+    ggsave(report_file_name(la, "primary", "pupil_funding_vs_outturn", ".png"))
   }
   plot
 }
@@ -253,8 +250,7 @@ plot_pupil_funding_vs_fsm <- function(schools_tidy, la, save_to_file=FALSE) {
     labs(color="Size of school", size="Number of pupils on FSM") +
     scale_colour_manual(values = SCHOOL_SIZE_COLOURS)
   if (save_to_file) {
-    dir.create(file.path(REPORTS_DIR, standardise_la_name(la)), showWarnings = FALSE)
-    ggsave(paste0(REPORTS_DIR, standardise_la_name(la), "/", standardise_la_name(la), "_pupil_funding_vs_fsm.png"))
+    ggsave(report_file_name(la, "primary", "pupil_funding_vs_fsm", ".png"))
   }
   plot
 }

@@ -296,3 +296,52 @@ tabulate_support_category_summary <- function(schools_tidy, school_type, save_to
   }
   ht
 }
+
+tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FALSE) {
+  # summary of main indicators (latest year available)
+  
+  summary_size <- schools_tidy %>%
+    filter(!is.na(local_authority)) %>%
+    filter(!is.na(num_pupils)) %>%
+    filter(year == '2018-19') %>%
+    group_by(local_authority) %>%
+    summarize(schools=n(), total_pupils=sum(num_pupils), mean=round(mean(num_pupils), 0)) %>%
+    mutate(mean_rank = rank(desc(mean))) %>%
+    rename("Local authority" = local_authority, "Schools (2018-19)" = schools, "Total pupils (2018-19)" = total_pupils, "Mean pupils (2018-19)" = mean, "Mean pupils rank (2018-19)" = mean_rank)
+  
+  summary_support_category <- schools_tidy %>%
+    filter(!is.na(local_authority)) %>%
+    filter(!is.na(num_pupils)) %>%
+    filter(year == '2018-19') %>%
+    mutate(support_category_days = case_when(support_category == 'Green' ~ 4,
+                                             support_category == 'Yellow' ~ 10,
+                                             support_category == 'Amber' ~ 15,
+                                             support_category == 'Red' ~ 25,
+                                             TRUE ~ NA_real_)) %>%
+    group_by(local_authority) %>%
+    summarize(mean=round(mean(support_category_days), 2)) %>%
+    mutate(mean_rank = min_rank(mean)) %>%
+    rename("Local authority" = local_authority, "Mean support category days (2018-19)" = mean, "Mean support category days rank (2018-19)" = mean_rank)
+  
+  summary_per_pupil_outturn <- schools_tidy %>%
+    filter(!is.na(local_authority)) %>%
+    filter(!is.na(num_pupils)) %>%
+    filter(year == '2017-18') %>%
+    group_by(local_authority) %>%
+    summarize(mean=round(mean(budget_outturn / num_pupils), 0)) %>%
+    mutate(mean_rank = rank(desc(mean))) %>%
+    rename("Local authority" = local_authority, "Mean per-pupil budget outturn (2017-18)" = mean, "Mean per-pupil budget outturn rank (2017-18)" = mean_rank)
+  
+  table <- summary_size %>%
+    inner_join(summary_support_category) %>%
+    inner_join(summary_per_pupil_outturn)
+  
+  dt <- datatable(table, rownames= FALSE, options = list(
+    pageLength = 100,
+    order = list(list(0, 'asc'))
+  ))
+  if (save_to_file) {
+    saveWidget(dt, report_file_name(NULL, school_type, "general_summary", ".html"))
+  }
+  dt
+}

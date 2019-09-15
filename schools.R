@@ -66,7 +66,7 @@ load_primaries <- function() {
   # QC
   # Should give 5 rows - new schools that don't have a support category from My Local Schools
   schools_tidy %>%
-    filter(year == '2018-19') %>%
+    filter(year == '2018') %>%
     filter(is.na(support_category)) %>%
     print()
   
@@ -141,7 +141,7 @@ tidy_raw_data <- function(schools_raw) {
     rename_all(gsub, pattern = '^Per pupil funding (20.+)$', replacement = 'per_pupil_funding#\\1') %>%
     rename_all(gsub, pattern = '^Budget outturn (20.+)$', replacement = 'budget_outturn#\\1') %>%
     rename_all(gsub, pattern = '^FSM rate 2018$', replacement = 'fsm_rate#2018-19') %>% # assume 2018 is 2018-19
-    rename_all(gsub, pattern = '^Support Category (20.+)$', replacement = 'support_category#\\1') %>%
+    rename_all(gsub, pattern = '^Support category (20.+)$', replacement = 'support_category#\\1') %>%
     select(-starts_with('X')) %>% # drop any extra X columns
     select(-c('welsh_medium', 'capacity', 'rural_schools')) %>% # drop for the moment
     filter(!is.na(school)) %>% # drop rows with no school name
@@ -198,6 +198,7 @@ plot_summary_size_distribution <- function(schools_tidy, school_type, save_to_fi
 plot_pupil_funding_vs_year <- function(schools_tidy, la, save_to_file=FALSE) {
   plot = schools_tidy %>%
     filter(local_authority == la) %>%
+    filter(str_detect(year, '-')) %>% # only school years
     ggplot(aes(x=year, y=per_pupil_funding, group=school, color=size)) +
     geom_line() +
     geom_point() +

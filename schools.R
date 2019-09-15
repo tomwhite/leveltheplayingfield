@@ -143,11 +143,11 @@ tidy_raw_data <- function(schools_raw) {
     rename_all(gsub, pattern = '^FSM rate 2018$', replacement = 'fsm_rate#2018-19') %>% # assume 2018 is 2018-19
     rename_all(gsub, pattern = '^Support category (20.+)$', replacement = 'support_category#\\1') %>%
     select(-starts_with('X')) %>% # drop any extra X columns
-    select(-c('welsh_medium', 'capacity', 'rural_schools')) %>% # drop for the moment
+    select(-c('welsh_medium', 'rural_schools')) %>% # drop for the moment
     filter(!is.na(school)) %>% # drop rows with no school name
     filter(!is.na(lea_code)) %>% # and no LEA code
     na_if('.') %>% # dots are NA
-    gather(element_year, value, -c(local_authority, lea_code, school)) %>%
+    gather(element_year, value, -c(local_authority, lea_code, school, capacity)) %>%
     separate(element_year, c("element", "year"), sep = "#") %>%
     spread(element, value) %>%
     mutate_at(c('budget_outturn', 'fsm_rate', 'num_pupils', 'per_pupil_funding', 'total_school_delegated_budget'), as.numeric) %>%

@@ -25,7 +25,7 @@ surplus_or_deficit_icons <- iconList(
 
 map_support_categories <- function(secondaries_tidy_geo, la = NULL, school_type, save_to_file=FALSE) {
   map <- secondaries_tidy_geo %>%
-    filter(year == '2018-19') %>%
+    filter(year == '2018') %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
     leaflet() %>%
     addTiles() %>%
@@ -39,7 +39,7 @@ map_support_categories <- function(secondaries_tidy_geo, la = NULL, school_type,
 map_support_categories_by_local_authority <- function(secondaries_tidy_geo, school_type, save_to_file=FALSE) {
   las <- as.character(unique(secondaries_tidy_geo$local_authority))
   secondaries_tidy_geo_filtered = secondaries_tidy_geo %>%
-    filter(year == '2018-19')
+    filter(year == '2018')
   map <- secondaries_tidy_geo_filtered %>%
     leaflet() %>%
     addTiles()
@@ -59,6 +59,7 @@ map_support_categories_by_local_authority <- function(secondaries_tidy_geo, scho
 
 map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_years, la = NULL, school_type, save_to_file=FALSE) {
   years <- unique(secondaries_tidy_geo_all_years$year)
+  years <- years[str_detect(years, '-')] # only school years
   secondaries_tidy_geo_all_years_filtered <- secondaries_tidy_geo_all_years %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
     filter(!is.na(budget_outturn)) %>% # drop rows with no budget_outturn

@@ -42,7 +42,7 @@ round_df <- function(x, digits) {
 
 load_google_sheet <- function(title) {
   gs_auth() # authorize with google
-  gs_title(title) %>% gs_read(ws = "Sheet1", skip = 1)
+  gs_title(title) %>% gs_read(ws = "Sheet1")
 }
 
 load_local_authority_sheet <- function(local_authority) {
@@ -132,16 +132,18 @@ tidy_raw_data <- function(schools_raw) {
   schools_raw %>%
     rename(local_authority = `Local authority`,
            lea_code = `LEA Code`,
-           school = `Name of school`) %>%
-    rename_all(gsub, pattern = '^2018$', replacement = 'fsm_rate#2018-19') %>% # only have FSM for 2018-19
-    rename_all(gsub, pattern = '^(20.+)_1$', replacement = 'total_school_delegated_budget#\\1') %>%
-    rename_all(gsub, pattern = '^(20.+)_2$', replacement = 'per_pupil_funding#\\1') %>%
-    rename_all(gsub, pattern = '^(20.+)_3$', replacement = 'budget_outturn#\\1') %>%
-    rename_all(gsub, pattern = '^(20.+)$', replacement = 'num_pupils#\\1') %>%
-    mutate_at(vars(contains("#")), as.numeric) %>%
-    rename('support_category#2018-19' = `X30`) %>% # only have support category for 2018-19
-    select(-c(`Yes/No`)) %>% # drop Welsh medium column for the moment
+           school = `Name of school`,
+           welsh_medium = `Welsh Medium`,
+           capacity = `Capacity`,
+           rural_schools = `Rural Schools`) %>%
+    rename_all(gsub, pattern = '^Pupil numbers (20.+)$', replacement = 'num_pupils#\\1') %>%
+    rename_all(gsub, pattern = '^Total delegated budget (20.+)$', replacement = 'total_school_delegated_budget#\\1') %>%
+    rename_all(gsub, pattern = '^Per pupil funding (20.+)$', replacement = 'per_pupil_funding#\\1') %>%
+    rename_all(gsub, pattern = '^Budget outturn (20.+)$', replacement = 'budget_outturn#\\1') %>%
+    rename_all(gsub, pattern = '^FSM rate 2018$', replacement = 'fsm_rate#2018-19') %>% # assume 2018 is 2018-19
+    rename_all(gsub, pattern = '^Support Category (20.+)$', replacement = 'support_category#\\1') %>%
     select(-starts_with('X')) %>% # drop any extra X columns
+    select(-c('welsh_medium', 'capacity', 'rural_schools')) %>% # drop for the moment
     filter(!is.na(school)) %>% # drop rows with no school name
     filter(!is.na(lea_code)) %>% # and no LEA code
     na_if('.') %>% # dots are NA
@@ -315,9 +317,8 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
   
   summary_support_category <- schools_tidy %>%
     filter(!is.na(local_authority)) %>%
-    filter(!is.na(num_pupils)) %>%
     filter(if (!is.null(st)) school_type == st else TRUE) %>%
-    filter(year == '2018-19') %>%
+    filter(year == '2018') %>%
     mutate(support_category_days = case_when(support_category == 'Green' ~ 4,
                                              support_category == 'Yellow' ~ 10,
                                              support_category == 'Amber' ~ 15,
@@ -326,7 +327,7 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
     group_by(local_authority) %>%
     summarize(mean=round(mean(support_category_days), 2)) %>%
     mutate(mean_rank = min_rank(mean)) %>%
-    rename("Local authority" = local_authority, "Mean support category days (2018-19)" = mean, "Mean support category days rank (2018-19)" = mean_rank)
+    rename("Local authority" = local_authority, "Mean support category days (2018)" = mean, "Mean support category days rank (2018)" = mean_rank)
   
   summary_per_pupil_outturn <- schools_tidy %>%
     filter(!is.na(local_authority)) %>%

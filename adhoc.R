@@ -28,3 +28,20 @@ secondaries_tidy %>%
   ggplot(aes(x = budget_outturn / num_pupils, y = per_pupil_funding)) +
   geom_point() +
   geom_smooth(method=lm)
+
+# Capacity distribution
+
+schools_tidy %>%
+  filter(local_authority == 'Powys') %>%
+  filter(year == '2018-19') %>%
+  mutate(capacity_pct = 100.0 * num_pupils / capacity) %>%
+  ggplot(aes(capacity_pct)) +
+  geom_histogram(binwidth = 5, colour="black", fill="white")
+
+schools_tidy %>%
+  filter(year == '2018-19') %>%
+  filter(!is.na(capacity)) %>%
+  mutate(capacity_pct = 100.0 * num_pupils / capacity) %>%
+  ggplot(aes(reorder(local_authority, capacity_pct, FUN = median), capacity_pct)) +
+  geom_boxplot() +
+  coord_flip()

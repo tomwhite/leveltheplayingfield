@@ -113,7 +113,8 @@ load_through_schools <- function() {
 }
 
 load_all_schools <- function() {
-  load_secondaries() %>%
+  load_primaries() %>%
+    union_all(load_secondaries()) %>%
     union_all(load_special_schools()) %>%
     union_all(load_through_schools()) %>%
     mutate_at(c('support_category'), as.factor)
@@ -166,15 +167,16 @@ standardise_la_name <- function(la) {
 
 report_file_name <- function(la, school_type, report_name, extension) {
   # create a standard file name for a report
+  st <- if (is.null(school_type)) 'all_schools' else school_type
   if (is.null(la)) {
     d <- paste0(REPORTS_DIR, "summary")
     dir.create(d, showWarnings = FALSE)
-    paste0(d, "/", school_type, "_", report_name, extension)
+    paste0(d, "/", st, "_", report_name, extension)
   } else {
     la <- standardise_la_name(la)
     d <- file.path(REPORTS_DIR, standardise_la_name(la))
     dir.create(d, showWarnings = FALSE)
-    paste0(d, "/", la, "_", school_type, "_", report_name, extension)
+    paste0(d, "/", la, "_", st, "_", report_name, extension)
   }
 }
 
@@ -300,9 +302,11 @@ tabulate_support_category_summary <- function(schools_tidy, school_type, save_to
 tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FALSE) {
   # summary of main indicators (latest year available)
   
+  st <- school_type
   summary_size <- schools_tidy %>%
     filter(!is.na(local_authority)) %>%
     filter(!is.na(num_pupils)) %>%
+    filter(if (!is.null(st)) school_type == st else TRUE) %>%
     filter(year == '2018-19') %>%
     group_by(local_authority) %>%
     summarize(schools=n(), total_pupils=sum(num_pupils), mean=round(mean(num_pupils), 0)) %>%
@@ -312,6 +316,7 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
   summary_support_category <- schools_tidy %>%
     filter(!is.na(local_authority)) %>%
     filter(!is.na(num_pupils)) %>%
+    filter(if (!is.null(st)) school_type == st else TRUE) %>%
     filter(year == '2018-19') %>%
     mutate(support_category_days = case_when(support_category == 'Green' ~ 4,
                                              support_category == 'Yellow' ~ 10,
@@ -326,6 +331,7 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
   summary_per_pupil_outturn <- schools_tidy %>%
     filter(!is.na(local_authority)) %>%
     filter(!is.na(num_pupils)) %>%
+    filter(if (!is.null(st)) school_type == st else TRUE) %>%
     filter(year == '2017-18') %>%
     group_by(local_authority) %>%
     summarize(mean=round(mean(budget_outturn / num_pupils), 0)) %>%

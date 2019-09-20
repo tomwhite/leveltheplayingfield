@@ -17,10 +17,18 @@ support_category_icons <- iconList(
   Red = make_coloured_icon('red')
 )
 
-# Surplace = black, deficit = red
+# Surplus = black, deficit = red
 surplus_or_deficit_icons <- iconList(
   Black = make_coloured_icon('black'),
   Red = make_coloured_icon('red')
+)
+
+# Occupancy bands
+occupancy_band_icons <- iconList(
+  '<50%' = make_coloured_icon('red'),
+  '50-75%' = make_coloured_icon('orange'),
+  '75-100%' = make_coloured_icon('blue'),
+  '>100%' = make_coloured_icon('violet')
 )
 
 map_support_categories <- function(secondaries_tidy_geo, la = NULL, school_type, save_to_file=FALSE) {
@@ -77,6 +85,32 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
   )
   if (save_to_file) {
     saveWidget(map, report_file_name(la, school_type, "outturn_surplus_or_deficit", ".html"))
+  }
+  map
+}
+
+map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
+  school_types <- as.character(unique(schools_tidy$school_type))
+  schools_tidy_filtered <- schools_tidy %>%
+    filter(if (!is.null(la)) local_authority == la else TRUE) %>%
+    filter(year == '2017-18') %>%
+    filter(!is.na(num_pupils)) %>% # drop rows with no num_pupils
+    filter(!is.na(capacity)) %>% # drop rows with no capacity
+    mutate(occupancy = 100.0 * num_pupils / capacity) %>%
+    mutate(occupancy_band = cut(occupancy, breaks=c(-Inf, 50, 75, 100, Inf), labels=c("<50%","50-75%", "75-100%", ">100%")))
+  map <- schools_tidy_filtered %>%
+    leaflet() %>%
+    addTiles()
+  for (st in school_types) {
+    d = schools_tidy_filtered[schools_tidy_filtered$school_type == st,]
+    map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste0(school, ', ', round(occupancy, 1), '%'), icon=~occupancy_band_icons[occupancy_band], group = st)
+  }
+  map <- map %>% addLayersControl(
+    overlayGroups = school_types,
+    options = layersControlOptions(collapsed = FALSE)
+  )
+  if (save_to_file) {
+    saveWidget(map, report_file_name(la, NULL, "occupancy", ".html"))
   }
   map
 }

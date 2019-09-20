@@ -34,16 +34,16 @@ secondaries_tidy %>%
 schools_tidy %>%
   filter(local_authority == 'Powys') %>%
   filter(year == '2018-19') %>%
-  mutate(capacity_pct = 100.0 * num_pupils / capacity) %>%
-  ggplot(aes(capacity_pct)) +
+  mutate(occupancy = 100.0 * num_pupils / capacity) %>%
+  ggplot(aes(occupancy)) +
   geom_histogram(binwidth = 5, colour="black", fill="white")
 
 schools_tidy %>%
   filter(year == '2018-19') %>%
   filter(!is.na(num_pupils)) %>%
   filter(!is.na(capacity)) %>%
-  mutate(capacity_pct = 100.0 * num_pupils / capacity) %>%
-  ggplot(aes(reorder(local_authority, capacity_pct, FUN = median), capacity_pct)) +
+  mutate(occupancy = 100.0 * num_pupils / capacity) %>%
+  ggplot(aes(reorder(local_authority, occupancy, FUN = median), occupancy)) +
   geom_boxplot() +
   geom_jitter(width=0.05,alpha=0.2) +
   coord_flip()

@@ -135,7 +135,7 @@ tidy_raw_data <- function(schools_raw) {
            school = `Name of school`,
            welsh_medium = `Welsh Medium`,
            capacity = `Capacity`,
-           rural_schools = `Rural Schools`) %>%
+           rural_school = `Rural Schools`) %>%
     rename_all(gsub, pattern = '^Pupil numbers (20.+)$', replacement = 'num_pupils#\\1') %>%
     rename_all(gsub, pattern = '^Total delegated budget (20.+)$', replacement = 'total_school_delegated_budget#\\1') %>%
     rename_all(gsub, pattern = '^Per pupil funding (20.+)$', replacement = 'per_pupil_funding#\\1') %>%
@@ -143,15 +143,16 @@ tidy_raw_data <- function(schools_raw) {
     rename_all(gsub, pattern = '^FSM rate 2018$', replacement = 'fsm_rate#2018-19') %>% # assume 2018 is 2018-19
     rename_all(gsub, pattern = '^Support category (20.+)$', replacement = 'support_category#\\1') %>%
     select(-starts_with('X')) %>% # drop any extra X columns
-    select(-c('welsh_medium', 'rural_schools')) %>% # drop for the moment
+    select(-c('welsh_medium')) %>% # drop for the moment
     filter(!is.na(school)) %>% # drop rows with no school name
     filter(!is.na(lea_code)) %>% # and no LEA code
     na_if('.') %>% # dots are NA
-    gather(element_year, value, -c(local_authority, lea_code, school, capacity)) %>%
+    gather(element_year, value, -c(local_authority, lea_code, school, capacity, rural_school)) %>%
     separate(element_year, c("element", "year"), sep = "#") %>%
     spread(element, value) %>%
     mutate_at(c('budget_outturn', 'fsm_rate', 'num_pupils', 'per_pupil_funding', 'total_school_delegated_budget'), as.numeric) %>%
     mutate_at(c('support_category'), as.factor) %>%
+    mutate_at(c('rural_school'), as.factor) %>%
     mutate(size=cut(num_pupils, breaks=c(-Inf, 50, 100, 200, 400, Inf), labels=c("<50","50-100", "100-200", "200-400", ">400")))  %>%
     mutate(num_pupils_on_fsm=fsm_rate * num_pupils / 100.0) %>%
     filter(!is.na(year) & year != '2020-21' & year != '2021-22') # drop blank years and years with no data

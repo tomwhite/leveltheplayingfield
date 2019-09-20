@@ -122,3 +122,17 @@ map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=F
   }
   map
 }
+
+map_rural_schools <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
+  map <- schools_tidy %>%
+    filter(year == '2018-19') %>%
+    filter(if (!is.null(la)) local_authority == la else TRUE) %>%
+    filter(rural_school == 'Yes') %>%
+    leaflet() %>%
+    addTiles() %>%
+    addMarkers(~longitude, ~latitude, popup = ~school, label=~school)
+  if (save_to_file) {
+    saveWidget(map, report_file_name(la, NULL, "support_category", ".html"))
+  }
+  map
+}

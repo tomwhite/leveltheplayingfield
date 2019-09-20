@@ -18,3 +18,6 @@ map_support_categories(all_schools, 'Powys', save_to_file=TRUE)
 
 # Occupancy
 map_occupancy_by_school_type(all_schools, 'Powys', save_to_file=TRUE)
+
+# Rural schools
+map_rural_schools(all_schools, 'Powys', save_to_file=TRUE)

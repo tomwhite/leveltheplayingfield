@@ -1,4 +1,5 @@
 library(tidyverse)
+library(broom)
 library(googlesheets)
 library(knitr)
 library(scales)
@@ -355,10 +356,28 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
     summarize(mean=round(mean(budget_outturn / num_pupils), 0)) %>%
     mutate(mean_rank = rank(desc(mean))) %>%
     rename("Local authority" = local_authority, "Mean per-pupil budget outturn (2017-18)" = mean, "Mean per-pupil budget outturn rank (2017-18)" = mean_rank)
-  
+
+  summary_per_pupil_fsm <- schools_tidy %>%
+    filter(!is.na(local_authority)) %>%
+    filter(!is.na(num_pupils)) %>%
+    filter(if (!is.null(st)) school_type == st else TRUE) %>%
+    filter(year == '2018-19') %>%
+    nest(-local_authority) %>%
+    mutate(
+      fit = map(data, ~ lm(per_pupil_funding ~ fsm_rate, data = .x)),
+      tidied = map(fit, tidy)
+    ) %>% 
+    unnest(tidied) %>%
+    filter(term == 'fsm_rate') %>%
+    select(c('local_authority', 'estimate')) %>%
+    mutate(estimate_rank = rank(desc(estimate))) %>%
+    mutate(estimate = round(estimate, 1)) %>%
+    rename("Local authority" = local_authority, "Per-pupil funding increase per FSM % increase (2018-19)" = estimate, "Per-pupil funding increase per FSM % increase rank (2018-19)" = estimate_rank)
+    
   table <- summary_size %>%
     inner_join(summary_support_category) %>%
-    inner_join(summary_per_pupil_outturn)
+    inner_join(summary_per_pupil_outturn) %>%
+    inner_join(summary_per_pupil_fsm)
   
   dt <- datatable(table, rownames= FALSE, options = list(
     pageLength = 100,

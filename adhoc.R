@@ -1,3 +1,4 @@
+source('schools.R')
 
 # Strip chart
 secondaries_tidy$surplus_or_deficit <- if_else(secondaries_tidy$budget_outturn >= 0, "Black", "Red")
@@ -85,3 +86,21 @@ all_schools %>%
   geom_point() +
   geom_smooth(method=lm)
   
+# FSM
+
+# Calculate the additional funding per pupil (in £) for every additional percentage point of FSM
+
+# Use broom 
+library(broom)
+schools_tidy %>%
+  filter(year == "2018-19") %>%
+  nest(-local_authority) %>%
+  mutate(
+    fit = map(data, ~ lm(per_pupil_funding ~ fsm_rate, data = .x)),
+    tidied = map(fit, tidy)
+  ) %>% 
+  unnest(tidied) %>%
+  filter(term == 'fsm_rate') %>%
+  ggplot(aes(reorder(local_authority, estimate), estimate)) +
+  geom_point() +
+  coord_flip()

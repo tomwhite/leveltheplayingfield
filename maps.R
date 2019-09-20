@@ -132,7 +132,7 @@ map_rural_schools <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
     addTiles() %>%
     addMarkers(~longitude, ~latitude, popup = ~school, label=~school)
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, NULL, "support_category", ".html"))
+    saveWidget(map, report_file_name(la, NULL, "rural_schools", ".html"))
   }
   map
 }

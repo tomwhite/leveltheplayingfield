@@ -81,7 +81,7 @@ all_schools %>%
   filter(year == '2018-19') %>%
   filter(school_type == 'primary') %>%
   mutate(occupancy = 100.0 * num_pupils / capacity) %>%
-  ggplot(aes(x = num_pupils, y = occupancy)) +
+  ggplot(aes(x = capacity, y = occupancy)) +
   geom_point() +
   geom_smooth(method=lm)
   

@@ -40,8 +40,11 @@ schools_tidy %>%
 
 schools_tidy %>%
   filter(year == '2018-19') %>%
+  filter(!is.na(num_pupils)) %>%
   filter(!is.na(capacity)) %>%
   mutate(capacity_pct = 100.0 * num_pupils / capacity) %>%
   ggplot(aes(reorder(local_authority, capacity_pct, FUN = median), capacity_pct)) +
   geom_boxplot() +
+  geom_jitter(width=0.05,alpha=0.2) +
   coord_flip()
+

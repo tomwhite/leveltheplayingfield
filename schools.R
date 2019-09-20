@@ -244,6 +244,21 @@ plot_pupil_funding_vs_outturn <- function(schools_tidy, la, save_to_file=FALSE) 
   plot
 }
 
+plot_pupil_funding_vs_per_pupil_outturn <- function(schools_tidy, la, save_to_file=FALSE) {
+  plot = schools_tidy %>%
+    filter(local_authority == la) %>%
+    filter (!is.na(budget_outturn)) %>%
+    ggplot(aes(x=budget_outturn/num_pupils, y=per_pupil_funding)) +
+    geom_point() +
+    geom_smooth(method=lm) +
+    xlab("Per-pupil budget outturn (£)") +
+    ylab("Per-pupil funding (£)")
+  if (save_to_file) {
+    ggsave(report_file_name(la, "primary", "pupil_funding_vs_pupil_outturn", ".png"))
+  }
+  plot
+}
+
 plot_pupil_funding_vs_fsm <- function(schools_tidy, la, save_to_file=FALSE) {
   plot = schools_tidy %>%
     filter(local_authority == la) %>%

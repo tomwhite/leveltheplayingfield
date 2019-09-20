@@ -19,6 +19,7 @@ for (la in LOCAL_AUTHORITIES) {
   plot_pupil_funding_vs_year(schools_tidy, la, save_to_file = TRUE)
   plot_school_funding_vs_size(schools_tidy, la, save_to_file = TRUE)
   plot_pupil_funding_vs_outturn(schools_tidy, la, save_to_file = TRUE)
+  plot_pupil_funding_vs_per_pupil_outturn(schools_tidy, la, save_to_file = TRUE)
   plot_pupil_funding_vs_fsm(schools_tidy, la, save_to_file = TRUE)
 }
 

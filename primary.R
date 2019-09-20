@@ -7,9 +7,10 @@ save(schools_tidy, file="data/schools_tidy.Rda")
 #load("data/schools_tidy.Rda")
 
 # Summary tables
-tabulate_num_pupils_summary(schools_tidy, "primary", save_to_file=TRUE)
-tabulate_support_category_summary(schools_tidy, "primary", save_to_file=TRUE)
-tabulate_general_summary(schools_tidy, "primary", save_to_file=TRUE)
+# Superceded by general table
+#tabulate_num_pupils_summary(schools_tidy, "primary", save_to_file=TRUE)
+#tabulate_support_category_summary(schools_tidy, "primary", save_to_file=TRUE)
+#tabulate_general_summary(schools_tidy, "primary", save_to_file=TRUE)
 
 # Charts
 plot_summary_size_distribution(schools_tidy, "primary", save_to_file = TRUE)

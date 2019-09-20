@@ -93,7 +93,7 @@ map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=F
   school_types <- as.character(unique(schools_tidy$school_type))
   schools_tidy_filtered <- schools_tidy %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
-    filter(year == '2017-18') %>%
+    filter(year == '2019-20') %>%
     filter(!is.na(num_pupils)) %>% # drop rows with no num_pupils
     filter(!is.na(capacity)) %>% # drop rows with no capacity
     mutate(occupancy = 100.0 * num_pupils / capacity) %>%

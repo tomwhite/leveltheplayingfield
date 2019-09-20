@@ -13,5 +13,8 @@ tabulate_general_summary(all_schools, "special", save_to_file=TRUE)
 
 # Maps
 
+# Support category
+map_support_categories(all_schools, 'Powys', save_to_file=TRUE)
+
 # Occupancy
 map_occupancy_by_school_type(all_schools, 'Powys', save_to_file=TRUE)

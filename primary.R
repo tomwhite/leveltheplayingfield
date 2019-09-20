@@ -24,10 +24,6 @@ for (la in LOCAL_AUTHORITIES) {
 
 # Maps
 
-# Support category
-# A single LA for a single year
-map_support_categories(schools_tidy, 'Powys', 'primary', save_to_file=TRUE)
-
 # Outturn - surplus or deficit
 # A single LA
 map_outturn_surplus_or_deficit_by_year(schools_tidy, 'Powys', 'primary', save_to_file=TRUE)

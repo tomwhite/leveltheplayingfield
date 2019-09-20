@@ -31,15 +31,24 @@ occupancy_band_icons <- iconList(
   '>100%' = make_coloured_icon('violet')
 )
 
-map_support_categories <- function(secondaries_tidy_geo, la = NULL, school_type, save_to_file=FALSE) {
-  map <- secondaries_tidy_geo %>%
+map_support_categories <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
+  school_types <- as.character(unique(schools_tidy$school_type))
+  schools_tidy_filtered = schools_tidy %>%
     filter(year == '2018') %>%
-    filter(if (!is.null(la)) local_authority == la else TRUE) %>%
+    filter(if (!is.null(la)) local_authority == la else TRUE)
+  map <- schools_tidy_filtered %>%
     leaflet() %>%
-    addTiles() %>%
-    addMarkers(~longitude, ~latitude, popup = ~school, label=~school, icon=~support_category_icons[support_category])
+    addTiles()
+  for (st in school_types) {
+    d = schools_tidy_filtered[schools_tidy_filtered$school_type == st,]
+    map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~school, icon=~support_category_icons[support_category], group = st)
+  }
+  map <- map %>% addLayersControl(
+    overlayGroups = school_types,
+    options = layersControlOptions(collapsed = FALSE)
+  )
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, school_type, "support_category", ".html"))
+    saveWidget(map, report_file_name(la, NULL, "support_category", ".html"))
   }
   map
 }
@@ -90,7 +99,6 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
 }
 
 map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
-  school_types <- as.character(unique(schools_tidy$school_type))
   schools_tidy_filtered <- schools_tidy %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
     filter(year == '2019-20') %>%

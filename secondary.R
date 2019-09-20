@@ -18,8 +18,6 @@ plot_summary_size_distribution(secondaries_tidy, "secondary", save_to_file = TRU
 # Support category
 # All of Wales
 map_support_categories(secondaries_tidy, school_type='secondary', save_to_file=TRUE)
-# A single LA
-map_support_categories(secondaries_tidy, 'Powys', 'secondary', save_to_file=TRUE)
 # Per LA controls
 map_support_categories_by_local_authority(secondaries_tidy, 'secondary', save_to_file=TRUE)
 

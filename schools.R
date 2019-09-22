@@ -156,6 +156,11 @@ tidy_raw_data <- function(schools_raw) {
     mutate_at(c('rural_school'), as.factor) %>%
     mutate(size=cut(num_pupils, breaks=c(-Inf, 50, 100, 200, 400, Inf), labels=c("<50","50-100", "100-200", "200-400", ">400")))  %>%
     mutate(num_pupils_on_fsm=fsm_rate * num_pupils / 100.0) %>%
+    mutate(support_category_days = case_when(support_category == 'Green' ~ 4,
+                                             support_category == 'Yellow' ~ 10,
+                                             support_category == 'Amber' ~ 15,
+                                             support_category == 'Red' ~ 25,
+                                             TRUE ~ NA_real_)) %>%
     filter(!is.na(year) & year != '2020-21' & year != '2021-22') # drop blank years and years with no data
 }
 
@@ -273,6 +278,37 @@ plot_pupil_funding_vs_fsm <- function(schools_tidy, la, save_to_file=FALSE) {
     scale_colour_manual(values = SCHOOL_SIZE_COLOURS)
   if (save_to_file) {
     ggsave(report_file_name(la, "primary", "pupil_funding_vs_fsm", ".png"))
+  }
+  plot
+}
+
+plot_support_catagory_vs_year <- function(schools_tidy, st, la, save_to_file=FALSE) {
+  all_wales_support_category <- schools_tidy %>%
+    filter(school_type == st) %>%
+    filter(!is.na(support_category)) %>%
+    group_by(year) %>%
+    summarize(mean_support_category_days=mean(support_category_days)) %>%
+    mutate(local_authority = 'All')
+  
+  per_la_support_category <- schools_tidy %>%
+    filter(school_type == st) %>%
+    filter(!is.na(support_category)) %>%
+    group_by(local_authority, year) %>%
+    summarize(mean_support_category_days=mean(support_category_days))
+  
+  plot = per_la_support_category %>%
+    ggplot(aes(x=year, y=mean_support_category_days, group=local_authority)) +
+    geom_hline(yintercept = 4, color='green') +
+    geom_hline(yintercept = 10, color='yellow') +
+    geom_hline(yintercept = 15, color='orange') +
+    geom_line(alpha = 0.2) +
+    geom_line(data = all_wales_support_category, color = 'black') +
+    geom_line(data = filter(per_la_support_category, local_authority == la), color='blue') +
+    ylab("Average support category days") + 
+    scale_y_continuous(breaks = seq(4, 25)) +
+    theme(axis.title.x=element_blank())
+  if (save_to_file) {
+    ggsave(report_file_name(la, "primary", "support_category_vs_year", ".png"))
   }
   plot
 }

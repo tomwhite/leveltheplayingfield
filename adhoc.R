@@ -104,3 +104,8 @@ schools_tidy %>%
   ggplot(aes(reorder(local_authority, estimate), estimate)) +
   geom_point() +
   coord_flip()
+
+# Support category plots over time
+
+plot_support_catagory_vs_year(all_schools, 'primary', 'Powys')
+plot_support_catagory_vs_year(all_schools, 'secondary', 'Powys')

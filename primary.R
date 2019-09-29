@@ -13,7 +13,7 @@ save(schools_tidy, file="data/schools_tidy.Rda")
 #tabulate_general_summary(schools_tidy, "primary", save_to_file=TRUE)
 
 # Charts
-plot_summary_size_distribution(schools_tidy, "primary", save_to_file = TRUE)
+#plot_summary_size_distribution(schools_tidy, "primary", save_to_file = TRUE)
 
 for (la in LOCAL_AUTHORITIES) {
   plot_pupil_funding_vs_year(schools_tidy, la, save_to_file = TRUE)

@@ -190,8 +190,10 @@ report_file_name <- function(la, school_type, report_name, extension) {
 }
 
 plot_summary_size_distribution <- function(schools_tidy, school_type, save_to_file=FALSE) {
+  st <- school_type
   plot = schools_tidy %>%
     filter(!is.na(local_authority)) %>%
+    filter(if (!is.null(st)) school_type == st else TRUE) %>%
     filter(year == '2018-19') %>%
     ggplot(aes(num_pupils)) +
     geom_histogram(binwidth=25, colour="black", fill="white") +

@@ -31,6 +31,12 @@ occupancy_band_icons <- iconList(
   '>100%' = make_coloured_icon('violet')
 )
 
+# Rural = green, not-rural = blue
+rural_icons <- iconList(
+  Yes = make_coloured_icon('green'),
+  No = make_coloured_icon('blue')
+)
+
 map_support_categories <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
   school_types <- as.character(unique(schools_tidy$school_type))
   schools_tidy_filtered = schools_tidy %>%
@@ -128,13 +134,17 @@ map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=F
 }
 
 map_rural_schools <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
+  html_legend <- "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png'>Rural<br/>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png'>Not rural"
   map <- schools_tidy %>%
     filter(year == '2018-19') %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
-    filter(rural_school == 'Yes') %>%
+    filter(school_type == 'primary') %>% # rural schools are primaries
+    mutate(rural_school = replace(rural_school, is.na(rural_school), 'No')) %>%
     leaflet() %>%
     addTiles() %>%
-    addMarkers(~longitude, ~latitude, popup = ~school, label=~school)
+    addMarkers(~longitude, ~latitude, popup = ~school, label=~school, icon=~rural_icons[rural_school]) %>%
+    addControl(html = html_legend)
   if (save_to_file) {
     saveWidget(map, report_file_name(la, NULL, "rural_schools", ".html"))
   }

@@ -107,5 +107,6 @@ schools_tidy %>%
 
 # Support category plots over time
 
+# All Wales is black, Powys is blue
 plot_support_catagory_vs_year(all_schools, 'primary', 'Powys')
 plot_support_catagory_vs_year(all_schools, 'secondary', 'Powys')

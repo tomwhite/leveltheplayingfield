@@ -38,15 +38,13 @@ map_outturn_surplus_or_deficit_by_year(all_schools, school_type='secondary', sav
 
 # Per LA
 
-# Support category
-map_support_categories(all_schools, 'Powys', save_to_file=TRUE)
-
-# Outturn - surplus or deficit
-map_outturn_surplus_or_deficit_by_year(all_schools, 'Powys', 'primary', save_to_file=TRUE)
-map_outturn_surplus_or_deficit_by_year(all_schools, 'Powys', 'secondary', save_to_file=TRUE)
-
-# Occupancy
-map_occupancy_by_school_type(all_schools, 'Powys', save_to_file=TRUE)
-
-# Rural schools
-map_rural_schools(all_schools, 'Powys', save_to_file=TRUE)
+for (la in c("Blaenau Gwent", "Powys")) {
+  map_support_categories(all_schools, la, save_to_file=TRUE)
+  
+  map_outturn_surplus_or_deficit_by_year(all_schools, la, 'primary', save_to_file=TRUE)
+  map_outturn_surplus_or_deficit_by_year(all_schools, la, 'secondary', save_to_file=TRUE)
+  
+  map_occupancy_by_school_type(all_schools, la, save_to_file=TRUE)
+  
+  map_rural_schools(all_schools, la, save_to_file=TRUE)
+}

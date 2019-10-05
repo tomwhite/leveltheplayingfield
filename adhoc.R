@@ -1,5 +1,11 @@
 source('schools.R')
 
+# Total school numbers
+all_schools %>%
+  filter(year == '2018-19') %>%
+  group_by(school_type) %>%
+  tally()
+
 # Strip chart
 secondaries_tidy$surplus_or_deficit <- if_else(secondaries_tidy$budget_outturn >= 0, "Black", "Red")
 

@@ -110,3 +110,31 @@ schools_tidy %>%
 # All Wales is black, Powys is blue
 plot_support_catagory_vs_year(all_schools, 'primary', 'Powys')
 plot_support_catagory_vs_year(all_schools, 'secondary', 'Powys')
+
+# Budget outturn trend arrows
+# see https://stackoverflow.com/questions/38104901/ggplot2-show-difference-in-values-over-time-with-an-arrow
+
+x <- all_schools %>%
+  filter(school_type == 'secondary') %>%
+  filter(local_authority == 'Powys') %>%
+  select(c(school, year, budget_outturn)) %>%
+  filter(year == "2016-17" | year == "2017-18") %>%
+  spread(year, budget_outturn) %>% # put years back into columns
+  mutate(direction = ifelse(`2017-18` - `2016-17` > 0, "Up", "Down")) %>%
+  melt(id = c("school", "direction"))
+  
+ggplot(x, aes(x=value, y = school, color = variable, group = school )) + 
+  geom_point(size=4) + 
+  geom_path(aes(color = direction), arrow=arrow())
+
+ggplot2df <- read.table(text = "question y2015 y2016
+q1 90 50
+                        q2 80 60
+                        q3 70 90
+                        q4 90 60
+                        q5 30 20", header = TRUE)
+
+library(reshape2)
+df <- ggplot2df %>% 
+  mutate(direction = ifelse(y2016 - y2015 > 0, "Up", "Down"))%>%
+  melt(id = c("question", "direction"))

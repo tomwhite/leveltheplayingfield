@@ -6,7 +6,7 @@ library(scales)
 library(DT)
 library(htmlTable)
 
-REPORTS_DIR = "~/projects-workspace/leveltheplayingfield/docs/"
+REPORTS_DIR = "~/projects-workspace/leveltheplayingfield/docs"
 LOCAL_AUTHORITIES = c("Blaenau Gwent",
                       "Bridgend",
                       "Caerphilly",
@@ -181,13 +181,15 @@ standardise_la_name <- function(la) {
 report_file_name <- function(la, school_type, report_name, extension) {
   # create a standard file name for a report
   st <- if (is.null(school_type)) 'all_schools' else school_type
+  dir.create(file.path(REPORTS_DIR), showWarnings = FALSE)
   if (is.null(la)) {
-    d <- paste0(REPORTS_DIR, "summary")
+    d <- file.path(REPORTS_DIR, "wales")
     dir.create(d, showWarnings = FALSE)
     paste0(d, "/", st, "_", report_name, extension)
   } else {
+    dir.create(file.path(REPORTS_DIR, "local_authorities"), showWarnings = FALSE)
     la <- standardise_la_name(la)
-    d <- file.path(REPORTS_DIR, standardise_la_name(la))
+    d <- file.path(REPORTS_DIR, "local_authorities", standardise_la_name(la))
     dir.create(d, showWarnings = FALSE)
     paste0(d, "/", la, "_", st, "_", report_name, extension)
   }

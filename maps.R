@@ -109,6 +109,7 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
 }
 
 map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
+  school_types <- as.character(unique(schools_tidy$school_type))
   schools_tidy_filtered <- schools_tidy %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
     filter(year == '2019-20') %>%

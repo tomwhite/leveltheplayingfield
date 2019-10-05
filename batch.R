@@ -30,7 +30,7 @@ for (la in LOCAL_AUTHORITIES) {
 # All of Wales
 
 # Support category
-map_support_categories_by_local_authority(secondaries_tidy, 'secondary', save_to_file=TRUE)
+map_support_categories_by_local_authority(all_schools, 'secondary', save_to_file=TRUE)
 
 # Outturn - surplus or deficit
 map_outturn_surplus_or_deficit_by_year(all_schools, school_type='secondary', save_to_file=TRUE)

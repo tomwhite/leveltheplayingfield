@@ -7,8 +7,7 @@ library(DT)
 library(htmlTable)
 
 REPORTS_DIR = "~/projects-workspace/leveltheplayingfield/docs/"
-LOCAL_AUTHORITIES = c("Anglesey",
-                      "Blaenau Gwent",
+LOCAL_AUTHORITIES = c("Blaenau Gwent",
                       "Bridgend",
                       "Caerphilly",
                       "Cardiff",
@@ -17,8 +16,8 @@ LOCAL_AUTHORITIES = c("Anglesey",
                       "Conwy",
                       "Denbighshire",
                       "Flintshire",
-                      "Glamorgan",
                       "Gwynedd",
+                      "Isle of Anglesey",
                       "Merthyr Tydfil",
                       "Monmouthshire",
                       "Neath Port Talbot",
@@ -28,6 +27,7 @@ LOCAL_AUTHORITIES = c("Anglesey",
                       "Rhondda Cynon Taf",
                       "Swansea",
                       "Torfaen",
+                      "Vale of Glamorgan",
                       "Wrexham")
 SCHOOL_SIZE_COLOURS = c("<50" = "#F8766D", "50-100" = "#A3A500", "100-200" = "#00BF7D", "200-400" = "#00B0F6", ">400" = "#E76BF3")
 
@@ -39,6 +39,10 @@ round_df <- function(x, digits) {
   numeric_columns <- sapply(x, mode) == 'numeric'
   x[numeric_columns] <-  round(x[numeric_columns], digits)
   x
+}
+
+as_numeric_ignore_commas <- function(x){
+  as.numeric(gsub("\\,", "", x))
 }
 
 load_google_sheet <- function(title) {
@@ -151,7 +155,7 @@ tidy_raw_data <- function(schools_raw) {
     gather(element_year, value, -c(local_authority, lea_code, school, capacity, rural_school)) %>%
     separate(element_year, c("element", "year"), sep = "#") %>%
     spread(element, value) %>%
-    mutate_at(c('budget_outturn', 'fsm_rate', 'num_pupils', 'per_pupil_funding', 'total_school_delegated_budget'), as.numeric) %>%
+    mutate_at(c('budget_outturn', 'fsm_rate', 'num_pupils', 'per_pupil_funding', 'total_school_delegated_budget'), as_numeric_ignore_commas) %>%
     mutate_at(c('support_category'), as.factor) %>%
     mutate_at(c('rural_school'), as.factor) %>%
     mutate(size=cut(num_pupils, breaks=c(-Inf, 50, 100, 200, 400, Inf), labels=c("<50","50-100", "100-200", "200-400", ">400")))  %>%
@@ -395,27 +399,32 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
     mutate(mean_rank = rank(desc(mean))) %>%
     rename("Local authority" = local_authority, "Mean per-pupil budget outturn (2017-18)" = mean, "Mean per-pupil budget outturn rank (2017-18)" = mean_rank)
 
-  summary_per_pupil_fsm <- schools_tidy %>%
-    filter(!is.na(local_authority)) %>%
-    filter(!is.na(num_pupils)) %>%
-    filter(if (!is.null(st)) school_type == st else TRUE) %>%
-    filter(year == '2018-19') %>%
-    nest(-local_authority) %>%
-    mutate(
-      fit = map(data, ~ lm(per_pupil_funding ~ fsm_rate, data = .x)),
-      tidied = map(fit, tidy)
-    ) %>% 
-    unnest(tidied) %>%
-    filter(term == 'fsm_rate') %>%
-    select(c('local_authority', 'estimate')) %>%
-    mutate(estimate_rank = rank(desc(estimate))) %>%
-    mutate(estimate = round(estimate, 1)) %>%
-    rename("Local authority" = local_authority, "Per-pupil funding increase per FSM % increase (2018-19)" = estimate, "Per-pupil funding increase per FSM % increase rank (2018-19)" = estimate_rank)
-    
   table <- summary_size %>%
-    inner_join(summary_support_category) %>%
-    inner_join(summary_per_pupil_outturn) %>%
-    inner_join(summary_per_pupil_fsm)
+    left_join(summary_support_category) %>%
+    left_join(summary_per_pupil_outturn)
+  
+  # TODO: handle NAs in fit?
+  # if (is.null(st) || (st != 'through' && st != 'special')) {
+  #   summary_per_pupil_fsm <- schools_tidy %>%
+  #     filter(!is.na(local_authority)) %>%
+  #     filter(!is.na(num_pupils)) %>%
+  #     filter(if (!is.null(st)) school_type == st else TRUE) %>%
+  #     filter(year == '2018-19') %>%
+  #     nest(-local_authority) %>%
+  #     mutate(
+  #       fit = map(data, ~ lm(per_pupil_funding ~ fsm_rate, data = .x)),
+  #       tidied = map(fit, tidy)
+  #     ) %>% 
+  #     unnest(tidied) %>%
+  #     filter(term == 'fsm_rate') %>%
+  #     select(c('local_authority', 'estimate')) %>%
+  #     mutate(estimate_rank = rank(desc(estimate))) %>%
+  #     mutate(estimate = round(estimate, 1)) %>%
+  #     rename("Local authority" = local_authority, "Per-pupil funding increase per FSM % increase (2018-19)" = estimate, "Per-pupil funding increase per FSM % increase rank (2018-19)" = estimate_rank)
+  #   
+  #   table <- table %>%
+  #     left_join(summary_per_pupil_fsm)
+  # }
   
   dt <- datatable(table, rownames= FALSE, options = list(
     pageLength = 100,

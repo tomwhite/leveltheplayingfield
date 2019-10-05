@@ -54,7 +54,7 @@ map_support_categories <- function(schools_tidy, la = NULL, save_to_file=FALSE) 
     options = layersControlOptions(collapsed = FALSE)
   )
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, NULL, "support_category", ".html"))
+    saveWidget(map, report_file_name(la, NULL, "support_category", ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -77,7 +77,7 @@ map_support_categories_by_local_authority <- function(secondaries_tidy_geo, scho
     options = layersControlOptions(collapsed = FALSE)
   )
   if (save_to_file) {
-    saveWidget(map, report_file_name(NULL, school_type, "support_category_with_la", ".html"))
+    saveWidget(map, report_file_name(NULL, school_type, "support_category_with_la", ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -103,7 +103,7 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
     options = layersControlOptions(collapsed = FALSE)
   )
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, school_type, "outturn_surplus_or_deficit", ".html"))
+    saveWidget(map, report_file_name(la, school_type, "outturn_surplus_or_deficit", ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -129,7 +129,7 @@ map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=F
     options = layersControlOptions(collapsed = FALSE)
   )
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, NULL, "occupancy", ".html"))
+    saveWidget(map, report_file_name(la, NULL, "occupancy", ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -147,7 +147,7 @@ map_rural_schools <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
     addMarkers(~longitude, ~latitude, popup = ~school, label=~school, icon=~rural_icons[rural_school]) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, NULL, "rural_schools", ".html"))
+    saveWidget(map, report_file_name(la, NULL, "rural_schools", ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }

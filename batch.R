@@ -23,7 +23,11 @@ for (la in LOCAL_AUTHORITIES) {
   plot_pupil_funding_vs_outturn(primary_schools, la, save_to_file = TRUE)
   plot_pupil_funding_vs_per_pupil_outturn(primary_schools, la, save_to_file = TRUE)
   plot_pupil_funding_vs_fsm(primary_schools, la, save_to_file = TRUE)
+
+  plot_support_catagory_vs_year(all_schools, 'primary', la, save_to_file = TRUE)
+  plot_support_catagory_vs_year(all_schools, 'secondary', la, save_to_file = TRUE)
 }
+
 
 # Maps
 

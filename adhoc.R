@@ -111,12 +111,6 @@ schools_tidy %>%
   geom_point() +
   coord_flip()
 
-# Support category plots over time
-
-# All Wales is black, Powys is blue
-plot_support_catagory_vs_year(all_schools, 'primary', 'Powys')
-plot_support_catagory_vs_year(all_schools, 'secondary', 'Powys')
-
 # Budget outturn trend arrows
 # see https://stackoverflow.com/questions/38104901/ggplot2-show-difference-in-values-over-time-with-an-arrow
 

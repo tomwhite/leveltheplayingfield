@@ -291,6 +291,7 @@ plot_pupil_funding_vs_fsm <- function(schools_tidy, la, save_to_file=FALSE) {
 }
 
 plot_support_catagory_vs_year <- function(schools_tidy, st, la, save_to_file=FALSE) {
+  # All Wales is black, LA is blue
   all_wales_support_category <- schools_tidy %>%
     filter(school_type == st) %>%
     filter(!is.na(support_category)) %>%
@@ -316,7 +317,7 @@ plot_support_catagory_vs_year <- function(schools_tidy, st, la, save_to_file=FAL
     scale_y_continuous(breaks = seq(4, 25)) +
     theme(axis.title.x=element_blank())
   if (save_to_file) {
-    ggsave(report_file_name(la, "primary", "support_category_vs_year", ".png"))
+    ggsave(report_file_name(la, st, "support_category_vs_year", ".png"))
   }
   plot
 }

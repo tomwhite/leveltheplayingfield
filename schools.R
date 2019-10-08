@@ -5,6 +5,7 @@ library(knitr)
 library(scales)
 library(DT)
 library(htmlTable)
+library(reshape2)
 
 REPORTS_DIR = "~/projects-workspace/leveltheplayingfield/docs"
 LOCAL_AUTHORITIES = c("Blaenau Gwent",
@@ -318,6 +319,32 @@ plot_support_catagory_vs_year <- function(schools_tidy, st, la, save_to_file=FAL
     theme(axis.title.x=element_blank())
   if (save_to_file) {
     ggsave(report_file_name(la, st, "support_category_vs_year", ".png"))
+  }
+  plot
+}
+
+plot_school_vs_budget_outturn_change <- function(schools_tidy, st, la, save_to_file=FALSE) {
+  # Budget outturn trend arrows
+  # see https://stackoverflow.com/questions/38104901/ggplot2-show-difference-in-values-over-time-with-an-arrow
+  
+  x <- schools_tidy %>%
+    filter(school_type == st) %>%
+    filter(local_authority == la) %>%
+    select(c(school, year, budget_outturn)) %>%
+    filter(year == "2016-17" | year == "2017-18") %>%
+    filter(!is.na(budget_outturn)) %>%
+    spread(year, budget_outturn) %>% # put years back into columns
+    mutate(direction = ifelse(`2017-18` - `2016-17` > 0, "Increase", "Decrease")) %>%
+    melt(id = c("school", "direction"))
+  plot <- ggplot(x, aes(x = value, y = reorder(school, value), group = school)) + 
+    geom_path(aes(color = direction), arrow = arrow(angle = 15, length = unit(0.15, "inches"), type = "open")) +
+    xlab("Budget outturn (£)") +
+    ylab("School") +
+    labs(color = "Change (2016-17 to 2017-18)") +
+    theme(axis.text.y=element_blank(), axis.ticks=element_blank()) +
+    scale_colour_manual(values=c("red", "black"))
+  if (save_to_file) {
+    ggsave(report_file_name(la, st, "school_vs_budget_outturn_change", ".png"))
   }
   plot
 }

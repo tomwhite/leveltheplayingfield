@@ -333,8 +333,9 @@ plot_school_vs_budget_outturn_change <- function(schools_tidy, st, la, save_to_f
     filter(local_authority == la) %>%
     select(c(school, year, budget_outturn)) %>%
     filter(year == "2016-17" | year == "2017-18") %>%
-    filter(!is.na(budget_outturn)) %>%
     spread(year, budget_outturn) %>% # put years back into columns
+    filter(!is.na(`2016-17`)) %>%
+    filter(!is.na(`2017-18`)) %>%
     mutate(direction = ifelse(`2017-18` - `2016-17` > 0, "Increase", "Decrease")) %>%
     melt(id = c("school", "direction"))
   plot <- ggplot(x, aes(x = value, y = reorder(school, value), group = school)) + 

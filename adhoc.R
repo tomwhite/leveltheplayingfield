@@ -121,4 +121,5 @@ schools_tidy %>%
   coord_flip()
 
 # Budget outturn trend arrows
-plot_school_vs_budget_outturn_change(all_schools, 'primary', 'Powys')
+plot_school_vs_budget_outturn_change(all_schools, 'primary', 'Gwynedd')
+

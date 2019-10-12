@@ -68,7 +68,7 @@ with open("docs/index.html", "w") as la_table:
         <th>Local Authority</th>
 
         <th colspan="3">Population Trends</th>
-        <th colspan="3">School Finance</th>
+        <th colspan="4">School Finance</th>
         <th colspan="3">School Support Categories</th>
         <th colspan="1">Free School Meal Rates</th>
         <th colspan="3">Welsh Language Provision</th>
@@ -83,7 +83,8 @@ with open("docs/index.html", "w") as la_table:
 
         <th>Chart</th>
         <th>Map</th>
-        <th>Chart</th>
+        <th>Pri</th>
+        <th>Sec</th>
 
         <th>Map</th>
         <th>Pri</th>
@@ -108,7 +109,8 @@ with open("docs/index.html", "w") as la_table:
 
         <td><a href="{}">Y</a></td>
         <td><a href="{}">Y</a></td>
-        <td>-</td>
+        <td><a href="{}">Y</a></td>
+        <td><a href="{}">Y</a></td>
 
         <td><a href="{}">Y</a></td>
         <td><a href="{}">Y</a></td>
@@ -124,6 +126,8 @@ with open("docs/index.html", "w") as la_table:
            "local_authorities/{}/{}_all_schools_occupancy.html".format(la, la),
            "local_authorities/{}/{}_primary_pupil_funding_vs_pupil_outturn.png".format(la, la),
            "local_authorities/{}/{}_all_schools_outturn_surplus_or_deficit.html".format(la, la),
+           "local_authorities/{}/{}_primary_school_vs_budget_outturn_change.png".format(la, la),
+           "local_authorities/{}/{}_secondary_school_vs_budget_outturn_change.png".format(la, la),
            "local_authorities/{}/{}_all_schools_support_category.html".format(la, la),
            "local_authorities/{}/{}_primary_support_category_vs_year.png".format(la, la),
            "local_authorities/{}/{}_secondary_support_category_vs_year.png".format(la, la),

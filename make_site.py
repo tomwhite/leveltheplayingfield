@@ -54,3 +54,82 @@ with open("docs/la_table.html", "w") as la_table:
 </table>
 </body>
 """)
+
+with open("docs/index.html", "w") as la_table:
+    la_table.write("""<html>
+<head>
+    <title>Level The Playing Field</title>
+</head>
+<body>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>Local Authority</th>
+
+        <th colspan="3">Population Trends</th>
+        <th colspan="3">School Finance</th>
+        <th colspan="3">School Support Categories</th>
+        <th colspan="1">Free School Meal Rates</th>
+        <th colspan="3">Welsh Language Provision</th>
+    </tr>
+
+    <tr>
+        <th></th>
+
+        <th>Chart</th>
+        <th>Chart</th>
+        <th>Map</th>
+
+        <th>Chart</th>
+        <th>Map</th>
+        <th>Chart</th>
+
+        <th>Map</th>
+        <th>Pri</th>
+        <th>Sec</th>
+
+        <th>Chart</th>
+
+        <th>Map</th>
+        <th>Chart</th>
+        <th>Chart</th>
+    </tr>
+    </thead>
+""")
+
+    for la in las:
+        la_table.write("""    <tr>
+        <td>{}</td>
+
+        <td>-</td>
+        <td>-</td>
+        <td><a href="{}">Y</a></td>
+
+        <td><a href="{}">Y</a></td>
+        <td><a href="{}">Y</a></td>
+        <td>-</td>
+
+        <td><a href="{}">Y</a></td>
+        <td><a href="{}">Y</a></td>
+        <td><a href="{}">Y</a></td>
+
+        <td><a href="{}">Y</a></td>
+
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+    </tr>
+""".format(pretty(la),
+           "local_authorities/{}/{}_all_schools_occupancy.html".format(la, la),
+           "local_authorities/{}/{}_primary_pupil_funding_vs_pupil_outturn.png".format(la, la),
+           "local_authorities/{}/{}_primary_outturn_surplus_or_deficit.html".format(la, la),
+           "local_authorities/{}/{}_all_schools_support_category.html".format(la, la),
+           "local_authorities/{}/{}_primary_support_category_vs_year.png".format(la, la),
+           "local_authorities/{}/{}_secondary_support_category_vs_year.png".format(la, la),
+           "local_authorities/{}/{}_primary_pupil_funding_vs_fsm.png".format(la, la)))
+
+    la_table.write("""
+</table>
+</body>
+""")

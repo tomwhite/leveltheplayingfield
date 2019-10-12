@@ -411,6 +411,7 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
     filter(!is.na(local_authority)) %>%
     filter(if (!is.null(st)) school_type == st else TRUE) %>%
     filter(year == '2018') %>%
+    filter(!is.na(support_category)) %>% # ignore missing (e.g. for new schools)
     mutate(support_category_days = case_when(support_category == 'Green' ~ 4,
                                              support_category == 'Yellow' ~ 10,
                                              support_category == 'Amber' ~ 15,

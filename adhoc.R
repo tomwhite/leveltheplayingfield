@@ -1,5 +1,7 @@
 source('schools.R')
 
+# TODO: how many schools have identical postcode and therefor lat/lon? Could cause a problem for maps.
+
 # Total school numbers
 all_schools %>%
   filter(year == '2018-19') %>%
@@ -92,13 +94,13 @@ all_schools %>%
   geom_point() +
   geom_smooth(method=lm)
 
-# Welsh Language
-secondary_schools <- load_secondaries()
-secondary_schools %>%
+# Language
+all_schools %>%
   filter(year == '2018-19') %>%
-  group_by(welsh_medium) %>%
+  filter(school_type != 'special') %>%
+  group_by(language) %>%
   tally()
-  
+
 # FSM
 
 # Calculate the additional funding per pupil (in £) for every additional percentage point of FSM

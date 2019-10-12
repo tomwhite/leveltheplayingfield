@@ -139,7 +139,7 @@ tidy_raw_data <- function(schools_raw) {
     rename(local_authority = `Local authority`,
            lea_code = `LEA Code`,
            school = `Name of school`,
-           welsh_medium = `Welsh Medium`,
+           language = `Welsh Medium`,
            capacity = `Capacity`,
            rural_school = `Rural Schools`) %>%
     rename_all(gsub, pattern = '^Pupil numbers (20.+)$', replacement = 'num_pupils#\\1') %>%
@@ -152,14 +152,14 @@ tidy_raw_data <- function(schools_raw) {
     filter(!is.na(school)) %>% # drop rows with no school name
     filter(!is.na(lea_code)) %>% # and no LEA code
     na_if('.') %>% # dots are NA
-    gather(element_year, value, -c(local_authority, lea_code, school, capacity, rural_school, welsh_medium)) %>%
+    gather(element_year, value, -c(local_authority, lea_code, school, capacity, rural_school, language)) %>%
     separate(element_year, c("element", "year"), sep = "#") %>%
     spread(element, value) %>%
     mutate_at(c('budget_outturn', 'fsm_rate', 'num_pupils', 'per_pupil_funding', 'total_school_delegated_budget'), as_numeric_ignore_commas) %>%
     mutate_at(c('support_category'), as.factor) %>%
     mutate_at(c('rural_school'), as.factor) %>%
-    mutate_at(c('welsh_medium'), as.factor) %>%
-    mutate(welsh_medium = fct_recode(welsh_medium, "Bilingual" = "Bilingual (A)", "Bilingual" = "Bilingual (B)", "Bilingual" = "Bilingual (C)")) %>%
+    mutate_at(c('language'), as.factor) %>%
+    mutate(language = fct_recode(language, "Welsh" = "Yes", "English" = "No", "Bilingual" = "Bilingual (A)", "Bilingual" = "Bilingual (B)", "Bilingual" = "Bilingual (C)")) %>%
     mutate(size=cut(num_pupils, breaks=c(-Inf, 50, 100, 200, 400, Inf), labels=c("<50","50-100", "100-200", "200-400", ">400")))  %>%
     mutate(num_pupils_on_fsm=fsm_rate * num_pupils / 100.0) %>%
     mutate(support_category_days = case_when(support_category == 'Green' ~ 4,

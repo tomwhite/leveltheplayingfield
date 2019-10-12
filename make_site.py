@@ -116,7 +116,7 @@ with open("docs/index.html", "w") as la_table:
 
         <td><a href="{}">Y</a></td>
 
-        <td>-</td>
+        <td><a href="{}">Y</a></td>
         <td>-</td>
         <td>-</td>
     </tr>
@@ -127,7 +127,8 @@ with open("docs/index.html", "w") as la_table:
            "local_authorities/{}/{}_all_schools_support_category.html".format(la, la),
            "local_authorities/{}/{}_primary_support_category_vs_year.png".format(la, la),
            "local_authorities/{}/{}_secondary_support_category_vs_year.png".format(la, la),
-           "local_authorities/{}/{}_primary_pupil_funding_vs_fsm.png".format(la, la)))
+           "local_authorities/{}/{}_primary_pupil_funding_vs_fsm.png".format(la, la),
+           "local_authorities/{}/{}_all_schools_language.html".format(la, la)))
 
     la_table.write("""
 </table>

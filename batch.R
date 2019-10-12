@@ -48,5 +48,8 @@ for (la in LOCAL_AUTHORITIES) {
 
   map_support_categories(all_schools, la, save_to_file=TRUE)
   
+  map_language_by_school_type(all_schools, la, save_to_file=TRUE)
+  
   map_rural_schools(all_schools, la, save_to_file=TRUE)
 }
+

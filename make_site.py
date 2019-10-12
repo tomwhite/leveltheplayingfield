@@ -62,6 +62,8 @@ with open("docs/index.html", "w") as la_table:
 </head>
 <body>
 
+<p>See <a href="index2.html">other index</a></p>
+
 <table border="1">
     <thead>
     <tr>

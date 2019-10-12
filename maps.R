@@ -38,10 +38,10 @@ rural_icons <- iconList(
 )
 
 map_support_categories <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
-  school_types <- as.character(unique(schools_tidy$school_type))
   schools_tidy_filtered = schools_tidy %>%
     filter(year == '2018') %>%
     filter(if (!is.null(la)) local_authority == la else TRUE)
+  school_types <- as.character(unique(schools_tidy_filtered$school_type))
   map <- schools_tidy_filtered %>%
     leaflet() %>%
     addTiles()
@@ -109,7 +109,6 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
 }
 
 map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
-  school_types <- as.character(unique(schools_tidy$school_type))
   schools_tidy_filtered <- schools_tidy %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
     filter(year == '2019-20') %>%
@@ -117,6 +116,7 @@ map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=F
     filter(!is.na(capacity)) %>% # drop rows with no capacity
     mutate(occupancy = 100.0 * num_pupils / capacity) %>%
     mutate(occupancy_band = cut(occupancy, breaks=c(-Inf, 50, 75, 100, Inf), labels=c("<50%","50-75%", "75-100%", ">100%")))
+  school_types <- as.character(unique(schools_tidy_filtered$school_type))
   map <- schools_tidy_filtered %>%
     leaflet() %>%
     addTiles()

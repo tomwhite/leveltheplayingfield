@@ -42,7 +42,7 @@ map_outturn_surplus_or_deficit_by_year(all_schools, school_type='secondary', sav
 
 # Per LA
 
-for (la in c("Blaenau Gwent", "Powys")) {
+for (la in LOCAL_AUTHORITIES) {
   map_support_categories(all_schools, la, save_to_file=TRUE)
   
   map_outturn_surplus_or_deficit_by_year(all_schools, la, 'primary', save_to_file=TRUE)

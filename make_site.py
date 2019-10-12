@@ -123,7 +123,7 @@ with open("docs/index.html", "w") as la_table:
 """.format(pretty(la),
            "local_authorities/{}/{}_all_schools_occupancy.html".format(la, la),
            "local_authorities/{}/{}_primary_pupil_funding_vs_pupil_outturn.png".format(la, la),
-           "local_authorities/{}/{}_primary_outturn_surplus_or_deficit.html".format(la, la),
+           "local_authorities/{}/{}_all_schools_outturn_surplus_or_deficit.html".format(la, la),
            "local_authorities/{}/{}_all_schools_support_category.html".format(la, la),
            "local_authorities/{}/{}_primary_support_category_vs_year.png".format(la, la),
            "local_authorities/{}/{}_secondary_support_category_vs_year.png".format(la, la),

@@ -108,6 +108,30 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
   map
 }
 
+map_outturn_surplus_or_deficit_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
+  schools_tidy_filtered <- schools_tidy %>%
+    filter(if (!is.null(la)) local_authority == la else TRUE) %>%
+    filter(year == "2017-18") %>%
+    filter(!is.na(budget_outturn)) %>% # drop rows with no budget_outturn
+    mutate(surplus_or_deficit = if_else(budget_outturn >= 0, "Black", "Red"))
+  school_types <- as.character(unique(schools_tidy_filtered$school_type))
+  map <- schools_tidy_filtered %>%
+    leaflet() %>%
+    addTiles()
+  for (st in school_types) {
+    d = schools_tidy_filtered[schools_tidy_filtered$school_type == st,]
+    map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste(school, ',', budget_outturn), icon=~surplus_or_deficit_icons[surplus_or_deficit], group = st)
+  }
+  map <- map %>% addLayersControl(
+    overlayGroups = school_types,
+    options = layersControlOptions(collapsed = FALSE)
+  )
+  if (save_to_file) {
+    saveWidget(map, report_file_name(la, NULL, "outturn_surplus_or_deficit", ".html"), selfcontained = FALSE, libdir = "lib")
+  }
+  map
+}
+
 map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
   schools_tidy_filtered <- schools_tidy %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%

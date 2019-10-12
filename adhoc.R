@@ -91,6 +91,13 @@ all_schools %>%
   ggplot(aes(x = capacity, y = occupancy)) +
   geom_point() +
   geom_smooth(method=lm)
+
+# Welsh Language
+secondary_schools <- load_secondaries()
+secondary_schools %>%
+  filter(year == '2018-19') %>%
+  group_by(welsh_medium) %>%
+  tally()
   
 # FSM
 

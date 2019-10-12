@@ -344,7 +344,7 @@ plot_school_vs_budget_outturn_change <- function(schools_tidy, st, la, save_to_f
     ylab("School") +
     labs(color = "Change (2016-17 to 2017-18)") +
     theme(axis.text.y=element_blank(), axis.ticks=element_blank()) +
-    scale_colour_manual(values=c("red", "black"))
+    scale_colour_manual(values=c("Decrease" = "red", "Increase" = "black"))
   if (save_to_file) {
     ggsave(report_file_name(la, st, "school_vs_budget_outturn_change", ".png"))
   }

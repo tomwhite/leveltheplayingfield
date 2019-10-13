@@ -47,7 +47,7 @@ rural_icons <- iconList(
 
 map_support_categories_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
   schools_tidy_filtered = schools_tidy %>%
-    filter(year == '2018') %>%
+    filter(year == LATEST_SUPPORT_CATEGORY_YEAR) %>%
     filter(if (!is.null(la)) local_authority == la else TRUE)
   school_types <- as.character(unique(schools_tidy_filtered$school_type))
   map <- schools_tidy_filtered %>%
@@ -71,7 +71,7 @@ map_support_categories_by_local_authority <- function(secondaries_tidy_geo, scho
   st <- school_type
   las <- as.character(unique(secondaries_tidy_geo$local_authority))
   secondaries_tidy_geo_filtered = secondaries_tidy_geo %>%
-    filter(year == '2018') %>%
+    filter(year == LATEST_SUPPORT_CATEGORY_YEAR) %>%
     filter(if (!is.null(st)) school_type == st else TRUE)
   map <- secondaries_tidy_geo_filtered %>%
     leaflet() %>%
@@ -119,7 +119,7 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
 map_outturn_surplus_or_deficit_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
   schools_tidy_filtered <- schools_tidy %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
-    filter(year == "2017-18") %>%
+    filter(year == LATEST_OUTTURN_YEAR) %>%
     filter(!is.na(budget_outturn)) %>% # drop rows with no budget_outturn
     mutate(surplus_or_deficit = if_else(budget_outturn >= 0, "Black", "Red"))
   school_types <- as.character(unique(schools_tidy_filtered$school_type))
@@ -143,7 +143,7 @@ map_outturn_surplus_or_deficit_by_school_type <- function(schools_tidy, la = NUL
 map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
   schools_tidy_filtered <- schools_tidy %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
-    filter(year == '2019-20') %>%
+    filter(year == LATEST_YEAR) %>%
     filter(!is.na(num_pupils)) %>% # drop rows with no num_pupils
     filter(!is.na(capacity)) %>% # drop rows with no capacity
     mutate(occupancy = 100.0 * num_pupils / capacity) %>%
@@ -173,7 +173,7 @@ map_language_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FA
 <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png'>Dual"
   schools_tidy_filtered <- schools_tidy %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
-    filter(year == '2018-19') %>%
+    filter(year == LATEST_YEAR) %>%
     filter(school_type != 'special') %>% # special schools don't have a language
     filter(!is.na(language))
   school_types <- as.character(unique(schools_tidy_filtered$school_type))
@@ -199,7 +199,7 @@ map_rural_schools <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
   html_legend <- "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png'>Rural<br/>
 <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png'>Not rural"
   map <- schools_tidy %>%
-    filter(year == '2018-19') %>%
+    filter(year == LATEST_YEAR) %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
     filter(school_type == 'primary') %>% # rural schools are primaries
     mutate(rural_school = replace(rural_school, is.na(rural_school), 'No')) %>%

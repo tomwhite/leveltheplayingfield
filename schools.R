@@ -32,6 +32,11 @@ LOCAL_AUTHORITIES = c("Blaenau Gwent",
                       "Wrexham")
 SCHOOL_SIZE_COLOURS = c("<50" = "#F8766D", "50-100" = "#A3A500", "100-200" = "#00BF7D", "200-400" = "#00B0F6", ">400" = "#E76BF3")
 
+LATEST_YEAR = '2018-19'
+LATEST_OUTTURN_YEAR = '2017-18'
+LATEST_SUPPORT_CATEGORY_YEAR = '2018'
+LATEST_FSM_YEAR = '2018-19'
+
 round_df <- function(x, digits) {
   # round all numeric variables
   # x: data frame 
@@ -68,12 +73,12 @@ load_primaries <- function() {
   # QC
   # Should give 5 rows - new schools that don't have a support category from My Local Schools
   schools_tidy %>%
-    filter(year == '2018') %>%
+    filter(year == LATEST_SUPPORT_CATEGORY_YEAR) %>%
     filter(is.na(support_category)) %>%
     print()
   
   # Find schools with no location
-  schools_tidy %>% filter(year == '2018-19') %>% filter(is.na(longitude)) %>% print()
+  schools_tidy %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
   
   schools_tidy
 }
@@ -85,7 +90,7 @@ load_secondaries <- function() {
   
   # QC
   # Find schools with no location (should be none)
-  secondaries_tidy %>% filter(year == '2018-19') %>% filter(is.na(longitude)) %>% print()
+  secondaries_tidy %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
   
   secondaries_tidy
 }
@@ -97,7 +102,7 @@ load_special_schools <- function() {
   
   # QC
   # Find schools with no location
-  schools %>% filter(year == '2018-19') %>% filter(is.na(longitude)) %>% print()
+  schools %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
   
   schools
 }
@@ -109,7 +114,7 @@ load_through_schools <- function() {
   
   # QC
   # Find schools with no location
-  schools %>% filter(year == '2018-19') %>% filter(is.na(longitude)) %>% print()
+  schools %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
   
   schools
 }
@@ -198,7 +203,7 @@ plot_summary_size_distribution <- function(schools_tidy, school_type, save_to_fi
   plot = schools_tidy %>%
     filter(!is.na(local_authority)) %>%
     filter(if (!is.null(st)) school_type == st else TRUE) %>%
-    filter(year == '2018-19') %>%
+    filter(year == LATEST_YEAR) %>%
     ggplot(aes(num_pupils)) +
     geom_histogram(binwidth=25, colour="black", fill="white") +
     facet_wrap(~ local_authority, ncol=4)
@@ -227,7 +232,7 @@ plot_pupil_funding_vs_year <- function(schools_tidy, la, save_to_file=FALSE) {
 plot_school_funding_vs_size <- function(schools_tidy, la, save_to_file=FALSE) {
   plot = schools_tidy %>%
     filter(local_authority == la) %>%
-    filter(year == "2019-20") %>%
+    filter(year == LATEST_YEAR) %>%
     ggplot(aes(x=num_pupils, y=total_school_delegated_budget)) +
     geom_point() +
     xlab("Number of pupils") +
@@ -278,11 +283,11 @@ plot_pupil_funding_vs_per_pupil_outturn <- function(schools_tidy, la, save_to_fi
 plot_pupil_funding_vs_fsm <- function(schools_tidy, la, save_to_file=FALSE) {
   x <- schools_tidy %>%
     filter(local_authority == la) %>%
-    filter(year == "2018-19") # FSM rate refers to 2018-19
+    filter(year == LATEST_FSM_YEAR)
   coef <- cor(x$fsm_rate, x$per_pupil_funding, method = "pearson", use = "complete.obs")
   plot = schools_tidy %>%
     filter(local_authority == la) %>%
-    filter(year == "2018-19") %>% # FSM rate refers to 2018-19
+    filter(year == LATEST_FSM_YEAR) %>%
     ggplot(aes(x=fsm_rate, y=per_pupil_funding)) +
     geom_point(aes(color=size, size=num_pupils_on_fsm)) +
     geom_smooth(method=lm) +
@@ -384,7 +389,7 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
     filter(!is.na(local_authority)) %>%
     filter(!is.na(num_pupils)) %>%
     filter(if (!is.null(st)) school_type == st else TRUE) %>%
-    filter(year == '2018-19') %>%
+    filter(year == LATEST_YEAR) %>%
     group_by(local_authority) %>%
     summarize(schools=n(), total_pupils=sum(num_pupils), mean=round(mean(num_pupils), 0)) %>%
     mutate(mean_rank = rank(desc(mean))) %>%
@@ -393,7 +398,7 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
   summary_support_category <- schools_tidy %>%
     filter(!is.na(local_authority)) %>%
     filter(if (!is.null(st)) school_type == st else TRUE) %>%
-    filter(year == '2018') %>%
+    filter(year == LATEST_SUPPORT_CATEGORY_YEAR) %>%
     filter(!is.na(support_category_days)) %>% # ignore missing (e.g. for new schools)
     group_by(local_authority) %>%
     summarize(mean=round(mean(support_category_days), 2)) %>%
@@ -404,7 +409,7 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
     filter(!is.na(local_authority)) %>%
     filter(!is.na(num_pupils)) %>%
     filter(if (!is.null(st)) school_type == st else TRUE) %>%
-    filter(year == '2017-18') %>%
+    filter(year == LATEST_OUTTURN_YEAR) %>%
     group_by(local_authority) %>%
     summarize(mean=round(mean(budget_outturn / num_pupils), 0)) %>%
     mutate(mean_rank = rank(desc(mean))) %>%
@@ -420,7 +425,7 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
   #     filter(!is.na(local_authority)) %>%
   #     filter(!is.na(num_pupils)) %>%
   #     filter(if (!is.null(st)) school_type == st else TRUE) %>%
-  #     filter(year == '2018-19') %>%
+  #     filter(year == LATEST_FSM_YEAR) %>%
   #     nest(-local_authority) %>%
   #     mutate(
   #       fit = map(data, ~ lm(per_pupil_funding ~ fsm_rate, data = .x)),

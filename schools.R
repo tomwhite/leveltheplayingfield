@@ -33,6 +33,7 @@ LOCAL_AUTHORITIES = c("Blaenau Gwent",
 SCHOOL_SIZE_COLOURS = c("<50" = "#F8766D", "50-100" = "#A3A500", "100-200" = "#00BF7D", "200-400" = "#00B0F6", ">400" = "#E76BF3")
 
 LATEST_YEAR = '2018-19'
+LATEST_NUM_PUPILS_YEAR = '2019-20'
 LATEST_OUTTURN_YEAR = '2017-18'
 LATEST_SUPPORT_CATEGORY_YEAR = '2018'
 LATEST_FSM_YEAR = '2018-19'
@@ -237,7 +238,7 @@ plot_pupil_funding_vs_year <- function(schools_tidy, la, save_to_file=FALSE) {
 plot_school_funding_vs_size <- function(schools_tidy, la, save_to_file=FALSE) {
   plot = schools_tidy %>%
     filter(local_authority == la) %>%
-    filter(year == LATEST_YEAR) %>%
+    filter(year == LATEST_NUM_PUPILS_YEAR) %>%
     ggplot(aes(x=num_pupils, y=total_school_delegated_budget)) +
     geom_point() +
     xlab("Number of pupils") +

@@ -151,7 +151,7 @@ map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=F
   <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png' width='12' height='20'>&gt;100%"
   schools_tidy_filtered <- schools_tidy %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
-    filter(year == LATEST_YEAR) %>%
+    filter(year == LATEST_NUM_PUPILS_YEAR) %>%
     filter(!is.na(num_pupils)) %>% # drop rows with no num_pupils
     filter(!is.na(capacity)) %>% # drop rows with no capacity
     mutate(occupancy = 100.0 * num_pupils / capacity) %>%

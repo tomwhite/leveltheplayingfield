@@ -55,10 +55,6 @@ load_local_authority_sheet <- function(local_authority) {
   load_google_sheet(paste(local_authority, "Primary Schools"))
 }
 
-load_secondary_schools_sheet <- function() {
-  load_google_sheet("Wales Secondary Schools")
-}
-
 load_primaries <- function() {
   school_spreadsheets = list()
   i <- 1
@@ -83,7 +79,7 @@ load_primaries <- function() {
 }
 
 load_secondaries <- function() {
-  secondaries_tidy <- tidy_raw_data(load_secondary_schools_sheet()) %>%
+  secondaries_tidy <- tidy_raw_data(load_google_sheet("Wales Secondary Schools")) %>%
     add_school_locations() %>%
     mutate(school_type = 'secondary')
   

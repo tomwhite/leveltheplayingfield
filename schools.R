@@ -331,20 +331,23 @@ plot_school_vs_budget_outturn_change <- function(schools_tidy, st, la, save_to_f
   x <- schools_tidy %>%
     filter(school_type == st) %>%
     filter(local_authority == la) %>%
-    select(c(school, year, budget_outturn)) %>%
+    mutate(per_pupil_budget_outturn = budget_outturn / num_pupils) %>%
+    select(c(school, year, per_pupil_budget_outturn)) %>%
     filter(year == "2016-17" | year == "2017-18") %>%
-    spread(year, budget_outturn) %>% # put years back into columns
+    spread(year, per_pupil_budget_outturn) %>% # put years back into columns
     filter(!is.na(`2016-17`)) %>%
     filter(!is.na(`2017-18`)) %>%
-    mutate(direction = ifelse(`2017-18` - `2016-17` > 0, "Increase", "Decrease")) %>%
-    melt(id = c("school", "direction"))
-  plot <- ggplot(x, aes(x = value, y = reorder(school, value), group = school)) + 
+    mutate(diff = `2017-18` - `2016-17`) %>%
+    mutate(direction = ifelse(diff > 0, "Increase", "Decrease")) %>%
+    melt(id = c("school", "direction", "diff"))
+  plot <- ggplot(x, aes(x = value, y = reorder(school, diff), group = school)) + 
     geom_path(aes(color = direction), arrow = arrow(angle = 15, length = unit(0.15, "inches"), type = "open")) +
-    xlab("Budget outturn (£)") +
+    xlim(-1000, 2000) +
+    xlab("Per-pupil budget outturn (£)") +
     ylab("School") +
     labs(color = "Change (2016-17 to 2017-18)") +
     theme(axis.text.y=element_blank(), axis.ticks=element_blank()) +
-    scale_colour_manual(values=c("Decrease" = "red", "Increase" = "black"))
+    scale_colour_manual(values=c("Decrease" = "red", "Increase" = "green"))
   if (save_to_file) {
     ggsave(report_file_name(la, st, "school_vs_budget_outturn_change", ".png"))
   }

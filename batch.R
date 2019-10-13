@@ -18,18 +18,18 @@ plot_summary_size_distribution(all_schools, "secondary", save_to_file = TRUE)
 for (la in LOCAL_AUTHORITIES) {
   print(la)
   # Just primary at the moment
-  primary_schools <- all_schools %>% filter(school_type == "primary")
-  plot_pupil_funding_vs_year(primary_schools, la, save_to_file = TRUE)
-  plot_school_funding_vs_size(primary_schools, la, save_to_file = TRUE)
-  plot_pupil_funding_vs_outturn(primary_schools, la, save_to_file = TRUE)
-  plot_pupil_funding_vs_per_pupil_outturn(primary_schools, la, save_to_file = TRUE)
-  plot_pupil_funding_vs_fsm(primary_schools, la, save_to_file = TRUE)
+  #primary_schools <- all_schools %>% filter(school_type == "primary")
+  #plot_pupil_funding_vs_year(primary_schools, la, save_to_file = TRUE)
+  #plot_school_funding_vs_size(primary_schools, la, save_to_file = TRUE)
+  #plot_pupil_funding_vs_outturn(primary_schools, la, save_to_file = TRUE)
+  #plot_pupil_funding_vs_per_pupil_outturn(primary_schools, la, save_to_file = TRUE)
+  #plot_pupil_funding_vs_fsm(primary_schools, la, save_to_file = TRUE)
 
   plot_school_vs_budget_outturn_change(all_schools, 'primary', la, save_to_file = TRUE)
   plot_school_vs_budget_outturn_change(all_schools, 'secondary', la, save_to_file = TRUE)
   
-  plot_support_catagory_vs_year(all_schools, 'primary', la, save_to_file = TRUE)
-  plot_support_catagory_vs_year(all_schools, 'secondary', la, save_to_file = TRUE)
+  #plot_support_catagory_vs_year(all_schools, 'primary', la, save_to_file = TRUE)
+  #plot_support_catagory_vs_year(all_schools, 'secondary', la, save_to_file = TRUE)
 }
 
 

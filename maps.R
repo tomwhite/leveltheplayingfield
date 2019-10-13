@@ -1,6 +1,11 @@
 library(htmlwidgets)
 library(leaflet)
 
+format_gbp <- function(amount) {
+  # format an amount in GBP (£)
+  ifelse(amount < 0, paste0("-", dollar(abs(amount), prefix="£")), dollar(amount, prefix="£"))
+}
+
 # Colours must be restricted to those at https://github.com/pointhi/leaflet-color-markers
 make_coloured_icon <- function(colour) {
   paste0('https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-', colour, '.png')
@@ -46,6 +51,11 @@ rural_icons <- iconList(
 )
 
 map_support_categories_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
+  html_legend <- "Support Category</br>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png' width='12' height='20'>Green<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png' width='12' height='20'>Yellow<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png' width='12' height='20'>Amber<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>Red"
   schools_tidy_filtered = schools_tidy %>%
     filter(year == LATEST_SUPPORT_CATEGORY_YEAR) %>%
     filter(if (!is.null(la)) local_authority == la else TRUE)
@@ -57,10 +67,9 @@ map_support_categories_by_school_type <- function(schools_tidy, la = NULL, save_
     d = schools_tidy_filtered[schools_tidy_filtered$school_type == st,]
     map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~school, icon=~support_category_icons[support_category], group = st)
   }
-  map <- map %>% addLayersControl(
-    overlayGroups = school_types,
-    options = layersControlOptions(collapsed = FALSE)
-  )
+  map <- map %>%
+    addLayersControl(overlayGroups = school_types, options = layersControlOptions(collapsed = FALSE)) %>%
+    addControl(html = html_legend)
   if (save_to_file) {
     saveWidget(map, report_file_name(la, NULL, "support_category", ".html"), selfcontained = FALSE, libdir = "lib")
   }
@@ -80,10 +89,8 @@ map_support_categories_by_local_authority <- function(secondaries_tidy_geo, scho
     d = secondaries_tidy_geo_filtered[secondaries_tidy_geo_filtered$local_authority == la,]
     map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~school, icon=~support_category_icons[support_category], group=la)
   }
-  map <- map %>% addLayersControl(
-    overlayGroups = las,
-    options = layersControlOptions(collapsed = FALSE)
-  )
+  map <- map %>%
+    addLayersControl(overlayGroups = las, options = layersControlOptions(collapsed = FALSE))
   if (save_to_file) {
     saveWidget(map, report_file_name(NULL, school_type, "support_category_with_la", ".html"), selfcontained = FALSE, libdir = "lib")
   }
@@ -104,12 +111,11 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
     addTiles()
   for (year in years) {
     d = secondaries_tidy_geo_all_years_filtered[secondaries_tidy_geo_all_years_filtered$year == year,]
-    map <- map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste(school, ',', budget_outturn), icon=~surplus_or_deficit_icons[surplus_or_deficit], group = year)
+    map <- map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste(school, ',', format_gbp(budget_outturn)), icon=~surplus_or_deficit_icons[surplus_or_deficit], group = year)
   }
-  map <- map %>% addLayersControl(
-    baseGroups = years,
-    options = layersControlOptions(collapsed = FALSE)
-  )
+  map <- map %>%
+    addLayersControl(baseGroups = years, options = layersControlOptions(collapsed = FALSE)) %>%
+    addControl(html = html_legend)
   if (save_to_file) {
     saveWidget(map, report_file_name(la, school_type, "outturn_surplus_or_deficit", ".html"), selfcontained = FALSE, libdir = "lib")
   }
@@ -117,6 +123,9 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
 }
 
 map_outturn_surplus_or_deficit_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
+  html_legend <- "Budget Outturn</br>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png' width='12' height='20'>Surplus<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>Deficit"
   schools_tidy_filtered <- schools_tidy %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
     filter(year == LATEST_OUTTURN_YEAR) %>%
@@ -128,12 +137,11 @@ map_outturn_surplus_or_deficit_by_school_type <- function(schools_tidy, la = NUL
     addTiles()
   for (st in school_types) {
     d = schools_tidy_filtered[schools_tidy_filtered$school_type == st,]
-    map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste(school, ',', budget_outturn), icon=~surplus_or_deficit_icons[surplus_or_deficit], group = st)
+    map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste(school, ',', format_gbp(budget_outturn)), icon=~surplus_or_deficit_icons[surplus_or_deficit], group = st)
   }
-  map <- map %>% addLayersControl(
-    overlayGroups = school_types,
-    options = layersControlOptions(collapsed = FALSE)
-  )
+  map <- map %>%
+    addLayersControl(overlayGroups = school_types, options = layersControlOptions(collapsed = FALSE)) %>%
+    addControl(html = html_legend)
   if (save_to_file) {
     saveWidget(map, report_file_name(la, NULL, "outturn_surplus_or_deficit", ".html"), selfcontained = FALSE, libdir = "lib")
   }
@@ -141,6 +149,11 @@ map_outturn_surplus_or_deficit_by_school_type <- function(schools_tidy, la = NUL
 }
 
 map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
+  html_legend <- "Occupancy</br>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>&lt;50%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png' width='12' height='20'>50-75%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png' width='12' height='20'>75-100%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png' width='12' height='20'>&gt;100%"
   schools_tidy_filtered <- schools_tidy %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
     filter(year == LATEST_YEAR) %>%
@@ -156,10 +169,9 @@ map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=F
     d = schools_tidy_filtered[schools_tidy_filtered$school_type == st,]
     map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste0(school, ', ', round(occupancy, 1), '%'), icon=~occupancy_band_icons[occupancy_band], group = st)
   }
-  map <- map %>% addLayersControl(
-    overlayGroups = school_types,
-    options = layersControlOptions(collapsed = FALSE)
-  )
+  map <- map %>%
+    addLayersControl(overlayGroups = school_types, options = layersControlOptions(collapsed = FALSE)) %>%
+    addControl(html = html_legend)
   if (save_to_file) {
     saveWidget(map, report_file_name(la, NULL, "occupancy", ".html"), selfcontained = FALSE, libdir = "lib")
   }
@@ -167,10 +179,11 @@ map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=F
 }
 
 map_language_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
-  html_legend <- "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png'>Welsh<br/>
-<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png'>English<br/>
-<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png'>Bilingual<br/>
-<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png'>Dual"
+  html_legend <- "Language Provision</br>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>Welsh<br/>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png' width='12' height='20'>English<br/>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png' width='12' height='20'>Bilingual<br/>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png' width='12' height='20'>Dual"
   schools_tidy_filtered <- schools_tidy %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
     filter(year == LATEST_YEAR) %>%
@@ -184,10 +197,8 @@ map_language_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FA
     d = schools_tidy_filtered[schools_tidy_filtered$school_type == st,]
     map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~school, icon=~language_icons[language], group = st)
   }
-  map <- map %>% addLayersControl(
-    overlayGroups = school_types,
-    options = layersControlOptions(collapsed = FALSE)
-  ) %>%
+  map <- map %>%
+    addLayersControl(overlayGroups = school_types, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
     saveWidget(map, report_file_name(la, NULL, "language", ".html"), selfcontained = FALSE, libdir = "lib")
@@ -196,8 +207,8 @@ map_language_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FA
 }
 
 map_rural_schools <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
-  html_legend <- "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png'>Rural<br/>
-<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png'>Not rural"
+  html_legend <- "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png' width='12' height='20'>Rural<br/>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png' width='12' height='20'>Not rural"
   map <- schools_tidy %>%
     filter(year == LATEST_YEAR) %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%

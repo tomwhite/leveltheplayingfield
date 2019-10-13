@@ -376,30 +376,6 @@ tabulate_num_pupils_summary <- function(schools_tidy, school_type, save_to_file=
   dt
 }
 
-tabulate_support_category_summary <- function(schools_tidy, school_type, save_to_file=FALSE) {
-  # ranking of support category per LA for 2018-19
-  table <- schools_tidy %>%
-    filter(year == '2018-19') %>%
-    mutate(support_category_number = case_when(support_category == 'Green' ~ 1,
-                                               support_category == 'Yellow' ~ 2,
-                                               support_category == 'Amber' ~ 3,
-                                               support_category == 'Red' ~ 4,
-                                               TRUE ~ NA_real_)) %>%
-    group_by(local_authority) %>%
-    summarize(schools=n(), mean_support_category=mean(support_category_number)) %>%
-    round_df(2)
-  #dt <- datatable(table, rownames= FALSE, options = list(
-  #  pageLength = 30,
-  #  order = list(list(2, 'asc'))
-  #))
-  ht <- htmlTable(table %>% arrange(mean_support_category),
-                  header = c("Local authority", "Num schools", "Mean support category"))
-  if (save_to_file) {
-    ht %>% cat(., file = report_file_name(NULL, school_type, "support_category_summary", ".html"))
-  }
-  ht
-}
-
 tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FALSE) {
   # summary of main indicators (latest year available)
   
@@ -418,12 +394,7 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
     filter(!is.na(local_authority)) %>%
     filter(if (!is.null(st)) school_type == st else TRUE) %>%
     filter(year == '2018') %>%
-    filter(!is.na(support_category)) %>% # ignore missing (e.g. for new schools)
-    mutate(support_category_days = case_when(support_category == 'Green' ~ 4,
-                                             support_category == 'Yellow' ~ 10,
-                                             support_category == 'Amber' ~ 15,
-                                             support_category == 'Red' ~ 25,
-                                             TRUE ~ NA_real_)) %>%
+    filter(!is.na(support_category_days)) %>% # ignore missing (e.g. for new schools)
     group_by(local_authority) %>%
     summarize(mean=round(mean(support_category_days), 2)) %>%
     mutate(mean_rank = min_rank(mean)) %>%

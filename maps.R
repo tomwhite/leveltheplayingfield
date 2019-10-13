@@ -1,11 +1,6 @@
 library(htmlwidgets)
 library(leaflet)
 
-format_gbp <- function(amount) {
-  # format an amount in GBP (£)
-  ifelse(amount < 0, paste0("-", dollar(abs(amount), prefix="£")), dollar(amount, prefix="£"))
-}
-
 # Colours must be restricted to those at https://github.com/pointhi/leaflet-color-markers
 make_coloured_icon <- function(colour) {
   paste0('https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-', colour, '.png')

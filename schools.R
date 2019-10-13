@@ -51,6 +51,11 @@ as_numeric_ignore_commas <- function(x){
   as.numeric(gsub("\\,", "", x))
 }
 
+format_gbp <- function(amount) {
+  # format an amount in GBP (£)
+  ifelse(amount < 0, paste0("-", dollar(abs(amount), prefix="£")), dollar(amount, prefix="£"))
+}
+
 load_google_sheet <- function(title) {
   gs_auth() # authorize with google
   gs_title(title) %>% gs_read(ws = "Sheet1")

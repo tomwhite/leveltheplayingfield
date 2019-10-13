@@ -268,18 +268,23 @@ plot_pupil_funding_vs_outturn <- function(schools_tidy, la, save_to_file=FALSE) 
 }
 
 plot_pupil_funding_vs_per_pupil_outturn <- function(schools_tidy, la, save_to_file=FALSE) {
+  yr = LATEST_OUTTURN_YEAR
   x <- schools_tidy %>%
     filter(local_authority == la) %>%
-    filter (!is.na(budget_outturn))
+    filter (!is.na(budget_outturn)) %>%
+    filter(year == yr)
   coef <- cor(x$budget_outturn/x$num_pupils, x$per_pupil_funding, method = "pearson", use = "complete.obs")
   plot = schools_tidy %>%
     filter(local_authority == la) %>%
     filter (!is.na(budget_outturn)) %>%
+    filter(year == yr) %>%
     ggplot(aes(x=budget_outturn/num_pupils, y=per_pupil_funding)) +
     geom_point() +
     geom_smooth(method=lm) +
-    xlab(paste("Per-pupil budget outturn (£). Correlation", round(coef, 2))) +
-    ylab("Per-pupil funding (£)")
+    xlab("Per-pupil budget outturn (£)") +
+    ylab("Per-pupil funding (£)") +
+    labs(title = "Relationship between per-pupil funding and budget outturn",
+         subtitle = paste0(la, ", ", yr, ", correlation ", round(coef, 2)))
   if (save_to_file) {
     ggsave(report_file_name(la, "primary", "pupil_funding_vs_pupil_outturn", ".png"))
   }
@@ -287,19 +292,23 @@ plot_pupil_funding_vs_per_pupil_outturn <- function(schools_tidy, la, save_to_fi
 }
 
 plot_pupil_funding_vs_fsm <- function(schools_tidy, la, save_to_file=FALSE) {
+  yr = LATEST_FSM_YEAR
   x <- schools_tidy %>%
     filter(local_authority == la) %>%
-    filter(year == LATEST_FSM_YEAR)
+    filter(year == yr)
   coef <- cor(x$fsm_rate, x$per_pupil_funding, method = "pearson", use = "complete.obs")
   plot = schools_tidy %>%
     filter(local_authority == la) %>%
-    filter(year == LATEST_FSM_YEAR) %>%
+    filter(year == yr) %>%
     ggplot(aes(x=fsm_rate, y=per_pupil_funding)) +
     geom_point(aes(color=size, size=num_pupils_on_fsm)) +
     geom_smooth(method=lm) +
-    xlab(paste("Percentage of pupils on free school meals. Correlation", round(coef, 2))) +
+    xlab("Percentage of pupils on free school meals") +
     ylab("Per-pupil funding (£)") +
-    labs(color="Size of school", size="Number of pupils on FSM") +
+    labs(color="Size of school",
+         size="Number of pupils on FSM",
+         title = "Relationship between per-pupil funding and free school meals",
+         subtitle = paste0(la, ", ", yr, ", correlation ", round(coef, 2)))
     scale_colour_manual(values = SCHOOL_SIZE_COLOURS)
   if (save_to_file) {
     ggsave(report_file_name(la, "primary", "pupil_funding_vs_fsm", ".png"))
@@ -332,6 +341,8 @@ plot_support_catagory_vs_year <- function(schools_tidy, st, la, save_to_file=FAL
     geom_line(data = filter(per_la_support_category, local_authority == la), color='blue') +
     ylab("Average support category days") + 
     scale_y_continuous(breaks = seq(4, 25)) +
+    labs(title = "Average support category days by year",
+         subtitle = paste0(la, " (blue) vs. Wales (black), ", st, " schools")) +
     theme(axis.title.x=element_blank())
   if (save_to_file) {
     ggsave(report_file_name(la, st, "support_category_vs_year", ".png"))
@@ -360,7 +371,9 @@ plot_school_vs_budget_outturn_change <- function(schools_tidy, st, la, save_to_f
     xlim(-1000, 2000) +
     xlab("Per-pupil budget outturn (£)") +
     ylab("School") +
-    labs(color = "Change (2016-17 to 2017-18)") +
+    labs(color = "Change in per-pupil budget outturn",
+         title = "Change in per-pupil budget outturn (2016-17 to 2017-18) for each school",
+         subtitle = paste0(la, ", ", st, " schools")) +
     theme(axis.text.y=element_blank(), axis.ticks=element_blank()) +
     scale_colour_manual(values=c("Decrease" = "red", "Increase" = "green"))
   if (save_to_file) {

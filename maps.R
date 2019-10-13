@@ -19,8 +19,8 @@ support_category_icons <- iconList(
 
 # Surplus = black, deficit = red
 surplus_or_deficit_icons <- iconList(
-  Black = make_coloured_icon('black'),
-  Red = make_coloured_icon('red')
+  Surplus = make_coloured_icon('black'),
+  Deficit = make_coloured_icon('red')
 )
 
 # Occupancy bands
@@ -100,7 +100,7 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
     filter(if (!is.null(st)) school_type == st else TRUE) %>%
     filter(!is.na(budget_outturn)) %>% # drop rows with no budget_outturn
-    mutate(surplus_or_deficit = if_else(budget_outturn >= 0, "Black", "Red"))
+    mutate(surplus_or_deficit = if_else(budget_outturn >= 0, "Surplus", "Deficit"))
   map <- secondaries_tidy_geo_all_years_filtered %>%
     leaflet() %>%
     addTiles()
@@ -125,7 +125,7 @@ map_outturn_surplus_or_deficit_by_school_type <- function(schools_tidy, la = NUL
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
     filter(year == LATEST_OUTTURN_YEAR) %>%
     filter(!is.na(budget_outturn)) %>% # drop rows with no budget_outturn
-    mutate(surplus_or_deficit = if_else(budget_outturn >= 0, "Black", "Red"))
+    mutate(surplus_or_deficit = if_else(budget_outturn >= 0, "Surplus", "Deficit"))
   school_types <- as.character(unique(schools_tidy_filtered$school_type))
   map <- schools_tidy_filtered %>%
     leaflet() %>%
@@ -202,8 +202,9 @@ map_language_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FA
 }
 
 map_rural_schools <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
-  html_legend <- "<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png' width='12' height='20'>Rural<br/>
-<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png' width='12' height='20'>Not rural"
+  html_legend <- "Rural Schools</br>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png' width='12' height='20'>Yes<br/>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png' width='12' height='20'>No"
   map <- schools_tidy %>%
     filter(year == LATEST_YEAR) %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%

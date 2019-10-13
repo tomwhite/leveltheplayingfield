@@ -261,7 +261,7 @@ plot_pupil_funding_vs_outturn <- function(schools_tidy, la, save_to_file=FALSE) 
 }
 
 plot_pupil_funding_vs_per_pupil_outturn <- function(schools_tidy, la, save_to_file=FALSE) {
-  x <- primary_schools %>%
+  x <- schools_tidy %>%
     filter(local_authority == la) %>%
     filter (!is.na(budget_outturn))
   coef <- cor(x$budget_outturn/x$num_pupils, x$per_pupil_funding, method = "pearson", use = "complete.obs")
@@ -271,7 +271,7 @@ plot_pupil_funding_vs_per_pupil_outturn <- function(schools_tidy, la, save_to_fi
     ggplot(aes(x=budget_outturn/num_pupils, y=per_pupil_funding)) +
     geom_point() +
     geom_smooth(method=lm) +
-    xlab(paste("Per-pupil budget outturn (£), correlation", round(coef, 2))) +
+    xlab(paste("Per-pupil budget outturn (£). Correlation", round(coef, 2))) +
     ylab("Per-pupil funding (£)")
   if (save_to_file) {
     ggsave(report_file_name(la, "primary", "pupil_funding_vs_pupil_outturn", ".png"))
@@ -280,13 +280,17 @@ plot_pupil_funding_vs_per_pupil_outturn <- function(schools_tidy, la, save_to_fi
 }
 
 plot_pupil_funding_vs_fsm <- function(schools_tidy, la, save_to_file=FALSE) {
+  x <- schools_tidy %>%
+    filter(local_authority == la) %>%
+    filter(year == "2018-19") # FSM rate refers to 2018-19
+  coef <- cor(x$fsm_rate, x$per_pupil_funding, method = "pearson", use = "complete.obs")
   plot = schools_tidy %>%
     filter(local_authority == la) %>%
     filter(year == "2018-19") %>% # FSM rate refers to 2018-19
     ggplot(aes(x=fsm_rate, y=per_pupil_funding)) +
     geom_point(aes(color=size, size=num_pupils_on_fsm)) +
     geom_smooth(method=lm) +
-    xlab("Percentage of pupils on free school meals") +
+    xlab(paste("Percentage of pupils on free school meals. Correlation", round(coef, 2))) +
     ylab("Per-pupil funding (£)") +
     labs(color="Size of school", size="Number of pupils on FSM") +
     scale_colour_manual(values = SCHOOL_SIZE_COLOURS)

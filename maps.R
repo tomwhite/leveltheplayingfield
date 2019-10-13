@@ -45,7 +45,7 @@ rural_icons <- iconList(
   No = make_coloured_icon('blue')
 )
 
-map_support_categories <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
+map_support_categories_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
   schools_tidy_filtered = schools_tidy %>%
     filter(year == '2018') %>%
     filter(if (!is.null(la)) local_authority == la else TRUE)

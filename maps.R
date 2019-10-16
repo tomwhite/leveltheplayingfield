@@ -109,8 +109,7 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
     map <- map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste(school, ',', format_gbp(budget_outturn)), icon=~surplus_or_deficit_icons[surplus_or_deficit], group = year)
   }
   map <- map %>%
-    addLayersControl(baseGroups = years, options = layersControlOptions(collapsed = FALSE)) %>%
-    addControl(html = html_legend)
+    addLayersControl(baseGroups = years, options = layersControlOptions(collapsed = FALSE))
   if (save_to_file) {
     saveWidget(map, report_file_name(la, school_type, "outturn_surplus_or_deficit", ".html"), selfcontained = FALSE, libdir = "lib")
   }

@@ -34,7 +34,7 @@ SCHOOL_SIZE_COLOURS = c("<50" = "#F8766D", "50-100" = "#A3A500", "100-200" = "#0
 
 LATEST_YEAR = '2018-19'
 LATEST_NUM_PUPILS_YEAR = '2019-20'
-LATEST_OUTTURN_YEAR = '2017-18'
+LATEST_OUTTURN_YEAR = '2018-19'
 LATEST_SUPPORT_CATEGORY_YEAR = '2018'
 LATEST_FSM_YEAR = '2018-19'
 
@@ -250,9 +250,11 @@ plot_school_funding_vs_size <- function(schools_tidy, la, save_to_file=FALSE) {
 }
 
 plot_pupil_funding_vs_outturn <- function(schools_tidy, la, save_to_file=FALSE) {
+  yr = LATEST_OUTTURN_YEAR
   plot = schools_tidy %>%
     filter(local_authority == la) %>%
     filter (!is.na(budget_outturn)) %>%
+    filter(year == yr) %>%
     ggplot(aes(x=budget_outturn, y=per_pupil_funding)) +
     geom_point(aes(color=size)) +
     geom_vline(xintercept = 0) +
@@ -432,7 +434,7 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
     group_by(local_authority) %>%
     summarize(mean=round(mean(budget_outturn / num_pupils), 0)) %>%
     mutate(mean_rank = rank(desc(mean))) %>%
-    rename("Local authority" = local_authority, "Mean per-pupil budget outturn (2017-18)" = mean, "Mean per-pupil budget outturn rank (2017-18)" = mean_rank)
+    rename("Local authority" = local_authority, "Mean per-pupil budget outturn (2018-19)" = mean, "Mean per-pupil budget outturn rank (2018-19)" = mean_rank)
 
   table <- summary_size %>%
     left_join(summary_support_category) %>%

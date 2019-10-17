@@ -187,34 +187,36 @@ standardise_la_name <- function(la) {
   gsub(" ", "_", tolower(la))
 }
 
-report_file_name <- function(la, school_type, report_name, extension) {
+report_file_name <- function(la, school_type, report_name, year, extension) {
   # create a standard file name for a report
   st <- if (is.null(school_type)) 'all_schools' else school_type
+  yr <- if (is.null(year)) '' else paste0('_', year)
   dir.create(file.path(REPORTS_DIR), showWarnings = FALSE)
   if (is.null(la)) {
     d <- file.path(REPORTS_DIR, "wales")
     dir.create(d, showWarnings = FALSE)
-    paste0(d, "/", st, "_", report_name, extension)
+    paste0(d, "/", st, "_", report_name, yr, extension)
   } else {
     dir.create(file.path(REPORTS_DIR, "local_authorities"), showWarnings = FALSE)
     la <- standardise_la_name(la)
     d <- file.path(REPORTS_DIR, "local_authorities", standardise_la_name(la))
     dir.create(d, showWarnings = FALSE)
-    paste0(d, "/", la, "_", st, "_", report_name, extension)
+    paste0(d, "/", la, "_", st, "_", report_name, yr, extension)
   }
 }
 
 plot_summary_size_distribution <- function(schools_tidy, school_type, save_to_file=FALSE) {
+  yr <- LATEST_YEAR
   st <- school_type
   plot = schools_tidy %>%
     filter(!is.na(local_authority)) %>%
     filter(if (!is.null(st)) school_type == st else TRUE) %>%
-    filter(year == LATEST_YEAR) %>%
+    filter(year == yr) %>%
     ggplot(aes(num_pupils)) +
     geom_histogram(binwidth=25, colour="black", fill="white") +
     facet_wrap(~ local_authority, ncol=4)
   if (save_to_file) {
-    ggsave(report_file_name(NULL, school_type, "size_distribution", ".png"))
+    ggsave(report_file_name(NULL, school_type, "size_distribution", yr, ".png"))
   }
   plot
 }
@@ -230,21 +232,22 @@ plot_pupil_funding_vs_year <- function(schools_tidy, la, save_to_file=FALSE) {
     theme(axis.title.x=element_blank()) +
     scale_colour_manual(values = SCHOOL_SIZE_COLOURS)
   if (save_to_file) {
-    ggsave(report_file_name(la, "primary", "pupil_funding_vs_year", ".png"))
+    ggsave(report_file_name(la, "primary", "pupil_funding_vs_year", NULL, ".png"))
   }
   plot
 }
 
 plot_school_funding_vs_size <- function(schools_tidy, la, save_to_file=FALSE) {
+  yr <- LATEST_NUM_PUPILS_YEAR
   plot = schools_tidy %>%
     filter(local_authority == la) %>%
-    filter(year == LATEST_NUM_PUPILS_YEAR) %>%
+    filter(year == yr) %>%
     ggplot(aes(x=num_pupils, y=total_school_delegated_budget)) +
     geom_point() +
     xlab("Number of pupils") +
     ylab("Total school delegated funding (£)")
   if (save_to_file) {
-    ggsave(report_file_name(la, "primary", "school_funding_vs_size", ".png"))
+    ggsave(report_file_name(la, "primary", "school_funding_vs_size", yr, ".png"))
   }
   plot
 }
@@ -264,7 +267,7 @@ plot_pupil_funding_vs_outturn <- function(schools_tidy, la, save_to_file=FALSE) 
     ylab("Per-pupil funding (£)") +
     scale_colour_manual(values = SCHOOL_SIZE_COLOURS)
   if (save_to_file) {
-    ggsave(report_file_name(la, "primary", "pupil_funding_vs_outturn", ".png"))
+    ggsave(report_file_name(la, "primary", "pupil_funding_vs_outturn", yr, ".png"))
   }
   plot
 }
@@ -288,7 +291,7 @@ plot_pupil_funding_vs_per_pupil_outturn <- function(schools_tidy, la, save_to_fi
     labs(title = "Relationship between per-pupil funding and budget outturn",
          subtitle = paste0(la, ", ", yr, ", correlation ", round(coef, 2)))
   if (save_to_file) {
-    ggsave(report_file_name(la, "primary", "pupil_funding_vs_pupil_outturn", ".png"))
+    ggsave(report_file_name(la, "primary", "pupil_funding_vs_pupil_outturn", yr, ".png"))
   }
   plot
 }
@@ -313,7 +316,7 @@ plot_pupil_funding_vs_fsm <- function(schools_tidy, la, save_to_file=FALSE) {
          subtitle = paste0(la, ", ", yr, ", correlation ", round(coef, 2)))
     scale_colour_manual(values = SCHOOL_SIZE_COLOURS)
   if (save_to_file) {
-    ggsave(report_file_name(la, "primary", "pupil_funding_vs_fsm", ".png"))
+    ggsave(report_file_name(la, "primary", "pupil_funding_vs_fsm", yr, ".png"))
   }
   plot
 }
@@ -347,7 +350,7 @@ plot_support_catagory_vs_year <- function(schools_tidy, st, la, save_to_file=FAL
          subtitle = paste0(la, " (blue) vs. Wales (black), ", st, " schools")) +
     theme(axis.title.x=element_blank())
   if (save_to_file) {
-    ggsave(report_file_name(la, st, "support_category_vs_year", ".png"))
+    ggsave(report_file_name(la, st, "support_category_vs_year", NULL, ".png"))
   }
   plot
 }
@@ -379,7 +382,7 @@ plot_school_vs_budget_outturn_change <- function(schools_tidy, st, la, save_to_f
     theme(axis.text.y=element_blank(), axis.ticks=element_blank()) +
     scale_colour_manual(values=c("Decrease" = "red", "Increase" = "green"))
   if (save_to_file) {
-    ggsave(report_file_name(la, st, "school_vs_budget_outturn_change", ".png"))
+    ggsave(report_file_name(la, st, "school_vs_budget_outturn_change", "2017-18", ".png"))
   }
   plot
 }
@@ -397,7 +400,7 @@ tabulate_num_pupils_summary <- function(schools_tidy, school_type, save_to_file=
     order = list(list(0, 'asc'))
   ))
   if (save_to_file) {
-    saveWidget(dt, report_file_name(NULL, school_type, "num_pupils_summary", ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidget(dt, report_file_name(NULL, school_type, "num_pupils_summary", NULL, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   dt
 }
@@ -468,7 +471,7 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
     order = list(list(0, 'asc'))
   ))
   if (save_to_file) {
-    saveWidget(dt, report_file_name(NULL, school_type, "general_summary", ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidget(dt, report_file_name(NULL, school_type, "general_summary", NULL, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   dt
 }

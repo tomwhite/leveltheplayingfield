@@ -1,5 +1,11 @@
 import os, string
 
+LATEST_YEAR = '2018-19'
+LATEST_NUM_PUPILS_YEAR = '2019-20'
+LATEST_OUTTURN_YEAR = '2018-19'
+LATEST_SUPPORT_CATEGORY_YEAR = '2018'
+LATEST_FSM_YEAR = '2018-19'
+
 def pretty(name):
     return string.capwords(name.replace('_', ' '))
 
@@ -19,7 +25,13 @@ for la in las:
 <table>
 <tr>
 """)
-        for type in ('_primary_pupil_funding_vs_fsm.png', '_primary_pupil_funding_vs_outturn.png', '_primary_pupil_funding_vs_pupil_outturn.png', '_primary_pupil_funding_vs_year.png', '_primary_school_funding_vs_size.png', '_primary_support_category_vs_year.png', '_secondary_support_category_vs_year.png'):
+        for type in ('_primary_pupil_funding_vs_fsm_{}.png'.format(LATEST_FSM_YEAR),
+                     '_primary_pupil_funding_vs_outturn_{}.png'.format(LATEST_OUTTURN_YEAR),
+                     '_primary_pupil_funding_vs_pupil_outturn_{}.png'.format(LATEST_OUTTURN_YEAR),
+                     '_primary_pupil_funding_vs_year.png',
+                     '_primary_school_funding_vs_size_{}.png'.format(LATEST_NUM_PUPILS_YEAR),
+                     '_primary_support_category_vs_year.png',
+                     '_secondary_support_category_vs_year.png'):
             index_file.write('<td><a href="{}{}"><img src="{}{}" width="250" height="250"></a></td>\n'.format(la, type, la, type))
         index_file.write("""
 </tr>
@@ -47,7 +59,13 @@ with open("docs/la_table.html", "w") as la_table:
     for la in las:
         la_table.write('<tr>\n')
         la_table.write('<td>{}</td>\n'.format(pretty(la)))
-        for type in ('_primary_pupil_funding_vs_fsm.png', '_primary_pupil_funding_vs_outturn.png', '_primary_pupil_funding_vs_pupil_outturn.png', '_primary_pupil_funding_vs_year.png', '_primary_school_funding_vs_size.png', '_primary_support_category_vs_year.png', '_secondary_support_category_vs_year.png'):
+        for type in ('_primary_pupil_funding_vs_fsm_{}.png'.format(LATEST_FSM_YEAR),
+                     '_primary_pupil_funding_vs_outturn_{}.png'.format(LATEST_OUTTURN_YEAR),
+                     '_primary_pupil_funding_vs_pupil_outturn_{}.png'.format(LATEST_OUTTURN_YEAR),
+                     '_primary_pupil_funding_vs_year.png',
+                     '_primary_school_funding_vs_size_{}.png'.format(LATEST_NUM_PUPILS_YEAR),
+                     '_primary_support_category_vs_year.png',
+                     '_secondary_support_category_vs_year.png'):
             la_table.write('<td><a href="local_authorities/{}/{}{}"><img src="local_authorities/{}/{}{}" width="250" height="250"></a></td>\n'.format(la, la, type, la, la, type))
         la_table.write('</tr>\n')
     la_table.write("""
@@ -125,16 +143,16 @@ with open("docs/index.html", "w") as la_table:
         <td>-</td>
     </tr>
 """.format(pretty(la),
-           "local_authorities/{}/{}_all_schools_occupancy.html".format(la, la),
-           "local_authorities/{}/{}_primary_pupil_funding_vs_pupil_outturn.png".format(la, la),
-           "local_authorities/{}/{}_all_schools_outturn_surplus_or_deficit.html".format(la, la),
-           "local_authorities/{}/{}_primary_school_vs_budget_outturn_change.png".format(la, la),
-           "local_authorities/{}/{}_secondary_school_vs_budget_outturn_change.png".format(la, la),
-           "local_authorities/{}/{}_all_schools_support_category.html".format(la, la),
+           "local_authorities/{}/{}_all_schools_occupancy_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
+           "local_authorities/{}/{}_primary_pupil_funding_vs_pupil_outturn_{}.png".format(la, la, LATEST_OUTTURN_YEAR),
+           "local_authorities/{}/{}_all_schools_outturn_surplus_or_deficit_{}.html".format(la, la, LATEST_OUTTURN_YEAR),
+           "local_authorities/{}/{}_primary_school_vs_budget_outturn_change_{}.png".format(la, la, "2017-18"),
+           "local_authorities/{}/{}_secondary_school_vs_budget_outturn_change_{}.png".format(la, la, "2017-18"),
+           "local_authorities/{}/{}_all_schools_support_category_{}.html".format(la, la, LATEST_SUPPORT_CATEGORY_YEAR),
            "local_authorities/{}/{}_primary_support_category_vs_year.png".format(la, la),
            "local_authorities/{}/{}_secondary_support_category_vs_year.png".format(la, la),
-           "local_authorities/{}/{}_primary_pupil_funding_vs_fsm.png".format(la, la),
-           "local_authorities/{}/{}_all_schools_language.html".format(la, la)))
+           "local_authorities/{}/{}_primary_pupil_funding_vs_fsm_{}.png".format(la, la, LATEST_FSM_YEAR),
+           "local_authorities/{}/{}_all_schools_language_{}.html".format(la, la, LATEST_YEAR)))
 
     la_table.write("""
 </table>

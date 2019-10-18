@@ -76,6 +76,36 @@ population_with_age <- population_0_15 %>%
   union(population_16_64) %>%
   union(population_65_plus)
 
+population_with_age_wales <- population_with_age %>%
+  group_by(year, age) %>%
+  summarise(population = sum(population))
+
+population_with_age_wales %>%
+  ggplot(aes(y = population, x = year, group= age, color = age)) +
+  geom_line() +
+  theme(axis.text.x=element_text(angle = 90),
+        axis.title.x=element_blank())
+
+plot_population_with_age <- function(la, save_to_file=FALSE) {
+  population_with_age %>%
+    filter(local_authority == la) %>%
+    ggplot(aes(y = population, x = year, group= age, color = age)) +
+    geom_line() +
+    ylab(paste("Population of", la)) +
+    labs(title = "Population by age group and year") +
+    theme(axis.text.x=element_text(angle = 90),
+          axis.title.x=element_blank())
+  if (save_to_file) {
+    ggsave(report_file_name(la, "total", "population_with_age_vs_year", NULL, ".png"))
+  }
+  plot
+}
+
+for (la in LOCAL_AUTHORITIES) {
+  print(la)
+  plot_population_with_age(la, save_to_file = TRUE)
+}
+
 # See http://t-redactyl.io/blog/2016/01/creating-plots-in-r-using-ggplot2-part-4-stacked-bar-plots.html
 
 # Absolute population numbers
@@ -94,3 +124,4 @@ population_with_age %>%
   scale_y_continuous(labels = scales::percent_format()) +
   theme(axis.text.x=element_text(angle = 90),
         axis.title.x=element_blank())
+

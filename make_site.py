@@ -124,7 +124,7 @@ with open("docs/index.html", "w") as la_table:
         <td>{}</td>
 
         <td><a href="{}">Y</a></td>
-        <td>-</td>
+        <td><a href="{}">Y</a></td>
         <td><a href="{}">Y</a></td>
 
         <td><a href="{}">Y</a></td>
@@ -144,6 +144,7 @@ with open("docs/index.html", "w") as la_table:
     </tr>
 """.format(pretty(la),
            "local_authorities/{}/{}_total_population_vs_year.png".format(la, la),
+           "local_authorities/{}/{}_total_population_with_age_vs_year.png".format(la, la),
            "local_authorities/{}/{}_all_schools_occupancy_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
            "local_authorities/{}/{}_primary_pupil_funding_vs_pupil_outturn_{}.png".format(la, la, LATEST_OUTTURN_YEAR),
            "local_authorities/{}/{}_all_schools_outturn_surplus_or_deficit_{}.html".format(la, la, LATEST_OUTTURN_YEAR),

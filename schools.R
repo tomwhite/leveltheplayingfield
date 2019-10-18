@@ -315,7 +315,7 @@ plot_per_pupil_outturn_vs_year <- function(schools_tidy, st, la, save_to_file=FA
     group_by(local_authority, year) %>%
     summarize(mean_per_pupil_outturn=mean(budget_outturn/num_pupils))
   
-  per_la_per_pupil_outturn %>%
+  plot = per_la_per_pupil_outturn %>%
     ggplot(aes(x=year, y=mean_per_pupil_outturn, group=local_authority)) +
     geom_hline(yintercept = 0, color='red') +
     geom_line(alpha = 0.2) +

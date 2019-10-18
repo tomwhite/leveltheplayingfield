@@ -14,40 +14,47 @@ filter_to_wales_local_authorities <- function(all_population) {
 
 population <- load_population_data()
 
-population_countries <- population %>%
-  filter(!is.na(country) & (is.na(local_authority) | country == local_authority)) %>%
-  select(-c(local_authority))
-
-population_wales <- filter_to_wales_local_authorities(population)
-
 # Plot of all LAs by year
-population_wales %>%
+filter_to_wales_local_authorities(population) %>%
   gather(year, population, -c(local_authority)) %>%
   ggplot(aes(x=year, y=population, group=local_authority)) +
   geom_line()
 
-plot_population <- function(la, save_to_file=FALSE) {
-  first_value <- population_countries %>% filter(country == 'Wales') %>% pull(2)
+plot_population <- function(population, la, save_to_file=FALSE) {
+  population_countries <- population %>%
+    filter(!is.na(country) & (is.na(local_authority) | country == local_authority)) %>%
+    select(-c(local_authority))
   
-  # TODO: rename
-  x <- population_countries %>% filter(country == 'Wales') %>%
-    mutate_if(is.numeric, list(~ ./ first_value * 100)) %>%
+  population_las <- filter_to_wales_local_authorities(population)
+  
+  wales_pop_0 <- population_countries %>% filter(country == 'Wales') %>% pull(2)
+  la_pop_0 <- population_las %>% filter(local_authority == la) %>% pull(2)
+  factor <- wales_pop_0 / la_pop_0
+  
+  population_wales <- population_countries %>%
+    filter(country == 'Wales') %>%
     gather(year, population, -c(country)) %>%
     rename(local_authority = country) # hack
   
-  first_value <- population_wales %>% filter(local_authority == la) %>% pull(2)
-  y <- population_wales %>% filter(local_authority == la) %>%
-    mutate_if(is.numeric, list(~ ./ first_value * 100)) %>%
-    gather(year, population, -c(local_authority))
-  
-  y %>%
-    ggplot(aes(x=year, y=population, group=local_authority)) +
-    geom_line() +
-    geom_line(data = x, color = 'green')
+  plot = population_las %>%
+    filter(local_authority == la) %>%
+    gather(year, population, -c(local_authority)) %>%
+    ggplot(aes(x=year, group=local_authority)) +
+    geom_line(aes(y = population)) +
+    geom_line(data = population_wales, aes(y = population / factor), color = 'green') +
+    ylab(paste("Population of", la, " (black)")) +
+    scale_y_continuous(sec.axis = sec_axis(~.*factor, name = "Population of Wales (green)"))
+  if (save_to_file) {
+    ggsave(report_file_name(la, "total", "population_vs_year", NULL, ".png"))
+  }
+  plot
 }
 
+for (la in LOCAL_AUTHORITIES) {
+  print(la)
+  plot_population(la, save_to_file = TRUE)
+}  
 
-plot_population("Denbighshire")
 
 population_0_15 <- load_population_data("data/population-estimates-by-local-authority-and-year-0-15.csv") %>%
   filter_to_wales_local_authorities() %>%

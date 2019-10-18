@@ -45,7 +45,7 @@ plot_population <- function(population, la, save_to_file=FALSE) {
     ylab(paste("Population of", la, " (blue)")) +
     scale_y_continuous(sec.axis = sec_axis(~.*factor, name = "Population of Wales (black)")) +
     labs(title = "Population by year",
-         subtitle = paste0(la, " (blue) vs. Wales (black), ")) +
+         subtitle = paste0(la, " (blue) vs. Wales (black)")) +
     theme(axis.text.x=element_text(angle = 90),
           axis.title.x=element_blank())
   if (save_to_file) {

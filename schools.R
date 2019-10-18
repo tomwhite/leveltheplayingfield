@@ -78,12 +78,14 @@ load_primaries <- function() {
   
   # QC
   # Should give 5 rows - new schools that don't have a support category from My Local Schools
+  print("Schools that don't have a support category")
   schools_tidy %>%
     filter(year == LATEST_SUPPORT_CATEGORY_YEAR) %>%
     filter(is.na(support_category)) %>%
     print()
   
   # Find schools with no location
+  print("Primary schools with no location")
   schools_tidy %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
   
   schools_tidy
@@ -96,6 +98,7 @@ load_secondaries <- function() {
   
   # QC
   # Find schools with no location (should be none)
+  print("Secondary schools with no location")
   secondaries_tidy %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
   
   secondaries_tidy
@@ -108,6 +111,7 @@ load_special_schools <- function() {
   
   # QC
   # Find schools with no location
+  print("Special schools with no location")
   schools %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
   
   schools
@@ -120,6 +124,7 @@ load_through_schools <- function() {
   
   # QC
   # Find schools with no location
+  print("Through schools with no location")
   schools %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
   
   schools

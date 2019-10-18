@@ -40,10 +40,14 @@ plot_population <- function(population, la, save_to_file=FALSE) {
     filter(local_authority == la) %>%
     gather(year, population, -c(local_authority)) %>%
     ggplot(aes(x=year, group=local_authority)) +
-    geom_line(aes(y = population)) +
-    geom_line(data = population_wales, aes(y = population / factor), color = 'green') +
-    ylab(paste("Population of", la, " (black)")) +
-    scale_y_continuous(sec.axis = sec_axis(~.*factor, name = "Population of Wales (green)"))
+    geom_line(aes(y = population), color = 'blue') +
+    geom_line(data = population_wales, aes(y = population / factor), color = 'black') +
+    ylab(paste("Population of", la, " (blue)")) +
+    scale_y_continuous(sec.axis = sec_axis(~.*factor, name = "Population of Wales (black)")) +
+    labs(title = "Population by year",
+         subtitle = paste0(la, " (blue) vs. Wales (black), ")) +
+    theme(axis.text.x=element_text(angle = 90),
+          axis.title.x=element_blank())
   if (save_to_file) {
     ggsave(report_file_name(la, "total", "population_vs_year", NULL, ".png"))
   }
@@ -52,9 +56,8 @@ plot_population <- function(population, la, save_to_file=FALSE) {
 
 for (la in LOCAL_AUTHORITIES) {
   print(la)
-  plot_population(la, save_to_file = TRUE)
-}  
-
+  plot_population(population, la, save_to_file = TRUE)
+}
 
 population_0_15 <- load_population_data("data/population-estimates-by-local-authority-and-year-0-15.csv") %>%
   filter_to_wales_local_authorities() %>%

@@ -317,6 +317,7 @@ plot_per_pupil_outturn_vs_year <- function(schools_tidy, st, la, save_to_file=FA
   
   per_la_per_pupil_outturn %>%
     ggplot(aes(x=year, y=mean_per_pupil_outturn, group=local_authority)) +
+    geom_hline(yintercept = 0, color='red') +
     geom_line(alpha = 0.2) +
     geom_line(data = all_wales_per_pupil_outturn, color = 'black') +
     geom_line(data = filter(per_la_per_pupil_outturn, local_authority == la), color='blue') +

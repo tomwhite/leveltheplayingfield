@@ -77,8 +77,20 @@ population_with_age <- population_0_15 %>%
   union(population_65_plus)
 
 # See http://t-redactyl.io/blog/2016/01/creating-plots-in-r-using-ggplot2-part-4-stacked-bar-plots.html
+
+# Absolute population numbers
 population_with_age %>%
   filter(local_authority == 'Powys') %>%
-  ggplot(aes(y = population, x = year, fill = age)) +
-  geom_bar(stat = 'identity')
+  ggplot(aes(y = population, x = year, fill = reorder(age, desc(age)))) +
+  geom_bar(stat = 'identity') +
+  theme(axis.text.x=element_text(angle = 90),
+        axis.title.x=element_blank())
 
+# Percentage bands for each age group
+population_with_age %>%
+  filter(local_authority == 'Powys') %>%
+  ggplot(aes(y = population, x = year, fill = reorder(age, desc(age)))) +
+  geom_bar(position = "fill", stat = 'identity') +
+  scale_y_continuous(labels = scales::percent_format()) +
+  theme(axis.text.x=element_text(angle = 90),
+        axis.title.x=element_blank())

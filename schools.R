@@ -296,6 +296,40 @@ plot_pupil_funding_vs_per_pupil_outturn <- function(schools_tidy, la, save_to_fi
   plot
 }
 
+plot_per_pupil_outturn_vs_year <- function(schools_tidy, st, la, save_to_file=FALSE) {
+  # All Wales is black, LA is blue
+  all_wales_per_pupil_outturn <- schools_tidy %>%
+    filter(school_type == st) %>%
+    filter(!is.na(budget_outturn)) %>%
+    filter(!is.na(num_pupils)) %>%
+    filter(year <= LATEST_OUTTURN_YEAR) %>%
+    group_by(year) %>%
+    summarize(mean_per_pupil_outturn=mean(budget_outturn/num_pupils)) %>%
+    mutate(local_authority = 'All')
+  
+  per_la_per_pupil_outturn <- schools_tidy %>%
+    filter(school_type == st) %>%
+    filter(!is.na(budget_outturn)) %>%
+    filter(!is.na(num_pupils)) %>%
+    filter(year <= LATEST_OUTTURN_YEAR) %>%
+    group_by(local_authority, year) %>%
+    summarize(mean_per_pupil_outturn=mean(budget_outturn/num_pupils))
+  
+  per_la_per_pupil_outturn %>%
+    ggplot(aes(x=year, y=mean_per_pupil_outturn, group=local_authority)) +
+    geom_line(alpha = 0.2) +
+    geom_line(data = all_wales_per_pupil_outturn, color = 'black') +
+    geom_line(data = filter(per_la_per_pupil_outturn, local_authority == la), color='blue') +
+    ylab("Average per-pupil budget outturn (£)") + 
+    labs(title = "Average per-pupil budget outturn by year",
+         subtitle = paste0(la, " (blue) vs. Wales (black), ", st, " schools")) +
+    theme(axis.title.x=element_blank())
+  if (save_to_file) {
+    ggsave(report_file_name(la, st, "pupil_outturn_vs_year", NULL, ".png"))
+  }
+  plot
+}
+
 plot_pupil_funding_vs_fsm <- function(schools_tidy, la, save_to_file=FALSE) {
   yr = LATEST_FSM_YEAR
   x <- schools_tidy %>%

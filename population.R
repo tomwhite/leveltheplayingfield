@@ -92,7 +92,8 @@ plot_population_with_age <- function(la, save_to_file=FALSE) {
     ggplot(aes(y = population, x = year, group= age, color = age)) +
     geom_line() +
     ylab(paste("Population of", la)) +
-    labs(title = "Population by age group and year") +
+    labs(title = "Population by age group and year",
+         subtitle = la) +
     theme(axis.text.x=element_text(angle = 90),
           axis.title.x=element_blank())
   if (save_to_file) {

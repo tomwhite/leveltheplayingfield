@@ -515,3 +515,24 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
   }
   dt
 }
+
+tabulate_occupancy_summary <- function(schools_tidy, save_to_file=FALSE) {
+  table <- schools_tidy %>%
+    filter(year == LATEST_NUM_PUPILS_YEAR) %>%
+    filter(!is.na(local_authority)) %>%
+    filter(!is.na(num_pupils)) %>%
+    filter(!is.na(capacity)) %>%
+    group_by(local_authority, school_type) %>%
+    summarize(total_capacity = round(sum(capacity), 0), total_pupils = sum(num_pupils)) %>%
+    mutate(surplus_places = total_capacity - total_pupils) %>%
+    mutate(occupancy_percent = round(100 * total_pupils / total_capacity, 1)) %>% 
+    rename("Local authority" = local_authority, "School type" = school_type, "Total capacity" = total_capacity, "Total pupils" = total_pupils, "Surplus places" = surplus_places, "Occupancy percent" = occupancy_percent)
+  dt <- datatable(table, rownames= FALSE, options = list(
+    pageLength = 100,
+    order = list(list(0, 'asc'))
+  ))
+  if (save_to_file) {
+    saveWidget(dt, report_file_name(NULL, NULL, "occupancy_summary", NULL, ".html"), selfcontained = FALSE, libdir = "lib")
+  }
+  dt
+}

@@ -13,6 +13,8 @@ tabulate_general_summary(all_schools, "secondary", save_to_file = TRUE)
 tabulate_general_summary(all_schools, "through", save_to_file = TRUE)
 tabulate_general_summary(all_schools, "special", save_to_file = TRUE)
 
+tabulate_occupancy_summary(all_schools, save_to_file = TRUE)
+
 # Charts
 plot_summary_size_distribution(all_schools, "primary", save_to_file = TRUE)
 plot_summary_size_distribution(all_schools, "secondary", save_to_file = TRUE)

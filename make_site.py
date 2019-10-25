@@ -117,6 +117,28 @@ with open("docs/index.html", "w") as la_table:
         <th>Chart</th>
     </tr>
     </thead>
+    <tr>
+        <td>All Wales</td>
+
+        <td>-</td>
+        <td>-</td>
+        <td><a href="wales/all_schools_occupancy_2019-20.html">Y</a></td>
+
+        <td>-</td>
+        <td><a href="wales/all_schools_outturn_surplus_or_deficit_2018-19.html">Y</a></td>
+        <td>-</td>
+        <td>-</td>
+
+        <td><a href="wales/all_schools_support_category_2018.html">Y</a></td>
+        <td>-</td>
+        <td>-</td>
+
+        <td>-</td>
+
+        <td><a href="wales/all_schools_language_2018-19.html">Y</a></td>
+        <td>-</td>
+        <td>-</td>
+    </tr>
 """)
 
     for la in las:

@@ -122,20 +122,20 @@ with open("docs/index.html", "w") as la_table:
 
         <td>-</td>
         <td>-</td>
-        <td><a href="wales/all_schools_occupancy_2019-20.html">Y</a></td>
+        <td><a href="wales/all_schools_occupancy_2019-20.html">Y</a> (<a href="wales/all_schools_occupancy_alt_2019-20.html">alt</a>)</td>
 
         <td>-</td>
-        <td><a href="wales/all_schools_outturn_surplus_or_deficit_2018-19.html">Y</a></td>
-        <td>-</td>
-        <td>-</td>
-
-        <td><a href="wales/all_schools_support_category_2018.html">Y</a></td>
+        <td><a href="wales/all_schools_outturn_surplus_or_deficit_2018-19.html">Y</a> (<a href="wales/all_schools_outturn_surplus_or_deficit_alt_2018-19.html">alt</a>)</td>
         <td>-</td>
         <td>-</td>
 
+        <td><a href="wales/all_schools_support_category_2018.html">Y</a> (<a href="wales/all_schools_support_category_alt_2018.html">alt</a>)</td>
+        <td>-</td>
         <td>-</td>
 
-        <td><a href="wales/all_schools_language_2018-19.html">Y</a></td>
+        <td>-</td>
+
+        <td><a href="wales/all_schools_language_2018-19.html">Y</a> (<a href="wales/all_schools_language_alt_2018-19.html">alt</a>)</td>
         <td>-</td>
         <td>-</td>
     </tr>

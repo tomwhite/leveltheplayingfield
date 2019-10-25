@@ -123,3 +123,27 @@ schools_tidy %>%
 # Budget outturn trend arrows
 plot_school_vs_budget_outturn_change(all_schools, 'primary', 'Gwynedd')
 
+# Per-pupil outturn change pct - primary vs secondary
+# Are some LAs improving one at the expense of the other?
+
+x <- all_schools %>%
+  filter(!is.na(budget_outturn)) %>%
+  filter(!is.na(num_pupils)) %>%
+  filter(year <= LATEST_OUTTURN_YEAR) %>%
+  group_by(local_authority, year, school_type) %>%
+  summarize(mean_per_pupil_outturn=mean(budget_outturn/num_pupils)) %>%
+  filter(school_type == 'primary' | school_type == 'secondary') %>%
+  filter(year != '2017-18') %>%
+  spread(year, mean_per_pupil_outturn) %>% # put years back into columns
+  mutate(diff = `2018-19` - `2016-17`) %>%
+  select(c(local_authority, school_type, diff)) %>%
+  spread(school_type, diff) # put school type back into columns
+
+x %>%
+  ggplot(aes(x = primary, y = secondary), group = local_authority) +
+  geom_vline(xintercept = 0) +
+  geom_hline(yintercept = 0) +
+  geom_point() +
+  geom_text(aes(label=local_authority), hjust = 0, nudge_x = 5) +
+  xlab("Change in primary per-pupil budget outturn 2016-17 to 2018-19 (£)") + 
+  ylab("Change in secondary per-pupil budget outturn 2016-17 to 2018-19 (£)")

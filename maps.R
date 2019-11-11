@@ -20,9 +20,9 @@ support_category_icons <- iconList(
 support_category_palette <- colorFactor(c("green", "yellow", "orange", "red"), domain = support_category_factors, ordered = TRUE)
 
 # Surplus = black, deficit = red
-surplus_or_deficit_factors <- c("Surplus (excess)", "Surplus", "Deficit")
+surplus_or_deficit_factors <- c("Over statutory limit", "Surplus", "Deficit")
 surplus_or_deficit_icons <- iconList(
-  `Surplus (excess)` = make_coloured_icon('yellow'),
+  `Over statutory limit` = make_coloured_icon('yellow'),
   Surplus = make_coloured_icon('black'),
   Deficit = make_coloured_icon('red')
 )
@@ -30,9 +30,9 @@ surplus_or_deficit_palette <- colorFactor(c("yellow", "black", "red"), domain = 
 
 to_surplus_or_deficit_category <- function(school_type, budget_outturn) {
   if (school_type == 'primary') {
-    return (case_when(budget_outturn < 0 ~ "Deficit", budget_outturn <= 50000 ~ "Surplus", TRUE ~ "Surplus (excess)"))
+    return (case_when(budget_outturn < 0 ~ "Deficit", budget_outturn <= 50000 ~ "Surplus", TRUE ~ "Over statutory limit"))
   } else if (school_type == 'secondary') {
-    return (case_when(budget_outturn < 0 ~ "Deficit", budget_outturn <= 100000 ~ "Surplus", TRUE ~ "Surplus (excess)"))
+    return (case_when(budget_outturn < 0 ~ "Deficit", budget_outturn <= 100000 ~ "Surplus", TRUE ~ "Over statutory limit"))
   }
   if_else(budget_outturn < 0, "Deficit", "Surplus")
 }
@@ -168,7 +168,7 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
 map_outturn_surplus_or_deficit_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
   yr = LATEST_OUTTURN_YEAR
   html_legend <- "Budget Outturn</br>
-<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png' width='12' height='20'>Surplus (excess)<br/>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png' width='12' height='20'>Over statutory limit<br/>
   <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png' width='12' height='20'>Surplus<br/>
   <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>Deficit"
   schools_tidy_filtered <- schools_tidy %>%
@@ -197,7 +197,7 @@ map_outturn_surplus_or_deficit_by_school_type <- function(schools_tidy, la = NUL
 map_outturn_surplus_or_deficit <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
   yr = LATEST_OUTTURN_YEAR
   html_legend <- "Budget Outturn</br>
-<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png' width='12' height='20'>Surplus (excess)<br/>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png' width='12' height='20'>Over statutory limit<br/>
   <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png' width='12' height='20'>Surplus<br/>
   <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>Deficit"
   schools_tidy_filtered <- schools_tidy %>%

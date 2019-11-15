@@ -20,19 +20,24 @@ plot_summary_size_distribution(all_schools, "primary", save_to_file = TRUE)
 plot_summary_size_distribution(all_schools, "secondary", save_to_file = TRUE)
 
 # Maps
-map_support_categories_by_local_authority(all_schools, 'secondary', save_to_file = TRUE)
-map_outturn_surplus_or_deficit_by_year(all_schools, school_type='secondary', save_to_file = TRUE)
-
 map_occupancy_by_school_type(all_schools, NULL, save_to_file = TRUE)
 map_outturn_surplus_or_deficit_by_school_type(all_schools, NULL, save_to_file = TRUE)
 map_support_categories_by_school_type(all_schools, NULL, save_to_file = TRUE)
 map_language_by_school_type(all_schools, NULL, save_to_file = TRUE)
 map_rural_schools(all_schools, NULL, save_to_file = TRUE)
 
+map_occupancy_by_local_authority(all_schools, save_to_file = TRUE)
+map_outturn_surplus_or_deficit_by_local_authority(all_schools, save_to_file = TRUE)
+map_support_categories_by_local_authority(all_schools, NULL, save_to_file = TRUE)
+map_language_by_local_authority(all_schools, save_to_file = TRUE)
+
 map_occupancy(all_schools, NULL, save_to_file = TRUE)
 map_outturn_surplus_or_deficit(all_schools, NULL, save_to_file = TRUE)
 map_support_categories(all_schools, NULL, save_to_file = TRUE)
 map_language(all_schools, NULL, save_to_file = TRUE)
+
+map_support_categories_by_local_authority(all_schools, 'secondary', save_to_file = TRUE)
+map_outturn_surplus_or_deficit_by_year(all_schools, school_type='secondary', save_to_file = TRUE)
 
 # Local authorities
 

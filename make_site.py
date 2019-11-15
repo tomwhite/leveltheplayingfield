@@ -76,11 +76,11 @@ with open("docs/la_table.html", "w") as la_table:
 with open("docs/index.html", "w") as la_table:
     la_table.write("""<html>
 <head>
-    <title>Level The Playing Field</title>
+    <title>Level The Playing Field Reports</title>
 </head>
 <body>
 
-<p>See <a href="index2.html">other index</a></p>
+<p>See <a href="index2.html">other index</a>, <a href="posts">custom reports for blog posts</a></p>
 
 <table border="1">
     <thead>

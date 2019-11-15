@@ -8,6 +8,7 @@ library(htmlTable)
 library(reshape2)
 
 REPORTS_DIR = "~/projects-workspace/leveltheplayingfield/docs"
+POSTS_DIR = paste0(REPORTS_DIR, "/posts")
 LOCAL_AUTHORITIES = c("Blaenau Gwent",
                       "Bridgend",
                       "Caerphilly",
@@ -207,6 +208,19 @@ report_file_name <- function(la, school_type, report_name, year, extension) {
     d <- file.path(REPORTS_DIR, "local_authorities", standardise_la_name(la))
     dir.create(d, showWarnings = FALSE)
     paste0(d, "/", la, "_", st, "_", report_name, yr, extension)
+  }
+}
+
+blog_post_file_name <- function(prefix, la, school_type, report_name, year, extension) {
+  # create a standard file name for a report
+  st <- if (is.null(school_type)) 'all_schools' else school_type
+  yr <- if (is.null(year)) '' else paste0('_', year)
+  dir.create(file.path(POSTS_DIR), showWarnings = FALSE)
+  if (is.null(la)) {
+    paste0(POSTS_DIR, "/", prefix, "_", st, "_", report_name, yr, extension)
+  } else {
+    la <- standardise_la_name(la)
+    paste0(POSTS_DIR, "/", prefix, "_", la, "_", st, "_", report_name, yr, extension)
   }
 }
 

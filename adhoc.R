@@ -196,3 +196,57 @@ z %>%
   filter(budget_outturn_pct > -50 & budget_outturn_pct < 50) %>%
   ggplot(aes(budget_outturn_pct)) +
   geom_histogram(binwidth = 1, colour="black", fill="white")
+
+#
+# Distribution of per-pupil funding
+#
+
+all_schools_latest <- all_schools %>% filter(year == LATEST_NUM_PUPILS_YEAR)
+
+# Which (non-special) schools have very high per-pupil funding?
+all_schools_latest %>%
+  filter(school_type != 'special') %>%
+  filter(per_pupil_funding > 8000) %>%
+  select(c(local_authority, school, school_type, num_pupils, per_pupil_funding)) %>%
+  arrange(desc(per_pupil_funding))
+
+# Which have very low per-pupil funding?
+all_schools_latest %>%
+  filter(per_pupil_funding < 3000) %>%
+  select(c(local_authority, school, school_type, num_pupils, per_pupil_funding)) %>%
+  arrange(per_pupil_funding)
+
+# Plot all schools (except special)
+all_schools_latest %>%
+  filter(school_type != 'special') %>%
+  ggplot(aes(per_pupil_funding, fill=school_type)) +
+  geom_histogram(binwidth = 200, position="dodge")
+
+library(ggridges)
+all_schools_latest %>%
+  ggplot(aes(per_pupil_funding, y=school_type, fill=school_type)) +
+  geom_density_ridges() +
+  theme_ridges()
+
+all_schools_latest %>%
+  filter(school_type != 'special') %>%
+  filter(per_pupil_funding < 10000) %>%
+  ggplot(aes(per_pupil_funding, y=school_type, fill=school_type)) +
+  geom_density_ridges() +
+  theme_ridges()
+
+# Plot primary
+all_schools_latest %>%
+  filter(school_type == 'primary') %>%
+  ggplot(aes(per_pupil_funding)) +
+  geom_histogram(binwidth = 100, colour="black", fill="white")
+
+quantile((all_schools_latest %>% filter(school_type == 'primary'))$per_pupil_funding, na.rm = TRUE)
+
+# Plot secondary
+all_schools_latest %>%
+  filter(school_type == 'secondary') %>%
+  ggplot(aes(per_pupil_funding)) +
+  geom_histogram(binwidth = 50, colour="black", fill="white")
+
+quantile((all_schools_latest %>% filter(school_type == 'secondary'))$per_pupil_funding)

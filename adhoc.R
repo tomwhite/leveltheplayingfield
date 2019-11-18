@@ -147,3 +147,52 @@ x %>%
   geom_text(aes(label=local_authority), hjust = 0, nudge_x = 5) +
   xlab("Change in primary per-pupil budget outturn 2016-17 to 2018-19 (£)") + 
   ylab("Change in secondary per-pupil budget outturn 2016-17 to 2018-19 (£)")
+
+
+####
+# Distribution of surplus/deficit as a percentage of per-pupil funding
+####
+
+schools <- all_schools %>% filter(school_type == 'primary')
+schools <- all_schools
+
+x <- schools %>%
+  filter(!is.na(budget_outturn)) %>%
+  filter(year == LATEST_OUTTURN_YEAR) %>%
+  select(c(lea_code, budget_outturn))
+
+y <- schools %>%
+  filter(!is.na(total_school_delegated_budget)) %>%
+  filter(year == "2019-20") %>% 
+  select(c(lea_code, total_school_delegated_budget))
+
+z <- x %>%
+  left_join(y) %>%
+  filter(!is.na(budget_outturn)) %>%
+  filter(!is.na(total_school_delegated_budget)) %>%
+  mutate(budget_outturn_pct = 100.0 * budget_outturn / total_school_delegated_budget)
+
+quantile(z$budget_outturn_pct)
+quantile(z$total_school_delegated_budget)
+
+quantile(x$budget_outturn)
+
+# Which percentile does the primary £50,000 (or £100,000 for secondary) excess budget outturn occur at?
+# See https://stats.stackexchange.com/questions/50080/estimate-quantile-of-value-in-a-vector
+ecdf_fun <- function(x,perc) ecdf(x)(perc)
+ecdf_fun(x$budget_outturn, 100000)
+# answer is 66% for primary and 65% for secondary
+# (also around 16% of all schools are in deficit)
+quantile(x$budget_outturn, c(0.66))
+quantile(z$budget_outturn_pct, c(0.66)) # 7.5% primary, 2.5% secondary, 6.9% all
+
+# Extremes
+z %>%
+  filter(budget_outturn_pct > 50 | budget_outturn_pct < -50) %>%
+  left_join(all_schools %>% filter(year == LATEST_OUTTURN_YEAR), by = "lea_code") %>%
+  select(c(local_authority, school, school_type, total_school_delegated_budget.x, budget_outturn.x, budget_outturn_pct))
+
+z %>%
+  filter(budget_outturn_pct > -50 & budget_outturn_pct < 50) %>%
+  ggplot(aes(budget_outturn_pct)) +
+  geom_histogram(binwidth = 1, colour="black", fill="white")

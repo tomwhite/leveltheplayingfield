@@ -74,7 +74,8 @@ map_support_categories_by_school_type <- function(schools_tidy, la = NULL, save_
   <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>Red"
   schools_tidy_filtered = schools_tidy %>%
     filter(year == yr) %>%
-    filter(if (!is.null(la)) local_authority == la else TRUE)
+    filter(if (!is.null(la)) local_authority == la else TRUE) %>%
+    filter(!is.na(support_category))
   school_types <- as.character(unique(schools_tidy_filtered$school_type))
   map <- schools_tidy_filtered %>%
     leaflet() %>%
@@ -101,7 +102,8 @@ map_support_categories <- function(schools_tidy, la = NULL, save_to_file=FALSE) 
   <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>Red"
   schools_tidy_filtered = schools_tidy %>%
     filter(year == yr) %>%
-    filter(if (!is.null(la)) local_authority == la else TRUE)
+    filter(if (!is.null(la)) local_authority == la else TRUE) %>%
+    filter(!is.na(support_category))
   map <- schools_tidy_filtered %>%
     leaflet() %>%
     addTiles()
@@ -129,7 +131,8 @@ map_support_categories_by_local_authority <- function(secondaries_tidy_geo, scho
   las <- as.character(unique(secondaries_tidy_geo$local_authority))
   secondaries_tidy_geo_filtered = secondaries_tidy_geo %>%
     filter(year == yr) %>%
-    filter(if (!is.null(st)) school_type == st else TRUE)
+    filter(if (!is.null(st)) school_type == st else TRUE) %>%
+    filter(!is.na(support_category))
   map <- secondaries_tidy_geo_filtered %>%
     leaflet() %>%
     addTiles()

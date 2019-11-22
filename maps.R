@@ -19,6 +19,14 @@ support_category_icons <- iconList(
 )
 support_category_palette <- colorFactor(c("green", "yellow", "orange", "red"), domain = support_category_factors, ordered = TRUE)
 
+# Per-pupil funding colours
+per_pupil_funding_icons <- iconList(
+  q4 = make_coloured_icon('green'),
+  q3 = make_coloured_icon('yellow'),
+  q2 = make_coloured_icon('orange'),
+  q1 = make_coloured_icon('red')
+)
+
 # Surplus = black, deficit = red
 surplus_or_deficit_factors <- c("Over statutory limit", "Surplus", "Deficit")
 surplus_or_deficit_icons <- iconList(
@@ -170,6 +178,44 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
     addLayersControl(baseGroups = years, options = layersControlOptions(collapsed = FALSE))
   if (save_to_file) {
     saveWidget(map, report_file_name(la, school_type, "outturn_surplus_or_deficit", NULL, ".html"), selfcontained = FALSE, libdir = "lib")
+  }
+  map
+}
+
+map_per_pupil_funding <- function(schools_tidy, school_type, la = NULL, save_to_file=FALSE) {
+  yr = LATEST_NUM_PUPILS_YEAR
+  st = school_type
+  schools_tidy_filtered <- schools_tidy %>%
+    filter(year == yr) %>%
+    filter(school_type == st) %>%
+    filter(!is.na(per_pupil_funding))
+  q <- quantile(schools_tidy_filtered$per_pupil_funding)
+  q1 <- format_gbp(round(q[['25%']], 0))
+  q2 <- format_gbp(round(q[['50%']], 0))
+  q3 <- format_gbp(round(q[['75%']], 0))
+  html_legend <- str_interp("Per-pupil funding</br>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png' width='12' height='20'>4th quartile (>${q3})<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png' width='12' height='20'>3rd quartile (${q2}-${q3})<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png' width='12' height='20'>2nd quartile (${q1}-${q2})<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>1st quartile (<${q1})")
+  schools_tidy_filtered <- schools_tidy_filtered %>%
+    filter(if (!is.null(la)) local_authority == la else TRUE) # filter by LA last since the bands are computed across all LAs
+  schools_tidy_filtered$per_pupil_funding_band <- cut(schools_tidy_filtered$per_pupil_funding, breaks=c(-Inf, q[['25%']], q[['50%']], q[['75%']], Inf), labels=c("q1","q2", "q3", "q4"))
+  las <- as.character(unique(schools_tidy$local_authority))
+  map <- schools_tidy_filtered %>%
+    leaflet() %>%
+    addTiles()
+  if (is.null(la)) {
+    map <- map %>% addLayersControl(overlayGroups = las, options = layersControlOptions(collapsed = FALSE))
+  }
+  for (lauth in las) {
+    d = schools_tidy_filtered[schools_tidy_filtered$local_authority == lauth,]
+    map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste(school, ',', format_gbp(per_pupil_funding)), icon=~per_pupil_funding_icons[per_pupil_funding_band], group = lauth)
+  }
+  map <- map %>%
+    addControl(html = html_legend)
+  if (save_to_file) {
+    saveWidget(map, report_file_name(la, school_type, "per_pupil_funding", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }

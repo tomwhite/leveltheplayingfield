@@ -36,6 +36,9 @@ map_outturn_surplus_or_deficit(all_schools, NULL, save_to_file = TRUE)
 map_support_categories(all_schools, NULL, save_to_file = TRUE)
 map_language(all_schools, NULL, save_to_file = TRUE)
 
+map_per_pupil_funding(all_schools, 'primary', save_to_file = TRUE)
+map_per_pupil_funding(all_schools, 'secondary', save_to_file = TRUE)
+
 map_support_categories_by_local_authority(all_schools, 'secondary', save_to_file = TRUE)
 map_outturn_surplus_or_deficit_by_year(all_schools, school_type='secondary', save_to_file = TRUE)
 
@@ -64,4 +67,7 @@ for (la in LOCAL_AUTHORITIES) {
   map_language_by_school_type(all_schools, la, save_to_file = TRUE)
   map_rural_schools(all_schools, la, save_to_file = TRUE)
   
+  map_per_pupil_funding(all_schools, 'primary', la, save_to_file = TRUE)
+  map_per_pupil_funding(all_schools, 'secondary', la, save_to_file = TRUE)
+
 }

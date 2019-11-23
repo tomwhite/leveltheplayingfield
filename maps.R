@@ -21,9 +21,9 @@ support_category_palette <- colorFactor(c("green", "yellow", "orange", "red"), d
 
 # Per-pupil funding colours
 per_pupil_funding_icons <- iconList(
-  q4 = make_coloured_icon('green'),
-  q3 = make_coloured_icon('yellow'),
-  q2 = make_coloured_icon('orange'),
+  q4 = make_coloured_icon('violet'),
+  q3 = make_coloured_icon('grey'),
+  q2 = make_coloured_icon('grey'),
   q1 = make_coloured_icon('red')
 )
 
@@ -194,10 +194,9 @@ map_per_pupil_funding <- function(schools_tidy, school_type, la = NULL, save_to_
   q2 <- format_gbp(round(q[['50%']], 0))
   q3 <- format_gbp(round(q[['75%']], 0))
   html_legend <- str_interp("Per-pupil funding</br>
-  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png' width='12' height='20'>4th quartile (>${q3})<br/>
-  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png' width='12' height='20'>3rd quartile (${q2}-${q3})<br/>
-  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png' width='12' height='20'>2nd quartile (${q1}-${q2})<br/>
-  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>1st quartile (<${q1})")
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png' width='12' height='20'>Top 25% (>${q3})<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png' width='12' height='20'>Middle 50% (${q1}-${q3})<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>Bottom 25% (<${q1})")
   schools_tidy_filtered <- schools_tidy_filtered %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) # filter by LA last since the bands are computed across all LAs
   schools_tidy_filtered$per_pupil_funding_band <- cut(schools_tidy_filtered$per_pupil_funding, breaks=c(-Inf, q[['25%']], q[['50%']], q[['75%']], Inf), labels=c("q1","q2", "q3", "q4"))

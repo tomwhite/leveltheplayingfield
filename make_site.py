@@ -88,7 +88,7 @@ with open("docs/index.html", "w") as la_table:
         <th>Local Authority</th>
 
         <th colspan="3">Population Trends</th>
-        <th colspan="2">Per-pupil Funding</th>
+        <th colspan="3">School Funding</th>
         <th colspan="4">School Finance</th>
         <th colspan="3">School Support Categories</th>
         <th colspan="1">Free School Meal Rates</th>
@@ -102,6 +102,7 @@ with open("docs/index.html", "w") as la_table:
         <th>Chart</th>
         <th>Map</th>
 
+        <th>Chart</th>
         <th>Map (Pri)</th>
         <th>Map (Sec)</th>
 
@@ -130,6 +131,7 @@ with open("docs/index.html", "w") as la_table:
 
         <td>-</td>
         <td>-</td>
+        <td>-</td>
 
         <td>-</td>
         <td><a href="wales/all_schools_outturn_surplus_or_deficit_2018-19.html">Y</a> (<a href="wales/all_schools_outturn_surplus_or_deficit_alt_2018-19.html">alt</a>)</td>
@@ -153,6 +155,7 @@ with open("docs/index.html", "w") as la_table:
         <td>-</td>
         <td><a href="wales/all_schools_occupancy_with_la_2019-20.html">Y</a></td>
 
+        <td>-</td>
         <td><a href="wales/primary_per_pupil_funding_2019-20.html">Y</a></td>
         <td><a href="wales/secondary_per_pupil_funding_2019-20.html">Y</a></td>
 
@@ -183,6 +186,7 @@ with open("docs/index.html", "w") as la_table:
 
         <td><a href="{}">Y</a></td>
         <td><a href="{}">Y</a></td>
+        <td><a href="{}">Y</a></td>
 
         <td><a href="{}">Y</a></td>
         <td><a href="{}">Y</a></td>
@@ -203,6 +207,7 @@ with open("docs/index.html", "w") as la_table:
            "local_authorities/{}/{}_total_population_vs_year.png".format(la, la),
            "local_authorities/{}/{}_total_population_with_age_vs_year.png".format(la, la),
            "local_authorities/{}/{}_all_schools_occupancy_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
+           "local_authorities/{}/{}_all_schools_delegation_rate_vs_year.png".format(la, la),
            "local_authorities/{}/{}_primary_per_pupil_funding_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
            "local_authorities/{}/{}_secondary_per_pupil_funding_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
            "local_authorities/{}/{}_primary_pupil_funding_vs_pupil_outturn_{}.png".format(la, la, LATEST_OUTTURN_YEAR),

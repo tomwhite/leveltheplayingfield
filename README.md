@@ -1,8 +1,23 @@
 # Level The Playing Field
 
-School Funding in Wales
+Analysis of school funding in Wales http://leveltheplayingfield.wales/
 
-### Running
+## Data sources
+
+The majority of the data is from [Stats Wales](https://statswales.gov.wales/).
+
+CSV files in the _data_ directory were downloaded from the Stats Wales website, and are named
+after the final part of the Stats Wales URL.
+
+* https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Delegated-School-Budgets/delegatedschoolbudgetsperpupil-by-sector
+* https://statswales.gov.wales/Catalogue/Population-and-Migration/Population/Estimates/Local-Authority/populationestimates-by-localauthority-year
+
+### Address data
+
+Data in the _data/geo_ directory is from https://gweddill.gov.wales/statistics-and-research/address-list-of-schools/?lang=en.
+Postcode to lat/long conversion was carried out using https://www.doogal.co.uk/BatchGeocoding.php.
+
+## Running
 
 In RStudio, run _batch.R_ to generate all the reports in the _docs_ directory. These are hosted on the main website at
 http://leveltheplayingfield.wales.

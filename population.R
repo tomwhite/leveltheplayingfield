@@ -1,4 +1,4 @@
-load_population_data <- function(csv = "data/population-estimates-by-local-authority-and-year.csv") {
+load_population_data <- function(csv = "data/populationestimates-by-localauthority-year.csv") {
   # Source: https://statswales.gov.wales/Catalogue/Population-and-Migration/Population/Estimates/Local-Authority/populationestimates-by-localauthority-year
   read_csv(csv) %>%
     rename(country = X3, local_authority = X4) %>%
@@ -59,15 +59,15 @@ for (la in LOCAL_AUTHORITIES) {
   plot_population(population, la, save_to_file = TRUE)
 }
 
-population_0_15 <- load_population_data("data/population-estimates-by-local-authority-and-year-0-15.csv") %>%
+population_0_15 <- load_population_data("data/populationestimates-by-localauthority-year-0-15.csv") %>%
   filter_to_wales_local_authorities() %>%
   gather(year, population, -c(local_authority)) %>%
   mutate(age = '0-15')
-population_16_64 <- load_population_data("data/population-estimates-by-local-authority-and-year-16-64.csv") %>%
+population_16_64 <- load_population_data("data/populationestimates-by-localauthority-year-16-64.csv") %>%
   filter_to_wales_local_authorities() %>%
   gather(year, population, -c(local_authority)) %>%
   mutate(age = '16-64')
-population_65_plus <- load_population_data("data/population-estimates-by-local-authority-and-year-65-and-over.csv") %>%
+population_65_plus <- load_population_data("data/populationestimates-by-localauthority-year-65-and-over.csv") %>%
   filter_to_wales_local_authorities() %>%
   gather(year, population, -c(local_authority)) %>%
   mutate(age = '65+')

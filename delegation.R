@@ -4,6 +4,20 @@ la_delegation_rates <- load_google_sheet('Delegation rates %') %>%
   rename(local_authority = Authority) %>%
   gather(year, delegation_rate_percent, -c(local_authority))
 
+load_delegatedschoolbudgetsperpupil_data <- function(csv = "data/delegatedschoolbudgetsperpupil-by-sector.csv") {
+  read_csv(csv) %>%
+    rename(country = X1) %>%
+    separate(X3, c("LA", "school_type"), " - ") %>% # split local authority from school type ('sector')
+    mutate(local_authority = ifelse(!is.na(LA), LA, ifelse(!is.na(X2), X2, 'All'))) %>% # X2 is local authority
+    select(-c(country, X2, LA)) %>%
+    na_if('.') %>% # dots are NA
+    gather(year, delegated_school_budget_per_pupil, -c(local_authority, school_type)) %>%
+    mutate_at(c("school_type"), tolower) %>%
+    mutate_at(c('delegated_school_budget_per_pupil'), as_numeric_ignore_commas)
+}
+
+delegatedschoolbudgetsperpupil <- load_delegatedschoolbudgetsperpupil_data()
+
 plot_delegation_rate_vs_year <- function(la_delegation_rates, la, save_to_file=FALSE) {
   # All Wales is black, LA is blue
   all_wales_delegation_rate_percent <- la_delegation_rates %>%
@@ -27,7 +41,48 @@ plot_delegation_rate_vs_year <- function(la_delegation_rates, la, save_to_file=F
   plot
 }
 
+plot_delegatedschoolbudgetsperpupil_all_school_types <- function(delegatedschoolbudgetsperpupil, la, save_to_file=FALSE) {
+  # All Wales is black, LA is blue
+  plot = delegatedschoolbudgetsperpupil %>%
+    filter(is.na(school_type)) %>%
+    filter(local_authority != 'All') %>%
+    ggplot(aes(x=year, y=delegated_school_budget_per_pupil, group=local_authority)) +
+    geom_line(alpha = 0.2) +
+    geom_line(data = filter(delegatedschoolbudgetsperpupil, local_authority == 'All'), color = 'black') +
+    geom_line(data = filter(delegatedschoolbudgetsperpupil, local_authority == la, is.na(school_type)), color='blue') +
+    ylab("Delegated school budget per pupil (£)") + 
+    labs(title = "Delegated school budget per pupil by year, all school types",
+         subtitle = paste0(la, " (blue) vs. Wales (black)")) +
+    theme(axis.title.x=element_blank())
+  if (save_to_file) {
+    ggsave(report_file_name(la, NULL, "delegated_school_budget_per_pupil_vs_year", NULL, ".png"))
+  }
+  plot
+}
+
+plot_delegatedschoolbudgetsperpupil_per_school_type <- function(delegatedschoolbudgetsperpupil, la, school_type, save_to_file=FALSE) {
+  st <- school_type
+  
+  plot = delegatedschoolbudgetsperpupil %>%
+    filter(school_type == st) %>%
+    filter(local_authority != 'All') %>%
+    ggplot(aes(x=year, y=delegated_school_budget_per_pupil, group=local_authority)) +
+    geom_line(alpha = 0.2) +
+    geom_line(data = filter(delegatedschoolbudgetsperpupil, local_authority == la, school_type == st), color='blue') +
+    ylab("Delegated school budget per pupil (£)") + 
+    labs(title = "Delegated school budget per pupil by year",
+         subtitle = paste0(la, " (blue), ", st, " schools")) +
+    theme(axis.title.x=element_blank())
+  if (save_to_file) {
+    ggsave(report_file_name(la, st, "delegated_school_budget_per_pupil_vs_year", NULL, ".png"))
+  }
+  plot
+}
+
 for (la in LOCAL_AUTHORITIES) {
   print(la)
   plot_delegation_rate_vs_year(la_delegation_rates, la, save_to_file = TRUE)
+  plot_delegatedschoolbudgetsperpupil_all_school_types(delegatedschoolbudgetsperpupil, la, save_to_file = TRUE)
+  plot_delegatedschoolbudgetsperpupil_per_school_type(delegatedschoolbudgetsperpupil, la, 'primary', save_to_file = TRUE)
+  plot_delegatedschoolbudgetsperpupil_per_school_type(delegatedschoolbudgetsperpupil, la, 'secondary', save_to_file = TRUE)
 }

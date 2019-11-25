@@ -88,10 +88,10 @@ with open("docs/index.html", "w") as la_table:
         <th>Local Authority</th>
 
         <th colspan="3">Population Trends</th>
-        <th colspan="3">School Funding</th>
+        <th colspan="6">School Funding</th>
         <th colspan="4">School Finance</th>
         <th colspan="3">School Support Categories</th>
-        <th colspan="1">Free School Meal Rates</th>
+        <th colspan="1">FSM Rates</th>
         <th colspan="3">Welsh Language Provision</th>
     </tr>
 
@@ -102,7 +102,10 @@ with open("docs/index.html", "w") as la_table:
         <th>Chart</th>
         <th>Map</th>
 
-        <th>Chart</th>
+        <th>Chart 1</th>
+        <th>Chart 2</th>
+        <th>Pri</th>
+        <th>Sec</th>
         <th>Map (Pri)</th>
         <th>Map (Sec)</th>
 
@@ -132,6 +135,9 @@ with open("docs/index.html", "w") as la_table:
         <td>-</td>
         <td>-</td>
         <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
 
         <td>-</td>
         <td><a href="wales/all_schools_outturn_surplus_or_deficit_2018-19.html">Y</a> (<a href="wales/all_schools_outturn_surplus_or_deficit_alt_2018-19.html">alt</a>)</td>
@@ -155,6 +161,9 @@ with open("docs/index.html", "w") as la_table:
         <td>-</td>
         <td><a href="wales/all_schools_occupancy_with_la_2019-20.html">Y</a></td>
 
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
         <td>-</td>
         <td><a href="wales/primary_per_pupil_funding_2019-20.html">Y</a></td>
         <td><a href="wales/secondary_per_pupil_funding_2019-20.html">Y</a></td>
@@ -187,6 +196,9 @@ with open("docs/index.html", "w") as la_table:
         <td><a href="{}">Y</a></td>
         <td><a href="{}">Y</a></td>
         <td><a href="{}">Y</a></td>
+        <td><a href="{}">Y</a></td>
+        <td><a href="{}">Y</a></td>
+        <td><a href="{}">Y</a></td>
 
         <td><a href="{}">Y</a></td>
         <td><a href="{}">Y</a></td>
@@ -204,20 +216,29 @@ with open("docs/index.html", "w") as la_table:
         <td>-</td>
     </tr>
 """.format(pretty(la),
+
            "local_authorities/{}/{}_total_population_vs_year.png".format(la, la),
            "local_authorities/{}/{}_total_population_with_age_vs_year.png".format(la, la),
            "local_authorities/{}/{}_all_schools_occupancy_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
+
            "local_authorities/{}/{}_all_schools_delegation_rate_vs_year.png".format(la, la),
+           "local_authorities/{}/{}_all_schools_delegated_school_budget_per_pupil_vs_year.png".format(la, la),
+           "local_authorities/{}/{}_primary_delegated_school_budget_per_pupil_vs_year.png".format(la, la),
+           "local_authorities/{}/{}_secondary_delegated_school_budget_per_pupil_vs_year.png".format(la, la),
            "local_authorities/{}/{}_primary_per_pupil_funding_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
            "local_authorities/{}/{}_secondary_per_pupil_funding_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
+
            "local_authorities/{}/{}_primary_pupil_funding_vs_pupil_outturn_{}.png".format(la, la, LATEST_OUTTURN_YEAR),
            "local_authorities/{}/{}_all_schools_outturn_surplus_or_deficit_{}.html".format(la, la, LATEST_OUTTURN_YEAR),
            "local_authorities/{}/{}_primary_pupil_outturn_vs_year.png".format(la, la),
            "local_authorities/{}/{}_secondary_pupil_outturn_vs_year.png".format(la, la),
+
            "local_authorities/{}/{}_all_schools_support_category_{}.html".format(la, la, LATEST_SUPPORT_CATEGORY_YEAR),
            "local_authorities/{}/{}_primary_support_category_vs_year.png".format(la, la),
            "local_authorities/{}/{}_secondary_support_category_vs_year.png".format(la, la),
+
            "local_authorities/{}/{}_primary_pupil_funding_vs_fsm_{}.png".format(la, la, LATEST_FSM_YEAR),
+
            "local_authorities/{}/{}_all_schools_language_{}.html".format(la, la, LATEST_YEAR)))
 
     la_table.write("""

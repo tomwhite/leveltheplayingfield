@@ -62,10 +62,3 @@ plot_delegatedschoolbudgetsperpupil_per_school_type <- function(delegatedschoolb
   plot
 }
 
-for (la in LOCAL_AUTHORITIES) {
-  print(la)
-  plot_delegation_rate_vs_year(la_delegation_rates, la, save_to_file = TRUE)
-  plot_delegatedschoolbudgetsperpupil_all_school_types(delegatedschoolbudgetsperpupil, la, save_to_file = TRUE)
-  plot_delegatedschoolbudgetsperpupil_per_school_type(delegatedschoolbudgetsperpupil, la, 'primary', save_to_file = TRUE)
-  plot_delegatedschoolbudgetsperpupil_per_school_type(delegatedschoolbudgetsperpupil, la, 'secondary', save_to_file = TRUE)
-}

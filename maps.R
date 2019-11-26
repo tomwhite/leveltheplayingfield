@@ -1,6 +1,8 @@
 library(htmlwidgets)
 library(leaflet)
 
+source('utils.R')
+
 # Colours must be restricted to those at https://github.com/pointhi/leaflet-color-markers
 make_coloured_icon <- function(colour) {
   paste0('https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-', colour, '.png')

@@ -1,8 +1,7 @@
+source('load_data.R')
+source('delegation.R')
 source('maps.R')
 source('schools.R')
-
-# Load school data
-all_schools <- load_all_schools()
 
 # All of Wales
 
@@ -54,6 +53,11 @@ for (la in LOCAL_AUTHORITIES) {
   plot_pupil_funding_vs_outturn(primary_schools, la, save_to_file = TRUE)
   plot_pupil_funding_vs_per_pupil_outturn(primary_schools, la, save_to_file = TRUE)
   plot_pupil_funding_vs_fsm(primary_schools, la, save_to_file = TRUE)
+
+  plot_delegation_rate_vs_year(la_delegation_rates, la, save_to_file = TRUE)
+  plot_delegatedschoolbudgetsperpupil_all_school_types(delegatedschoolbudgetsperpupil, la, save_to_file = TRUE)
+  plot_delegatedschoolbudgetsperpupil_per_school_type(delegatedschoolbudgetsperpupil, la, 'primary', save_to_file = TRUE)
+  plot_delegatedschoolbudgetsperpupil_per_school_type(delegatedschoolbudgetsperpupil, la, 'secondary', save_to_file = TRUE)
 
   plot_per_pupil_outturn_vs_year(all_schools, 'primary', la, save_to_file = TRUE)
   plot_per_pupil_outturn_vs_year(all_schools, 'secondary', la, save_to_file = TRUE)

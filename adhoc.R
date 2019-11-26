@@ -1,4 +1,8 @@
+# Ad hoc exploratory analysis
+
+source('load_data.R')
 source('schools.R')
+source('utils.R')
 
 # TODO: how many schools have identical postcode and therefor lat/lon? Could cause a problem for maps.
 

@@ -18,5 +18,15 @@ save_google_sheet_locally <- function(title) {
   saveRDS(df, file=path)
 }
 
+# Save all sheets locally
+
+for (local_authority in LOCAL_AUTHORITIES) {
+  save_google_sheet_locally(paste(local_authority, "Primary Schools"))
+}
+
+save_google_sheet_locally("Wales Secondary Schools")
+save_google_sheet_locally("Wales Through Schools")
+save_google_sheet_locally("Wales Special Schools")
+
 save_google_sheet_locally('Delegation rates %')
 

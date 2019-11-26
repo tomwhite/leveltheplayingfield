@@ -150,24 +150,27 @@ filter_to_wales_local_authorities <- function(all_population) {
     select(-c(country))
 }
 
+load_population_with_age <- function() {
+  population_0_15 <- load_population_data("data/populationestimates-by-localauthority-year-0-15.csv") %>%
+    filter_to_wales_local_authorities() %>%
+    gather(year, population, -c(local_authority)) %>%
+    mutate(age = '0-15')
+  population_16_64 <- load_population_data("data/populationestimates-by-localauthority-year-16-64.csv") %>%
+    filter_to_wales_local_authorities() %>%
+    gather(year, population, -c(local_authority)) %>%
+    mutate(age = '16-64')
+  population_65_plus <- load_population_data("data/populationestimates-by-localauthority-year-65-and-over.csv") %>%
+    filter_to_wales_local_authorities() %>%
+    gather(year, population, -c(local_authority)) %>%
+    mutate(age = '65+')
+  
+  population_0_15 %>%
+    union(population_16_64) %>%
+    union(population_65_plus)
+}
+
 population <- load_population_data()
-
-population_0_15 <- load_population_data("data/populationestimates-by-localauthority-year-0-15.csv") %>%
-  filter_to_wales_local_authorities() %>%
-  gather(year, population, -c(local_authority)) %>%
-  mutate(age = '0-15')
-population_16_64 <- load_population_data("data/populationestimates-by-localauthority-year-16-64.csv") %>%
-  filter_to_wales_local_authorities() %>%
-  gather(year, population, -c(local_authority)) %>%
-  mutate(age = '16-64')
-population_65_plus <- load_population_data("data/populationestimates-by-localauthority-year-65-and-over.csv") %>%
-  filter_to_wales_local_authorities() %>%
-  gather(year, population, -c(local_authority)) %>%
-  mutate(age = '65+')
-
-population_with_age <- population_0_15 %>%
-  union(population_16_64) %>%
-  union(population_65_plus)
+population_with_age <- load_population_with_age()
 
 # Local authority delegated school budget data
 

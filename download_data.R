@@ -4,9 +4,6 @@
 
 library(googlesheets)
 
-d <- file.path("data", "sheets")
-dir.create(d, showWarnings = FALSE)
-
 load_google_sheet <- function(title) {
   gs_auth() # authorize with google
   gs_title(title) %>% gs_read(ws = "Sheet1")
@@ -14,6 +11,8 @@ load_google_sheet <- function(title) {
 
 save_google_sheet_locally <- function(title) {
   df <- load_google_sheet(title)
+  d <- file.path("data", "sheets")
+  dir.create(d, showWarnings = FALSE)
   path <- file.path(d, paste0(title, ".Rda"))
   saveRDS(df, file=path)
 }

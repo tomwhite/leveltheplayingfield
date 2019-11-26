@@ -4,7 +4,7 @@ source('load_data.R')
 source('schools.R')
 source('utils.R')
 
-# TODO: how many schools have identical postcode and therefor lat/lon? Could cause a problem for maps.
+# TODO: how many schools have identical postcode and therefore lat/lon? Could cause a problem for maps.
 
 # Total school numbers
 all_schools %>%
@@ -206,3 +206,42 @@ all_schools_latest %>%
   geom_histogram(binwidth = 50, colour="black", fill="white")
 
 quantile((all_schools_latest %>% filter(school_type == 'secondary'))$per_pupil_funding)
+
+#
+# Population
+#
+
+# Plot of population for each LA by year
+filter_to_wales_local_authorities(population) %>%
+  gather(year, population, -c(local_authority)) %>%
+  ggplot(aes(x=year, y=population, group=local_authority)) +
+  geom_line()
+
+population_with_age_wales <- population_with_age %>%
+  group_by(year, age) %>%
+  summarise(population = sum(population))
+
+population_with_age_wales %>%
+  ggplot(aes(y = population, x = year, group= age, color = age)) +
+  geom_line() +
+  theme(axis.text.x=element_text(angle = 90),
+        axis.title.x=element_blank())
+
+# See http://t-redactyl.io/blog/2016/01/creating-plots-in-r-using-ggplot2-part-4-stacked-bar-plots.html
+
+# Absolute population numbers
+population_with_age %>%
+  filter(local_authority == 'Powys') %>%
+  ggplot(aes(y = population, x = year, fill = reorder(age, desc(age)))) +
+  geom_bar(stat = 'identity') +
+  theme(axis.text.x=element_text(angle = 90),
+        axis.title.x=element_blank())
+
+# Percentage bands for each age group
+population_with_age %>%
+  filter(local_authority == 'Powys') %>%
+  ggplot(aes(y = population, x = year, fill = reorder(age, desc(age)))) +
+  geom_bar(position = "fill", stat = 'identity') +
+  scale_y_continuous(labels = scales::percent_format()) +
+  theme(axis.text.x=element_text(angle = 90),
+        axis.title.x=element_blank())

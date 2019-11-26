@@ -2,9 +2,8 @@
 
 source('utils.R')
 
-d <- file.path("data", "sheets")
-
 load_google_sheet_locally <- function(title) {
+  d <- file.path("data", "sheets")
   path <- file.path(d, paste0(title, ".Rda"))
   readRDS(path)
 }
@@ -134,6 +133,41 @@ add_school_locations <- function(schools_tidy) {
 }
 
 all_schools <- load_all_schools()
+
+# Population data
+
+load_population_data <- function(csv = "data/populationestimates-by-localauthority-year.csv") {
+  # Source: https://statswales.gov.wales/Catalogue/Population-and-Migration/Population/Estimates/Local-Authority/populationestimates-by-localauthority-year
+  read_csv(csv) %>%
+    rename(country = X3, local_authority = X4) %>%
+    rename_all(gsub, pattern = '^Mid-year (.+)$', replacement = '\\1') %>%
+    select(-c(X1, X2))
+}
+
+filter_to_wales_local_authorities <- function(all_population) {
+  all_population %>%
+    filter(!is.na(local_authority) & local_authority != 'Scotland' & local_authority != 'Northern Ireland') %>%
+    select(-c(country))
+}
+
+population <- load_population_data()
+
+population_0_15 <- load_population_data("data/populationestimates-by-localauthority-year-0-15.csv") %>%
+  filter_to_wales_local_authorities() %>%
+  gather(year, population, -c(local_authority)) %>%
+  mutate(age = '0-15')
+population_16_64 <- load_population_data("data/populationestimates-by-localauthority-year-16-64.csv") %>%
+  filter_to_wales_local_authorities() %>%
+  gather(year, population, -c(local_authority)) %>%
+  mutate(age = '16-64')
+population_65_plus <- load_population_data("data/populationestimates-by-localauthority-year-65-and-over.csv") %>%
+  filter_to_wales_local_authorities() %>%
+  gather(year, population, -c(local_authority)) %>%
+  mutate(age = '65+')
+
+population_with_age <- population_0_15 %>%
+  union(population_16_64) %>%
+  union(population_65_plus)
 
 # Local authority delegated school budget data
 

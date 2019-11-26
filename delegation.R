@@ -1,6 +1,3 @@
-source('load_data.R')
-source('schools.R')
-
 plot_delegation_rate_vs_year <- function(la_delegation_rates, la, save_to_file=FALSE) {
   # All Wales is black, LA is blue
   all_wales_delegation_rate_percent <- la_delegation_rates %>%

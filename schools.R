@@ -1,6 +1,5 @@
 library(tidyverse)
 library(broom)
-library(googlesheets)
 library(knitr)
 library(scales)
 library(DT)

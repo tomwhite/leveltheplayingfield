@@ -1,3 +1,5 @@
+# Constants and utility functions
+
 REPORTS_DIR = "~/projects-workspace/leveltheplayingfield/docs"
 POSTS_DIR = paste0(REPORTS_DIR, "/posts")
 

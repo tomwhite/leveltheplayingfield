@@ -25,13 +25,9 @@ for la in las:
 <table>
 <tr>
 """)
-        for type in ('_primary_pupil_funding_vs_fsm_{}.png'.format(LATEST_FSM_YEAR),
-                     '_primary_pupil_funding_vs_outturn_{}.png'.format(LATEST_OUTTURN_YEAR),
-                     '_primary_pupil_funding_vs_pupil_outturn_{}.png'.format(LATEST_OUTTURN_YEAR),
+        for type in ('_primary_pupil_funding_vs_outturn_{}.png'.format(LATEST_OUTTURN_YEAR),
                      '_primary_pupil_funding_vs_year.png',
-                     '_primary_school_funding_vs_size_{}.png'.format(LATEST_NUM_PUPILS_YEAR),
-                     '_primary_support_category_vs_year.png',
-                     '_secondary_support_category_vs_year.png'):
+                     '_primary_school_funding_vs_size_{}.png'.format(LATEST_NUM_PUPILS_YEAR)):
             index_file.write('<td><a href="{}{}"><img src="{}{}" width="250" height="250"></a></td>\n'.format(la, type, la, type))
         index_file.write("""
 </tr>
@@ -59,13 +55,9 @@ with open("docs/la_table.html", "w") as la_table:
     for la in las:
         la_table.write('<tr>\n')
         la_table.write('<td>{}</td>\n'.format(pretty(la)))
-        for type in ('_primary_pupil_funding_vs_fsm_{}.png'.format(LATEST_FSM_YEAR),
-                     '_primary_pupil_funding_vs_outturn_{}.png'.format(LATEST_OUTTURN_YEAR),
-                     '_primary_pupil_funding_vs_pupil_outturn_{}.png'.format(LATEST_OUTTURN_YEAR),
+        for type in ('_primary_pupil_funding_vs_outturn_{}.png'.format(LATEST_OUTTURN_YEAR),
                      '_primary_pupil_funding_vs_year.png',
-                     '_primary_school_funding_vs_size_{}.png'.format(LATEST_NUM_PUPILS_YEAR),
-                     '_primary_support_category_vs_year.png',
-                     '_secondary_support_category_vs_year.png'):
+                     '_primary_school_funding_vs_size_{}.png'.format(LATEST_NUM_PUPILS_YEAR)):
             la_table.write('<td><a href="local_authorities/{}/{}{}"><img src="local_authorities/{}/{}{}" width="250" height="250"></a></td>\n'.format(la, la, type, la, la, type))
         la_table.write('</tr>\n')
     la_table.write("""
@@ -92,7 +84,7 @@ with open("docs/index.html", "w") as la_table:
         <th colspan="4">School Finance</th>
         <th colspan="3">School Support Categories</th>
         <th colspan="1">FSM Rates</th>
-        <th colspan="3">Welsh Language Provision</th>
+        <th colspan="1">Welsh Language Provision</th>
     </tr>
 
     <tr>
@@ -121,8 +113,6 @@ with open("docs/index.html", "w") as la_table:
         <th>Chart</th>
 
         <th>Map</th>
-        <th>Chart</th>
-        <th>Chart</th>
     </tr>
     </thead>
     <tr>
@@ -151,8 +141,6 @@ with open("docs/index.html", "w") as la_table:
         <td>-</td>
 
         <td><a href="wales/all_schools_language_2018-19.html">Y</a> (<a href="wales/all_schools_language_alt_2018-19.html">alt</a>)</td>
-        <td>-</td>
-        <td>-</td>
     </tr>
     <tr>
         <td>All Wales (by LA)</td>
@@ -180,8 +168,6 @@ with open("docs/index.html", "w") as la_table:
         <td>-</td>
 
         <td><a href="wales/all_schools_language_with_la_2018-19.html">Y</a></td>
-        <td>-</td>
-        <td>-</td>
     </tr>
 """)
 
@@ -212,8 +198,6 @@ with open("docs/index.html", "w") as la_table:
         <td><a href="{}">Y</a></td>
 
         <td><a href="{}">Y</a></td>
-        <td>-</td>
-        <td>-</td>
     </tr>
 """.format(pretty(la),
 

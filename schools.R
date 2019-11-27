@@ -77,9 +77,10 @@ plot_pupil_funding_vs_outturn <- function(schools_tidy, la, save_to_file=FALSE) 
   plot
 }
 
-plot_pupil_funding_vs_per_pupil_outturn <- function(schools_tidy, la, save_to_file=FALSE) {
+plot_pupil_funding_vs_per_pupil_outturn <- function(schools_tidy, st, la, save_to_file=FALSE) {
   yr = LATEST_OUTTURN_YEAR
   x <- schools_tidy %>%
+    filter(school_type == st) %>%
     filter(local_authority == la) %>%
     filter (!is.na(budget_outturn)) %>%
     filter(year == yr)
@@ -96,7 +97,7 @@ plot_pupil_funding_vs_per_pupil_outturn <- function(schools_tidy, la, save_to_fi
     labs(title = "Relationship between per-pupil funding and budget outturn",
          subtitle = paste0(la, ", ", yr, ", correlation ", round(coef, 2)))
   if (save_to_file) {
-    ggsave(report_file_name(la, "primary", "pupil_funding_vs_pupil_outturn", yr, ".png"))
+    ggsave(report_file_name(la, st, "pupil_funding_vs_pupil_outturn", yr, ".png"))
   }
   plot
 }
@@ -136,9 +137,10 @@ plot_per_pupil_outturn_vs_year <- function(schools_tidy, st, la, save_to_file=FA
   plot
 }
 
-plot_pupil_funding_vs_fsm <- function(schools_tidy, la, save_to_file=FALSE) {
+plot_pupil_funding_vs_fsm <- function(schools_tidy, st, la, save_to_file=FALSE) {
   yr = LATEST_FSM_YEAR
   x <- schools_tidy %>%
+    filter(school_type == st) %>%
     filter(local_authority == la) %>%
     filter(year == yr)
   coef <- cor(x$fsm_rate, x$per_pupil_funding, method = "pearson", use = "complete.obs")
@@ -156,7 +158,7 @@ plot_pupil_funding_vs_fsm <- function(schools_tidy, la, save_to_file=FALSE) {
          subtitle = paste0(la, ", ", yr, ", correlation ", round(coef, 2)))
     scale_colour_manual(values = SCHOOL_SIZE_COLOURS)
   if (save_to_file) {
-    ggsave(report_file_name(la, "primary", "pupil_funding_vs_fsm", yr, ".png"))
+    ggsave(report_file_name(la, st, "pupil_funding_vs_fsm", yr, ".png"))
   }
   plot
 }

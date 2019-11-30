@@ -59,3 +59,24 @@ plot_delegatedschoolbudgetsperpupil_per_school_type <- function(delegatedschoolb
   plot
 }
 
+tabulate_delegatedschoolbudgetsperpupil <- function(delegatedschoolbudgetsperpupil, school_type, save_to_file=FALSE) {
+  
+  st = school_type
+  table <- delegatedschoolbudgetsperpupil %>%
+    filter(if (!is.null(st)) school_type == st else is.na(school_type)) %>%
+    filter(local_authority != 'All') %>%
+    filter(year == LATEST_NUM_PUPILS_YEAR) %>%
+    mutate(delegated_school_budget_per_pupil_rank = rank(desc(delegated_school_budget_per_pupil))) %>%
+    mutate_at(c('delegated_school_budget_per_pupil'), round) %>%
+    select(-c(school_type, year)) %>%
+    rename("Local authority" = local_authority, "Delegated school budget per-pupil (2019-20)" = delegated_school_budget_per_pupil, "Delegated school budget per-pupil rank (2019-20)" = delegated_school_budget_per_pupil_rank)
+
+  dt <- datatable(table, rownames= FALSE, options = list(
+    pageLength = 100,
+    order = list(list(0, 'asc'))
+  ))
+  if (save_to_file) {
+    saveWidgetFix(dt, report_file_name(NULL, school_type, "delegated_school_budget_summary", NULL, ".html"), selfcontained = FALSE, libdir = "lib")
+  }
+  dt
+}

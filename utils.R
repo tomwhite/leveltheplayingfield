@@ -1,6 +1,6 @@
 # Constants and utility functions
 
-REPORTS_DIR = "~/projects-workspace/leveltheplayingfield/docs"
+REPORTS_DIR = "./docs"
 POSTS_DIR = paste0(REPORTS_DIR, "/posts")
 
 LOCAL_AUTHORITIES = c("Blaenau Gwent",
@@ -84,4 +84,17 @@ blog_post_file_name <- function(prefix, la, school_type, report_name, year, exte
     la <- standardise_la_name(la)
     paste0(POSTS_DIR, "/", prefix, "_", la, "_", st, "_", report_name, yr, extension)
   }
+}
+
+# From https://github.com/ramnathv/htmlwidgets/issues/299
+saveWidgetFix <- function (widget,file,...) {
+  ## A wrapper to saveWidget which compensates for arguable BUG in
+  ## saveWidget which requires `file` to be in current working
+  ## directory.
+  wd<-getwd()
+  on.exit(setwd(wd))
+  outDir<-dirname(file)
+  file<-basename(file)
+  setwd(outDir);
+  saveWidget(widget,file=file,...)
 }

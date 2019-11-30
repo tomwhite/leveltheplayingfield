@@ -98,7 +98,7 @@ map_support_categories_by_school_type <- function(schools_tidy, la = NULL, save_
     addLayersControl(overlayGroups = school_types, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, NULL, "support_category", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(la, NULL, "support_category", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -125,7 +125,7 @@ map_support_categories <- function(schools_tidy, la = NULL, save_to_file=FALSE) 
     addLayersControl(overlayGroups = support_category_factors, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, NULL, "support_category_alt", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(la, NULL, "support_category_alt", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -154,7 +154,7 @@ map_support_categories_by_local_authority <- function(secondaries_tidy_geo, scho
     addLayersControl(overlayGroups = las, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(NULL, school_type, "support_category_with_la", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(NULL, school_type, "support_category_with_la", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -179,7 +179,7 @@ map_outturn_surplus_or_deficit_by_year <- function(secondaries_tidy_geo_all_year
   map <- map %>%
     addLayersControl(baseGroups = years, options = layersControlOptions(collapsed = FALSE))
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, school_type, "outturn_surplus_or_deficit", NULL, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(la, school_type, "outturn_surplus_or_deficit", NULL, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -216,7 +216,7 @@ map_per_pupil_funding <- function(schools_tidy, school_type, la = NULL, save_to_
   map <- map %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, school_type, "per_pupil_funding", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(la, school_type, "per_pupil_funding", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -245,7 +245,7 @@ map_outturn_surplus_or_deficit_by_school_type <- function(schools_tidy, la = NUL
     addLayersControl(overlayGroups = school_types, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, NULL, "outturn_surplus_or_deficit", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(la, NULL, "outturn_surplus_or_deficit", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -273,7 +273,7 @@ map_outturn_surplus_or_deficit_by_local_authority <- function(schools_tidy, save
     addLayersControl(overlayGroups = las, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(NULL, NULL, "outturn_surplus_or_deficit_with_la", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(NULL, NULL, "outturn_surplus_or_deficit_with_la", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -302,7 +302,7 @@ map_outturn_surplus_or_deficit <- function(schools_tidy, la = NULL, save_to_file
     addLayersControl(overlayGroups = surplus_or_deficit_factors, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, NULL, "outturn_surplus_or_deficit_alt", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(la, NULL, "outturn_surplus_or_deficit_alt", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -333,7 +333,7 @@ map_occupancy_by_school_type <- function(schools_tidy, la = NULL, save_to_file=F
     addLayersControl(overlayGroups = school_types, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, NULL, "occupancy", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(la, NULL, "occupancy", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -363,7 +363,7 @@ map_occupancy_by_local_authority <- function(schools_tidy, save_to_file=FALSE) {
     addLayersControl(overlayGroups = las, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(NULL, NULL, "occupancy_with_la", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(NULL, NULL, "occupancy_with_la", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -393,7 +393,7 @@ map_occupancy <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
     addLayersControl(overlayGroups = occupancy_band_factors, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, NULL, "occupancy_alt", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(la, NULL, "occupancy_alt", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -421,7 +421,7 @@ map_language_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FA
     addLayersControl(overlayGroups = school_types, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, NULL, "language", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(la, NULL, "language", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -448,7 +448,7 @@ map_language_by_local_authority <- function(schools_tidy, save_to_file=FALSE) {
     addLayersControl(overlayGroups = las, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(NULL, NULL, "language_with_la", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(NULL, NULL, "language_with_la", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -475,7 +475,7 @@ map_language <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
     addLayersControl(overlayGroups = language_factors, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, NULL, "language_alt", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(la, NULL, "language_alt", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -495,7 +495,7 @@ map_rural_schools <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
     addMarkers(~longitude, ~latitude, popup = ~school, label=~school, icon=~rural_icons[rural_school]) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, report_file_name(la, NULL, "rural_schools", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, report_file_name(la, NULL, "rural_schools", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }

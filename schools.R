@@ -242,7 +242,7 @@ tabulate_num_pupils_summary <- function(schools_tidy, school_type, save_to_file=
     order = list(list(0, 'asc'))
   ))
   if (save_to_file) {
-    saveWidget(dt, report_file_name(NULL, school_type, "num_pupils_summary", NULL, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(dt, report_file_name(NULL, school_type, "num_pupils_summary", NULL, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   dt
 }
@@ -313,7 +313,7 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
     order = list(list(0, 'asc'))
   ))
   if (save_to_file) {
-    saveWidget(dt, report_file_name(NULL, school_type, "general_summary", NULL, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(dt, report_file_name(NULL, school_type, "general_summary", NULL, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   dt
 }
@@ -334,7 +334,7 @@ tabulate_occupancy_summary <- function(schools_tidy, save_to_file=FALSE) {
     order = list(list(0, 'asc'))
   ))
   if (save_to_file) {
-    saveWidget(dt, report_file_name(NULL, NULL, "occupancy_summary", NULL, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(dt, report_file_name(NULL, NULL, "occupancy_summary", NULL, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   dt
 }

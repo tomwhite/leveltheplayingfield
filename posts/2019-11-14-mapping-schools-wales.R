@@ -32,7 +32,7 @@ map_outturn_surplus_or_deficit_by_school_type_secondary_only <- function(schools
     hideGroup("special") %>%
     hideGroup("through")
   if (save_to_file) {
-    saveWidget(map, blog_post_file_name(PREFIX, la, NULL, "outturn_surplus_or_deficit", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, blog_post_file_name(PREFIX, la, NULL, "outturn_surplus_or_deficit", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -62,7 +62,7 @@ map_support_categories_by_school_type_secondary_only <- function(schools_tidy, l
     hideGroup("special") %>%
     hideGroup("through")
   if (save_to_file) {
-    saveWidget(map, blog_post_file_name(PREFIX, la, NULL, "support_category", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, blog_post_file_name(PREFIX, la, NULL, "support_category", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }

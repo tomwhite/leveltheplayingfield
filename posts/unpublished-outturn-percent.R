@@ -93,7 +93,7 @@ map_outturn_surplus_or_deficit_pct_by_local_authority_2_5 <- function(schools_ti
     addLayersControl(overlayGroups = las, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, blog_post_file_name(PREFIX, NULL, st, "outturn_surplus_or_deficit_with_la_2_5", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, blog_post_file_name(PREFIX, NULL, st, "outturn_surplus_or_deficit_with_la_2_5", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }
@@ -130,7 +130,7 @@ map_outturn_surplus_or_deficit_pct_by_local_authority_7_5 <- function(schools_ti
     addLayersControl(overlayGroups = las, options = layersControlOptions(collapsed = FALSE)) %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidget(map, blog_post_file_name(PREFIX, NULL, st, "outturn_surplus_or_deficit_with_la_7_5", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, blog_post_file_name(PREFIX, NULL, st, "outturn_surplus_or_deficit_with_la_7_5", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }

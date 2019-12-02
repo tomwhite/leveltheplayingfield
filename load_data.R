@@ -191,3 +191,30 @@ load_delegatedschoolbudgetsperpupil_data <- function(csv = "data/delegatedschool
 }
 
 delegatedschoolbudgetsperpupil <- load_delegatedschoolbudgetsperpupil_data()
+
+# Local authority outturn data
+
+load_outturn_data <- function(csv = "data/levelofreservescarriedforward-by-sector.csv") {
+  outturn_by_year <- read_csv("data/levelofreservescarriedforward-by-sector.csv") %>%
+    rename(country = X1) %>%
+    separate(X3, c("LA", "school_type"), " - ") %>% # split local authority from school type ('sector')
+    mutate(local_authority = ifelse(!is.na(LA), LA, ifelse(!is.na(X2), X2, 'All'))) %>% # X2 is local authority
+    select(-c(country, X2, LA)) %>%
+    na_if('.') %>% # dots are NA
+    gather(year, budget_outturn, -c(local_authority, school_type)) %>%
+    mutate_at(c("school_type"), tolower) %>%
+    mutate_at(c('budget_outturn'), as_numeric_ignore_commas) %>%
+    mutate_at(c('budget_outturn'), ~.*1000) # multiply to get values in £
+  
+  outturn_totals_by_year <- x %>% filter(!is.na(school_type)) %>%
+    group_by(year, school_type) %>%
+    summarize(budget_outturn = sum(budget_outturn)) %>%
+    filter(!is.na(budget_outturn)) %>%
+    mutate(local_authority = 'All')
+  
+  outturn_by_year %>% union(outturn_totals_by_year)
+}
+
+outturn_data <- load_outturn_data()
+
+

@@ -12,6 +12,7 @@ after the final part of the Stats Wales URL.
 * https://statswales.gov.wales/Catalogue/Population-and-Migration/Population/Estimates/Local-Authority/populationestimates-by-localauthority-year
 * https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Delegated-School-Budgets/delegatedschoolbudgetsperpupil-by-sector
 * https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Delegated-School-Outturn/levelofreservescarriedforward-by-sector
+* https://statswales.gov.wales/Catalogue/Education-and-Skills/Schools-and-Teachers/Schools-Census/Pupil-Level-Annual-School-Census/Pupils/pupils-by-localauthority-yeargroup-sector
 
 ### Address data
 

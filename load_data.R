@@ -217,4 +217,40 @@ load_outturn_data <- function(csv = "data/levelofreservescarriedforward-by-secto
 
 outturn_data <- load_outturn_data()
 
+# Load pupil numbers
+
+load_num_pupils_per_la_for_school_type_and_year <- function(school_type, year) {
+  st <- school_type
+  yr <- year
+  csv_file <- paste0("data/pupils-by-localauthority-yeargroup-sector-", school_type, "-", year, ".csv")
+  col_names <- names(read_csv(csv_file, n_max = 0))
+  read_csv(csv_file, col_names = col_names, skip = 2) %>%
+    rename(la = X1) %>%
+    mutate(local_authority = str_trim(str_extract(la, "[^(]+"))) %>% # remove training brackets, e.g. "Isle of Anglesey (1)" -> "Isle of Anglesey"
+    select(-c("la")) %>%
+    na_if('.') %>% # dots are NA
+    na_if('*') %>% # asterisks are NA
+    mutate_at(vars(-local_authority), as.numeric) %>%
+    mutate(num_pupils = select(., `Nursery 1`:`Year Group 14`) %>% apply(1, sum, na.rm=TRUE)) %>%
+    select(c('local_authority', 'num_pupils')) %>%
+    mutate(year = yr) %>%
+    mutate(school_type = st)
+}
+
+load_num_pupils_per_la <- function() {
+  df = NULL
+  for (yr in c("2011-12", "2012-13", "2013-14", "2014-15", "2015-16", "2016-17", "2017-18", "2018-19")) {
+    for (st in c("primary", "secondary")) {
+      x <- load_num_pupils_per_la_for_school_type_and_year(st, yr)
+      if (is.null(df)) {
+        df <- x
+      } else {
+        df = union(df, x)
+      }
+    }
+  }
+  df
+}
+
+num_pupils_per_la <- load_num_pupils_per_la()
 

@@ -246,7 +246,7 @@ load_outturn_data <- function(csv = "data/levelofreservescarriedforward-by-secto
     mutate_at(c('budget_outturn'), as_numeric_ignore_commas) %>%
     mutate_at(c('budget_outturn'), ~.*1000) # multiply to get values in £
   
-  outturn_totals_by_year <- x %>% filter(!is.na(school_type)) %>%
+  outturn_totals_by_year <- outturn_by_year %>% filter(!is.na(school_type)) %>%
     group_by(year, school_type) %>%
     summarize(budget_outturn = sum(budget_outturn)) %>%
     filter(!is.na(budget_outturn)) %>%

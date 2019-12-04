@@ -1,6 +1,7 @@
 source('load_data.R')
 source('delegation.R')
 source('maps.R')
+source('outturn.R')
 source('population.R')
 source('schools.R')
 
@@ -56,8 +57,8 @@ for (la in LOCAL_AUTHORITIES) {
   # School Finance
   plot_pupil_funding_vs_per_pupil_outturn(all_schools, 'primary', la, save_to_file = TRUE)
   map_outturn_surplus_or_deficit_by_school_type(all_schools, la, save_to_file = TRUE)
-  plot_per_pupil_outturn_vs_year(all_schools, 'primary', la, save_to_file = TRUE)
-  plot_per_pupil_outturn_vs_year(all_schools, 'secondary', la, save_to_file = TRUE)
+  plot_per_pupil_outturn_vs_year(outturn_data, 'primary', la, save_to_file = TRUE)
+  plot_per_pupil_outturn_vs_year(outturn_data, 'secondary', la, save_to_file = TRUE)
   
   # School Support Categories
   map_support_categories_by_school_type(all_schools, la, save_to_file = TRUE)

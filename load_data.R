@@ -193,40 +193,19 @@ load_delegatedschoolbudgetsperpupil_data <- function(csv = "data/delegatedschool
 delegatedschoolbudgetsperpupil <- load_delegatedschoolbudgetsperpupil_data()
 
 
-# Load pupil numbers
+# Load pupil numbers - note it's from the delegatedschoolbudgetsperpupil page
 
-load_num_pupils_per_la_for_school_type_and_year <- function(school_type, year) {
-  st <- school_type
-  yr <- year
-  csv_file <- paste0("data/pupils-by-localauthority-yeargroup-sector-", school_type, "-", year, ".csv")
-  col_names <- names(read_csv(csv_file, n_max = 0))
-  read_csv(csv_file, col_names = col_names, skip = 2) %>%
-    rename(la = X1) %>%
-    mutate(local_authority = str_trim(str_extract(la, "[^(]+"))) %>% # remove training brackets, e.g. "Isle of Anglesey (1)" -> "Isle of Anglesey"
-    mutate(local_authority = replace(local_authority, local_authority == "Wales", "All")) %>%
-    select(-c("la")) %>%
+load_num_pupils_per_la <- function(csv = "data/delegatedschoolbudgetsperpupil-by-sector-num-pupils.csv") {
+  read_csv(csv) %>%
+    rename(country = X1) %>%
+    separate(X3, c("LA", "school_type"), " - ") %>% # split local authority from school type ('sector')
+    mutate(local_authority = ifelse(!is.na(LA), LA, ifelse(!is.na(X2), X2, 'All'))) %>% # X2 is local authority
+    select(-c(country, X2, LA)) %>%
     na_if('.') %>% # dots are NA
-    na_if('*') %>% # asterisks are NA
-    mutate_at(vars(-local_authority), as.numeric) %>%
-    mutate(num_pupils = select(., `Nursery 1`:`Year Group 14`) %>% apply(1, sum, na.rm=TRUE)) %>%
-    select(c('local_authority', 'num_pupils')) %>%
-    mutate(year = yr) %>%
-    mutate(school_type = st)
-}
-
-load_num_pupils_per_la <- function() {
-  df = NULL
-  for (yr in c("2011-12", "2012-13", "2013-14", "2014-15", "2015-16", "2016-17", "2017-18", "2018-19")) {
-    for (st in c("primary", "secondary")) {
-      x <- load_num_pupils_per_la_for_school_type_and_year(st, yr)
-      if (is.null(df)) {
-        df <- x
-      } else {
-        df = union(df, x)
-      }
-    }
-  }
-  df
+    gather(year, num_pupils, -c(local_authority, school_type)) %>%
+    mutate_at(c("school_type"), tolower) %>%
+    mutate_at(c('num_pupils'), as_numeric_ignore_commas) %>%
+    mutate(num_pupils = round(num_pupils))
 }
 
 num_pupils_per_la <- load_num_pupils_per_la()

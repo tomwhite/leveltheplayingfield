@@ -1,14 +1,6 @@
 source('utils.R')
 
 plot_per_pupil_outturn_vs_year <- function(outturn_data, st, la, save_to_file=FALSE) {
-  # All Wales is black, LA is blue
-  all_wales_per_pupil_outturn <- outturn_data %>%
-    filter(school_type == st) %>%
-    filter(!is.na(budget_outturn)) %>%
-    filter(!is.na(num_pupils)) %>%
-    filter(year <= LATEST_OUTTURN_YEAR) %>%
-    filter(local_authority == 'All')
-  
   per_la_per_pupil_outturn <- outturn_data %>%
     filter(school_type == st) %>%
     filter(!is.na(budget_outturn)) %>%
@@ -20,11 +12,10 @@ plot_per_pupil_outturn_vs_year <- function(outturn_data, st, la, save_to_file=FA
     ggplot(aes(x=year, y=per_pupil_outturn, group=local_authority)) +
     geom_hline(yintercept = 0, color='red') +
     geom_line(alpha = 0.2) +
-    geom_line(data = all_wales_per_pupil_outturn, color = 'black') +
     geom_line(data = filter(per_la_per_pupil_outturn, local_authority == la), color='blue') +
     ylab("Per-pupil budget outturn (£)") + 
     labs(title = "Per-pupil budget outturn by year",
-         subtitle = paste0(la, " (blue) vs. Wales (black), ", st, " schools")) +
+         subtitle = paste0(la, " (blue), ", st, " schools")) +
     theme(axis.title.x=element_blank())
   if (save_to_file) {
     ggsave(report_file_name(la, st, "pupil_outturn_vs_year", NULL, ".png"))

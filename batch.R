@@ -85,6 +85,9 @@ tabulate_general_summary(all_schools, "special", save_to_file = TRUE)
 
 tabulate_occupancy_summary(all_schools, save_to_file = TRUE)
 
+tabulate_per_pupil_outturn(outturn_data, "primary", save_to_file = TRUE)
+tabulate_per_pupil_outturn(outturn_data, "secondary", save_to_file = TRUE)
+
 tabulate_delegatedschoolbudgetsperpupil(delegatedschoolbudgetsperpupil, NULL, save_to_file = TRUE)
 tabulate_delegatedschoolbudgetsperpupil(delegatedschoolbudgetsperpupil, "primary", save_to_file = TRUE)
 tabulate_delegatedschoolbudgetsperpupil(delegatedschoolbudgetsperpupil, "secondary", save_to_file = TRUE)

@@ -271,19 +271,8 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
     mutate(mean_rank = min_rank(mean)) %>%
     rename("Local authority" = local_authority, "Mean support category days (2018)" = mean, "Mean support category days rank (2018)" = mean_rank)
   
-  summary_per_pupil_outturn <- schools_tidy %>%
-    filter(!is.na(local_authority)) %>%
-    filter(!is.na(num_pupils)) %>%
-    filter(if (!is.null(st)) school_type == st else TRUE) %>%
-    filter(year == LATEST_OUTTURN_YEAR) %>%
-    group_by(local_authority) %>%
-    summarize(mean=round(mean(budget_outturn / num_pupils), 0)) %>%
-    mutate(mean_rank = rank(desc(mean))) %>%
-    rename("Local authority" = local_authority, "Mean per-pupil budget outturn (2018-19)" = mean, "Mean per-pupil budget outturn rank (2018-19)" = mean_rank)
-
   table <- summary_size %>%
-    left_join(summary_support_category) %>%
-    left_join(summary_per_pupil_outturn)
+    left_join(summary_support_category)
   
   # TODO: handle NAs in fit?
   # if (is.null(st) || (st != 'through' && st != 'special')) {

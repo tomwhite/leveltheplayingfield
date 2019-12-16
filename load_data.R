@@ -1,5 +1,7 @@
 # Import and tidy all datasets
 
+library(tidyverse)
+
 source('utils.R')
 
 load_google_sheet_locally <- function(title) {

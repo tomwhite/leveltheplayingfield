@@ -194,6 +194,42 @@ plot_school_vs_budget_outturn_change <- function(schools_tidy, st, la, save_to_f
   plot
 }
 
+plot_size_vs_fsm <- function(schools_tidy, st, la, save_to_file=FALSE) {
+  yr = LATEST_NUM_PUPILS_YEAR
+  schools_tidy_filtered <- schools_tidy %>%
+    filter(year == yr) %>%
+    filter(school_type == st) %>%
+    filter(!is.na(per_pupil_funding))
+  q <- quantile(schools_tidy_filtered$per_pupil_funding)
+  q1 <- format_gbp(round(q[['25%']], 0))
+  q2 <- format_gbp(round(q[['50%']], 0))
+  q3 <- format_gbp(round(q[['75%']], 0))
+  
+  SCHOOL_SIZE_QUARTILE_COLOURS = c("q1" = "#C92D43", "q2" = "#757575", "q3" = "#757575", "q4" = "#9A25C8")
+  
+  plot <- schools_tidy %>%
+    filter(!is.na(local_authority)) %>%
+    filter(if (!is.null(st)) school_type == st else TRUE) %>%
+    filter(if (!is.null(la)) local_authority == la else TRUE) %>%
+    filter(year == LATEST_FSM_YEAR) %>%
+    filter(!is.na(num_pupils)) %>%
+    filter(!is.na(fsm_rate)) %>%
+    mutate(per_pupil_funding_band = cut(per_pupil_funding, breaks=c(-Inf, q[['25%']], q[['50%']], q[['75%']], Inf), labels=c("q1","q2", "q3", "q4"))) %>%
+    ggplot(aes(num_pupils, fsm_rate, color = per_pupil_funding_band)) +
+    geom_point() +
+    scale_x_continuous(breaks = seq(0, 700, 30), minor_breaks = NULL, limits = c(0, 700)) +
+    scale_y_continuous(breaks = seq(0, 70, 10), minor_breaks = NULL, limits = c(0, 75)) +
+    scale_colour_manual(values = SCHOOL_SIZE_QUARTILE_COLOURS) + 
+    xlab("Number of pupils") +
+    ylab("Percentage of pupils on free school meals") +
+    labs(title = "Distribution of school size and free school meals",
+         subtitle = paste0(if (!is.null(la)) la else "Wales", " ", st, " schools"))
+  if (save_to_file) {
+    ggsave(report_file_name(la, st, "size_vs_fsm", LATEST_FSM_YEAR, ".png"))
+  }  
+  plot
+}
+
 tabulate_num_pupils_summary <- function(schools_tidy, school_type, save_to_file=FALSE) {
   # summary of min, max, mean, median number of pupils per LA per year
   table <- schools_tidy %>%

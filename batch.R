@@ -96,6 +96,7 @@ tabulate_delegatedschoolbudgetsperpupil(delegatedschoolbudgetsperpupil, "seconda
 # Charts
 plot_summary_size_distribution(all_schools, "primary", save_to_file = TRUE)
 plot_summary_size_distribution(all_schools, "secondary", save_to_file = TRUE)
+plot_size_vs_fsm(all_schools, "primary", NULL, save_to_file = TRUE)
 
 # Maps
 map_support_categories_by_local_authority(all_schools, 'secondary', save_to_file = TRUE)
@@ -110,6 +111,7 @@ for (la in LOCAL_AUTHORITIES) {
   plot_pupil_funding_vs_year(primary_schools, la, save_to_file = TRUE)
   plot_school_funding_vs_size(primary_schools, la, save_to_file = TRUE)
   plot_pupil_funding_vs_outturn(primary_schools, la, save_to_file = TRUE)
+  plot_size_vs_fsm(all_schools, "primary", la, save_to_file = TRUE)
 }
 
 for (la in LOCAL_AUTHORITIES) {

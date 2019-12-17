@@ -57,7 +57,8 @@ with open("docs/la_table.html", "w") as la_table:
         la_table.write('<td>{}</td>\n'.format(pretty(la)))
         for type in ('_primary_pupil_funding_vs_outturn_{}.png'.format(LATEST_OUTTURN_YEAR),
                      '_primary_pupil_funding_vs_year.png',
-                     '_primary_school_funding_vs_size_{}.png'.format(LATEST_NUM_PUPILS_YEAR)):
+                     '_primary_school_funding_vs_size_{}.png'.format(LATEST_NUM_PUPILS_YEAR),
+                     '_primary_size_vs_fsm_{}.png'.format(LATEST_FSM_YEAR)):
             la_table.write('<td><a href="local_authorities/{}/{}{}"><img src="local_authorities/{}/{}{}" width="250" height="250"></a></td>\n'.format(la, la, type, la, la, type))
         la_table.write('</tr>\n')
     la_table.write("""

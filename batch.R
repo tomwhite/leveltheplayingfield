@@ -2,6 +2,7 @@ source('load_data.R')
 source('delegation.R')
 source('maps.R')
 source('outturn.R')
+source('peers.R')
 source('population.R')
 source('schools.R')
 
@@ -92,6 +93,8 @@ tabulate_per_pupil_outturn(outturn_data, "secondary", save_to_file = TRUE)
 tabulate_delegatedschoolbudgetsperpupil(delegatedschoolbudgetsperpupil, NULL, save_to_file = TRUE)
 tabulate_delegatedschoolbudgetsperpupil(delegatedschoolbudgetsperpupil, "primary", save_to_file = TRUE)
 tabulate_delegatedschoolbudgetsperpupil(delegatedschoolbudgetsperpupil, "secondary", save_to_file = TRUE)
+
+tabulate_per_pupil_funding_peers_summary(all_schools, 'primary', save_to_file = TRUE)
 
 # Charts
 plot_summary_size_distribution(all_schools, "primary", save_to_file = TRUE)

@@ -15,7 +15,7 @@ get_filled_in_fsm_rate <- function(schools_tidy, st, la) {
     filter(!is.na(fsm_rate))
 }
 
-plot_size_vs_fsm <- function(schools_tidy, st, la, save_to_file=FALSE) {
+plot_size_vs_fsm <- function(schools_tidy, st, la, save_to_file=FALSE, num_pupils_bin_size=30, num_pupils_limit=700) {
   yr = LATEST_NUM_PUPILS_YEAR
   schools_tidy_filtered <- schools_tidy %>%
     filter(year == yr) %>%
@@ -30,9 +30,9 @@ plot_size_vs_fsm <- function(schools_tidy, st, la, save_to_file=FALSE) {
   
   plot <- get_filled_in_fsm_rate(schools_tidy, st, la) %>%
     mutate(per_pupil_funding_band = cut(per_pupil_funding, breaks=c(-Inf, q[['25%']], q[['50%']], q[['75%']], Inf), labels=c("q1","q2", "q3", "q4"))) %>%
-    ggplot(aes(num_pupils, fsm_rate, color = per_pupil_funding_band)) +
+    ggplot(aes(num_pupils, fsm_rate, color = per_pupil_funding_band, text = paste0(format_gbp(per_pupil_funding), ", ", local_authority, ", ", school))) +
     geom_point() +
-    scale_x_continuous(breaks = seq(0, 700, 30), minor_breaks = NULL, limits = c(0, 700)) +
+    scale_x_continuous(breaks = seq(0, num_pupils_limit, num_pupils_bin_size), minor_breaks = NULL, limits = c(0, num_pupils_limit)) +
     scale_y_continuous(breaks = seq(0, 70, 10), minor_breaks = NULL, limits = c(0, 75)) +
     scale_colour_manual(values = SCHOOL_SIZE_QUARTILE_COLOURS) + 
     xlab("Number of pupils") +
@@ -148,3 +148,20 @@ map_per_pupil_funding_peers <- function(schools_tidy, school_type, num_pupils_ba
   }
   map
 }
+
+plotly_test <- function() {
+  library(shiny)
+  library(ggplot2)
+  library(plotly)
+  
+  plot <- plot_size_vs_fsm(all_schools, "secondary", NULL, save_to_file = FALSE, num_pupils_bin_size=100, num_pupils_limit=2000)
+  ui <- fluidPage(
+    plotlyOutput("distPlot")
+  )
+  server <- function(input, output) {
+    output$distPlot <- renderPlotly(plot)
+  }
+  shinyApp(ui = ui, server = server)
+}
+
+#plotly_test()

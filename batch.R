@@ -99,7 +99,8 @@ tabulate_per_pupil_funding_peers_summary(all_schools, 'primary', save_to_file = 
 # Charts
 plot_summary_size_distribution(all_schools, "primary", save_to_file = TRUE)
 plot_summary_size_distribution(all_schools, "secondary", save_to_file = TRUE)
-plot_size_vs_fsm(all_schools, "primary", NULL, save_to_file = TRUE)
+plot_size_vs_fsm_interactive(all_schools, "primary", NULL, save_to_file = TRUE)
+plot_size_vs_fsm_interactive(all_schools, "secondary", NULL, save_to_file = TRUE, num_pupils_bin_size=100, num_pupils_limit=2000)
 
 # Maps
 map_support_categories_by_local_authority(all_schools, 'secondary', save_to_file = TRUE)

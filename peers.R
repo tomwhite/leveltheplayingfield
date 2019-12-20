@@ -45,6 +45,18 @@ plot_size_vs_fsm <- function(schools_tidy, st, la, save_to_file=FALSE, num_pupil
   plot
 }
 
+plot_size_vs_fsm_interactive <- function(schools_tidy, st, la, save_to_file=FALSE, num_pupils_bin_size=30, num_pupils_limit=700) {
+  library(plotly)
+  
+  yr = LATEST_NUM_PUPILS_YEAR
+  plot <- plot_size_vs_fsm(all_schools, st, la, save_to_file = FALSE, num_pupils_bin_size=num_pupils_bin_size, num_pupils_limit=num_pupils_limit) %>%
+    ggplotly()
+  if (save_to_file) {
+    saveWidgetFix(plot, report_file_name(la, st, "size_vs_fsm", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+  }
+  plot
+}
+
 tabulate_per_pupil_funding_peers_summary <- function(schools_tidy, school_type, save_to_file=FALSE) {
   yr = LATEST_NUM_PUPILS_YEAR
   st <- school_type
@@ -148,20 +160,3 @@ map_per_pupil_funding_peers <- function(schools_tidy, school_type, num_pupils_ba
   }
   map
 }
-
-plotly_test <- function() {
-  library(shiny)
-  library(ggplot2)
-  library(plotly)
-  
-  plot <- plot_size_vs_fsm(all_schools, "secondary", NULL, save_to_file = FALSE, num_pupils_bin_size=100, num_pupils_limit=2000)
-  ui <- fluidPage(
-    plotlyOutput("distPlot")
-  )
-  server <- function(input, output) {
-    output$distPlot <- renderPlotly(plot)
-  }
-  shinyApp(ui = ui, server = server)
-}
-
-#plotly_test()

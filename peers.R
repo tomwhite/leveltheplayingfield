@@ -58,6 +58,7 @@ tabulate_per_pupil_funding_peers_summary <- function(schools_tidy, school_type, 
               max_school = school[which(per_pupil_funding == max(per_pupil_funding))],
               gini = round(Gini(per_pupil_funding), 2)) %>%
     mutate(Map = paste0("https://tomwhite.github.io/leveltheplayingfield/wales/", st, "_map_per_pupil_funding_peers_", num_pupils_bin, "_", fsm_rate_bin, "_", LATEST_NUM_PUPILS_YEAR, ".html")) %>%
+    mutate(Table = paste0("https://tomwhite.github.io/leveltheplayingfield/wales/", st, "_per_pupil_funding_peers_", num_pupils_bin, "_", fsm_rate_bin, "_", LATEST_NUM_PUPILS_YEAR, ".html")) %>%
     rename("Num pupils group" = num_pupils_bin,
            "FSM rate group" = fsm_rate_bin,
            "Num schools" = n,
@@ -72,6 +73,9 @@ tabulate_per_pupil_funding_peers_summary <- function(schools_tidy, school_type, 
   
   # Create one map per row
   by(table, 1:nrow(table), function(row) map_per_pupil_funding_peers(all_schools, st, row$`Num pupils group`, row$`FSM rate group`, save_to_file = TRUE))
+
+  # Create one table per row
+  by(table, 1:nrow(table), function(row) tabulate_per_pupil_funding_peers(all_schools, st, row$`Num pupils group`, row$`FSM rate group`, save_to_file = TRUE))
   
   dt <- datatable(table, rownames= FALSE, options = list(
     pageLength = 200,
@@ -79,6 +83,33 @@ tabulate_per_pupil_funding_peers_summary <- function(schools_tidy, school_type, 
   ))
   if (save_to_file) {
     saveWidgetFix(dt, report_file_name(NULL, school_type, "per_pupil_funding_peers_summary", NULL, ".html"), selfcontained = FALSE, libdir = "lib")
+  }
+  dt
+}
+
+tabulate_per_pupil_funding_peers <- function(schools_tidy, school_type, num_pupils_band, fsm_rate_band, save_to_file=FALSE) {
+  yr = LATEST_NUM_PUPILS_YEAR
+  st = school_type
+  schools_subset_one_bin <- schools_tidy %>%
+    filter(!is.na(local_authority)) %>%
+    filter(if (!is.null(st)) school_type == st else TRUE) %>%
+    filter(year == LATEST_FSM_YEAR) %>%
+    filter(!is.na(num_pupils)) %>%
+    filter(!is.na(fsm_rate)) %>%
+    mutate(num_pupils_bin = cut_width(num_pupils, width = 30, center = 15, closed="left")) %>%
+    mutate(fsm_rate_bin = cut_width(fsm_rate, width = 10, center = 5, closed="left")) %>%
+    filter(num_pupils_bin == num_pupils_band) %>%
+    filter(fsm_rate_bin == fsm_rate_band) %>%
+    select(-c(rural_school, year, size, support_category, support_category_days, latitude, longitude, school_type))
+  schools_subset_one_bin$per_pupil_funding_band <- cut(schools_subset_one_bin$per_pupil_funding, breaks=c(-Inf, q[['25%']], q[['50%']], q[['75%']], Inf), labels=c("q1","q2", "q3", "q4"))
+  
+  table <- schools_subset_one_bin
+  dt <- datatable(table, rownames= FALSE, options = list(
+    pageLength = 200,
+    order = list(list(0, 'asc'))
+  ))
+  if (save_to_file) {
+    saveWidgetFix(dt, report_file_name(NULL, school_type, paste0("per_pupil_funding_peers_", num_pupils_band, "_", fsm_rate_band), yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   dt
 }

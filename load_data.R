@@ -105,6 +105,7 @@ tidy_raw_data <- function(schools_raw) {
     rename_all(gsub, pattern = '^Per pupil funding (20.+)$', replacement = 'per_pupil_funding#\\1') %>%
     rename_all(gsub, pattern = '^Budget outturn (20.+)$', replacement = 'budget_outturn#\\1') %>%
     rename_all(gsub, pattern = '^FSM rate 2018$', replacement = 'fsm_rate#2018-19') %>% # assume 2018 is 2018-19
+    rename_all(gsub, pattern = '^FSM rate 2019$', replacement = 'fsm_rate#2019-20') %>% # assume 2019 is 2019-20
     rename_all(gsub, pattern = '^Support category (20.+)$', replacement = 'support_category#\\1') %>%
     select(-starts_with('X')) %>% # drop any extra X columns
     filter(!is.na(school)) %>% # drop rows with no school name

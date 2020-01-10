@@ -26,15 +26,16 @@ plot_size_vs_fsm <- function(schools_tidy, st, la, save_to_file=FALSE, num_pupil
   q2 <- format_gbp(round(q[['50%']], 0))
   q3 <- format_gbp(round(q[['75%']], 0))
   
-  SCHOOL_SIZE_QUARTILE_COLOURS = c("q1" = "#C92D43", "q2" = "#757575", "q3" = "#757575", "q4" = "#9A25C8")
+  SCHOOL_SIZE_QUARTILE_COLOURS = c("#C92D43", "#757575", "#757575", "#9A25C8")
+  SCHOOL_SIZE_QUARTILE_LABELS = c(str_interp("<${q1}"), str_interp("${q1} - ${q2}"), str_interp("${q2} - ${q3}"), str_interp(">${q3}"))
   
   plot <- get_filled_in_fsm_rate(schools_tidy, st, la) %>%
-    mutate(per_pupil_funding_band = cut(per_pupil_funding, breaks=c(-Inf, q[['25%']], q[['50%']], q[['75%']], Inf), labels=c("q1","q2", "q3", "q4"))) %>%
+    mutate(per_pupil_funding_band = cut(per_pupil_funding, breaks=c(-Inf, q[['25%']], q[['50%']], q[['75%']], Inf), labels = SCHOOL_SIZE_QUARTILE_LABELS)) %>%
     ggplot(aes(num_pupils, fsm_rate, color = per_pupil_funding_band, text = paste0(format_gbp(per_pupil_funding), ", ", local_authority, ", ", school))) +
     geom_point() +
     scale_x_continuous(breaks = seq(0, num_pupils_limit, num_pupils_bin_size), minor_breaks = NULL, limits = c(0, num_pupils_limit)) +
     scale_y_continuous(breaks = seq(0, 70, 10), minor_breaks = NULL, limits = c(0, 75)) +
-    scale_colour_manual(values = SCHOOL_SIZE_QUARTILE_COLOURS) + 
+    scale_colour_manual("Per-pupil funding (£)", values = SCHOOL_SIZE_QUARTILE_COLOURS) + 
     xlab("Number of pupils") +
     ylab("Percentage of pupils on free school meals") +
     labs(title = "Distribution of school size and free school meals (2019-20)",

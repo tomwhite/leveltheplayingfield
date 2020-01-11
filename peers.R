@@ -22,12 +22,14 @@ plot_size_vs_fsm <- function(schools_tidy, st, la, save_to_file=FALSE, num_pupil
     filter(school_type == st) %>%
     filter(!is.na(per_pupil_funding))
   q <- quantile(schools_tidy_filtered$per_pupil_funding)
+  q0 <- format_gbp(round(q[['0%']], 0))
   q1 <- format_gbp(round(q[['25%']], 0))
   q2 <- format_gbp(round(q[['50%']], 0))
   q3 <- format_gbp(round(q[['75%']], 0))
+  q4 <- format_gbp(round(q[['100%']], 0))
   
-  SCHOOL_SIZE_QUARTILE_COLOURS = c("#C92D43", "#757575", "#757575", "#9A25C8")
-  SCHOOL_SIZE_QUARTILE_LABELS = c(str_interp("<${q1}"), str_interp("${q1} - ${q2}"), str_interp("${q2} - ${q3}"), str_interp(">${q3}"))
+  SCHOOL_SIZE_QUARTILE_COLOURS = c("#C92D43", "#999999", "#757575", "#9A25C8")
+  SCHOOL_SIZE_QUARTILE_LABELS = c(str_interp("${q0} - ${q1}"), str_interp("${q1} - ${q2}"), str_interp("${q2} - ${q3}"), str_interp("${q3} - ${q4}"))
   
   plot <- get_filled_in_fsm_rate(schools_tidy, st, la) %>%
     mutate(per_pupil_funding_band = cut(per_pupil_funding, breaks=c(-Inf, q[['25%']], q[['50%']], q[['75%']], Inf), labels = SCHOOL_SIZE_QUARTILE_LABELS)) %>%

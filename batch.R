@@ -32,7 +32,7 @@ map_support_categories_by_local_authority(all_schools, NULL, save_to_file = TRUE
 map_support_categories(all_schools, NULL, save_to_file = TRUE)
 
 # FSM Rates
-map_fsm_by_local_authority(all_schools, NULL, save_to_file = TRUE)
+map_fsm_by_local_authority(all_schools, save_to_file = TRUE)
 
 # Welsh Language Provision
 map_language_by_local_authority(all_schools, save_to_file = TRUE)

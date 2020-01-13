@@ -31,6 +31,9 @@ map_support_categories_by_school_type(all_schools, NULL, save_to_file = TRUE)
 map_support_categories_by_local_authority(all_schools, NULL, save_to_file = TRUE)
 map_support_categories(all_schools, NULL, save_to_file = TRUE)
 
+# FSM Rates
+map_fsm_by_local_authority(all_schools, NULL, save_to_file = TRUE)
+
 # Welsh Language Provision
 map_language_by_local_authority(all_schools, save_to_file = TRUE)
 map_language_by_school_type(all_schools, NULL, save_to_file = TRUE)
@@ -68,6 +71,7 @@ for (la in LOCAL_AUTHORITIES) {
   
   # FSM Rates
   plot_pupil_funding_vs_fsm(all_schools, 'primary', la, save_to_file = TRUE)
+  map_fsm_by_school_type(all_schools, la, save_to_file = TRUE)
   
   # Welsh Language Provision
   map_language_by_school_type(all_schools, la, save_to_file = TRUE)

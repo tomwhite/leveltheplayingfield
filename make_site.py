@@ -84,7 +84,7 @@ with open("docs/index.html", "w") as la_table:
         <th colspan="6">School Funding</th>
         <th colspan="4">School Finance</th>
         <th colspan="3">School Support Categories</th>
-        <th colspan="1">FSM Rates</th>
+        <th colspan="2">FSM Rates</th>
         <th colspan="1">Welsh Language Provision</th>
     </tr>
 
@@ -112,6 +112,7 @@ with open("docs/index.html", "w") as la_table:
         <th>Sec</th>
 
         <th>Chart</th>
+        <th>Map</th>
 
         <th>Map</th>
     </tr>
@@ -140,6 +141,7 @@ with open("docs/index.html", "w") as la_table:
         <td>-</td>
 
         <td>-</td>
+        <td>-</td>
 
         <td><a href="wales/all_schools_language_2018-19.html">Y</a> (<a href="wales/all_schools_language_alt_2018-19.html">alt</a>)</td>
     </tr>
@@ -167,6 +169,7 @@ with open("docs/index.html", "w") as la_table:
         <td>-</td>
 
         <td>-</td>
+        <td><a href="wales/all_schools_fsm_with_la_2018-19.html">Y</a></td>
 
         <td><a href="wales/all_schools_language_with_la_2018-19.html">Y</a></td>
     </tr>
@@ -197,6 +200,7 @@ with open("docs/index.html", "w") as la_table:
         <td><a href="{}">Y</a></td>
 
         <td><a href="{}">Y</a></td>
+        <td><a href="{}">Y</a></td>
 
         <td><a href="{}">Y</a></td>
     </tr>
@@ -223,6 +227,7 @@ with open("docs/index.html", "w") as la_table:
            "local_authorities/{}/{}_secondary_support_category_vs_year.png".format(la, la),
 
            "local_authorities/{}/{}_primary_pupil_funding_vs_fsm_{}.png".format(la, la, LATEST_FSM_YEAR),
+           "local_authorities/{}/{}_all_schools_fsm_{}.html".format(la, la, LATEST_FSM_YEAR),
 
            "local_authorities/{}/{}_all_schools_language_{}.html".format(la, la, LATEST_YEAR)))
 

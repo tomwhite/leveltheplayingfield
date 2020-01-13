@@ -75,6 +75,18 @@ rural_icons <- iconList(
 )
 rural_palette <- colorFactor(c("green", "blue"), domain = rural_factors, ordered = TRUE)
 
+# FSM bands
+fsm_band_factors <- c("<10%", "10-20%", "20-30%", "30-40%", "40-50%", ">50%")
+fsm_band_icons <- iconList(
+  '<10%' = make_coloured_icon('black'),
+  '10-20%' = make_coloured_icon('grey'),
+  '20-30%' = make_coloured_icon('blue'),
+  '30-40%' = make_coloured_icon('yellow'),
+  '40-50%' = make_coloured_icon('orange'),
+  '>50%' = make_coloured_icon('red')
+)
+fsm_band_palette <- colorFactor(c("black", "grey", "blue", "yellow", "orange", "red"), domain = fsm_band_factors, ordered = TRUE)
+
 map_support_categories_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
   yr = LATEST_SUPPORT_CATEGORY_YEAR
   html_legend <- "Support Category</br>
@@ -496,6 +508,73 @@ map_rural_schools <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
     addControl(html = html_legend)
   if (save_to_file) {
     saveWidgetFix(map, report_file_name(la, NULL, "rural_schools", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+  }
+  map
+}
+
+map_fsm_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
+  yr = LATEST_FSM_YEAR
+  html_legend <- "FSM rate</br>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png' width='12' height='20'>&lt;10%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png' width='12' height='20'>10-20%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png' width='12' height='20'>20-30%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png' width='12' height='20'>30-40%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png' width='12' height='20'>40-50%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>&gt;50%"
+  schools_tidy_filtered <- schools_tidy %>%
+    filter(if (!is.null(la)) local_authority == la else TRUE) %>%
+    filter(year == yr) %>%
+    filter(!is.na(fsm_rate)) %>% # drop rows with no FSM
+    mutate(fsm_band = cut(fsm_rate, breaks=c(-Inf, 10, 20, 30, 40, 50, Inf), labels=fsm_band_factors))
+  school_types <- as.character(unique(schools_tidy_filtered$school_type))
+  map <- schools_tidy_filtered %>%
+    leaflet() %>%
+    addTiles()
+  for (st in school_types) {
+    d = schools_tidy_filtered[schools_tidy_filtered$school_type == st,]
+    map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste0(school, ', ', round(fsm_rate, 1), '%'), icon=~fsm_band_icons[fsm_band], group = st)
+  }
+  map <- map %>%
+    addLayersControl(overlayGroups = school_types, options = layersControlOptions(collapsed = FALSE)) %>%
+    addControl(html = html_legend)
+  if (save_to_file) {
+    saveWidgetFix(map, report_file_name(la, NULL, "fsm", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+  }
+  map
+}
+
+map_fsm_by_local_authority <- function(schools_tidy, save_to_file=FALSE) {
+  yr = LATEST_FSM_YEAR
+  html_legend <- "FSM rate</br>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-black.png' width='12' height='20'>&lt;10%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png' width='12' height='20'>10-20%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png' width='12' height='20'>20-30%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-yellow.png' width='12' height='20'>30-40%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png' width='12' height='20'>40-50%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>&gt;50%"
+  schools_tidy_filtered <- schools_tidy %>%
+    filter(year == yr) %>%
+    filter(!is.na(num_pupils)) %>% # drop rows with no num_pupils
+    filter(!is.na(capacity)) %>% # drop rows with no capacity
+    mutate(occupancy = 100.0 * num_pupils / capacity) %>%
+    mutate(occupancy_band = cut(occupancy, breaks=c(-Inf, 50, 75, 100, Inf), labels=c("<50%","50-75%", "75-100%", ">100%")))
+  schools_tidy_filtered <- schools_tidy %>%
+    filter(year == yr) %>%
+    filter(!is.na(fsm_rate)) %>% # drop rows with no FSM
+    mutate(fsm_band = cut(fsm_rate, breaks=c(-Inf, 10, 20, 30, 40, 50, Inf), labels=fsm_band_factors))
+  las <- as.character(unique(schools_tidy$local_authority))
+  map <- schools_tidy_filtered %>%
+    leaflet() %>%
+    addTiles()
+  for (la in las) {
+    d = schools_tidy_filtered[schools_tidy_filtered$local_authority == la,]
+    map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste0(school, ', ', round(fsm_rate, 1), '%'), icon=~fsm_band_icons[fsm_band], group = la)
+  }
+  map <- map %>%
+    addLayersControl(overlayGroups = las, options = layersControlOptions(collapsed = FALSE)) %>%
+    addControl(html = html_legend)
+  if (save_to_file) {
+    saveWidgetFix(map, report_file_name(NULL, NULL, "fsm_with_la", yr, ".html"), selfcontained = FALSE, libdir = "lib")
   }
   map
 }

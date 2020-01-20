@@ -38,7 +38,7 @@ map_schools_with_idle_funds <- function(schools_tidy, school_type, save_to_file=
     addTiles()
   for (la in las) {
     d = schools_tidy_filtered[schools_tidy_filtered$local_authority == la,]
-    map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste0(school, ', ', round(budget_outturn_pct_of_delegated_budget, 1), "%"), icon=~idle_funds_icons[budget_outturn_pct_band], group = la)
+    map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste0(school, ', ', round(budget_outturn_pct_of_delegated_budget, 1), '%', ', ', format_gbp(budget_outturn), '/', format_gbp(total_school_delegated_budget)), icon=~idle_funds_icons[budget_outturn_pct_band], group = la)
   }
   map <- map %>%
     addLayersControl(overlayGroups = las, options = layersControlOptions(collapsed = FALSE)) %>%

@@ -109,9 +109,7 @@ plot_pupil_funding_vs_fsm <- function(schools_tidy, st, la, save_to_file=FALSE) 
     filter(local_authority == la) %>%
     filter(year == yr)
   coef <- cor(x$fsm_rate, x$per_pupil_funding, method = "pearson", use = "complete.obs")
-  plot = schools_tidy %>%
-    filter(local_authority == la) %>%
-    filter(year == yr) %>%
+  plot = x %>%
     ggplot(aes(x=fsm_rate, y=per_pupil_funding)) +
     geom_point(aes(color=size, size=num_pupils_on_fsm)) +
     geom_smooth(method=lm) +

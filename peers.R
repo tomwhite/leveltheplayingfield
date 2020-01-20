@@ -81,7 +81,7 @@ tabulate_per_pupil_funding_peers_summary <- function(schools_tidy, school_type, 
     mutate(Map = paste0("https://tomwhite.github.io/leveltheplayingfield/wales/", st, "_map_per_pupil_funding_peers_", num_pupils_bin, "_", fsm_rate_bin, "_", yr, ".html")) %>%
     mutate(Table = paste0("https://tomwhite.github.io/leveltheplayingfield/wales/", st, "_per_pupil_funding_peers_", num_pupils_bin, "_", fsm_rate_bin, "_", yr, ".html")) %>%
     rename("Num pupils group (2019-20)" = num_pupils_bin,
-           "FSM rate group (2018-19)" = fsm_rate_bin,
+           "FSM rate group (2019-20)" = fsm_rate_bin,
            "Num schools" = n,
            "Min PPF (2019-20)" = min_per_pupil_funding,
            "Max PPF" = max_per_pupil_funding,
@@ -93,10 +93,10 @@ tabulate_per_pupil_funding_peers_summary <- function(schools_tidy, school_type, 
            "Gini coefficient" = gini)
   
   # Create one map per row
-  by(table, 1:nrow(table), function(row) map_per_pupil_funding_peers(all_schools, st, row$`Num pupils group (2019-20)`, row$`FSM rate group (2018-19)`, save_to_file = TRUE))
+  by(table, 1:nrow(table), function(row) map_per_pupil_funding_peers(all_schools, st, row$`Num pupils group (2019-20)`, row$`FSM rate group (2019-20)`, save_to_file = TRUE))
 
   # Create one table per row
-  by(table, 1:nrow(table), function(row) tabulate_per_pupil_funding_peers(all_schools, st, row$`Num pupils group (2019-20)`, row$`FSM rate group (2018-19)`, save_to_file = TRUE))
+  by(table, 1:nrow(table), function(row) tabulate_per_pupil_funding_peers(all_schools, st, row$`Num pupils group (2019-20)`, row$`FSM rate group (2019-20)`, save_to_file = TRUE))
   
   dt <- datatable(table, rownames= FALSE, options = list(
     pageLength = 200,
@@ -111,6 +111,11 @@ tabulate_per_pupil_funding_peers_summary <- function(schools_tidy, school_type, 
 tabulate_per_pupil_funding_peers <- function(schools_tidy, school_type, num_pupils_band, fsm_rate_band, save_to_file=FALSE) {
   yr = LATEST_NUM_PUPILS_YEAR
   st = school_type
+  schools_tidy_filtered <- schools_tidy %>%
+    filter(year == yr) %>%
+    filter(school_type == st) %>%
+    filter(!is.na(per_pupil_funding))
+  q <- quantile(schools_tidy_filtered$per_pupil_funding)
   schools_subset_one_bin <- get_filled_in_fsm_rate(schools_tidy, st, NULL) %>%
     mutate(num_pupils_bin = cut_width(num_pupils, width = 30, center = 15, closed="left")) %>%
     mutate(fsm_rate_bin = cut_width(fsm_rate, width = 10, center = 5, closed="left")) %>%

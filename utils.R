@@ -30,7 +30,7 @@ LATEST_YEAR = '2018-19'
 LATEST_NUM_PUPILS_YEAR = '2019-20'
 LATEST_OUTTURN_YEAR = '2018-19'
 LATEST_SUPPORT_CATEGORY_YEAR = '2018'
-LATEST_FSM_YEAR = '2018-19'
+LATEST_FSM_YEAR = '2019-20'
 
 round_df <- function(x, digits) {
   # round all numeric variables

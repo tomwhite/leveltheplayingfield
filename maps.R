@@ -554,12 +554,6 @@ map_fsm_by_local_authority <- function(schools_tidy, save_to_file=FALSE) {
   <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png' width='12' height='20'>&gt;50%"
   schools_tidy_filtered <- schools_tidy %>%
     filter(year == yr) %>%
-    filter(!is.na(num_pupils)) %>% # drop rows with no num_pupils
-    filter(!is.na(capacity)) %>% # drop rows with no capacity
-    mutate(occupancy = 100.0 * num_pupils / capacity) %>%
-    mutate(occupancy_band = cut(occupancy, breaks=c(-Inf, 50, 75, 100, Inf), labels=c("<50%","50-75%", "75-100%", ">100%")))
-  schools_tidy_filtered <- schools_tidy %>%
-    filter(year == yr) %>%
     filter(!is.na(fsm_rate)) %>% # drop rows with no FSM
     mutate(fsm_band = cut(fsm_rate, breaks=c(-Inf, 10, 20, 30, 40, 50, Inf), labels=fsm_band_factors))
   las <- as.character(unique(schools_tidy$local_authority))

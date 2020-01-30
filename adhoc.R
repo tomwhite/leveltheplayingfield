@@ -245,3 +245,30 @@ population_with_age %>%
   scale_y_continuous(labels = scales::percent_format()) +
   theme(axis.text.x=element_text(angle = 90),
         axis.title.x=element_blank())
+
+# What is the relationship between occupancy and per-pupil funding?
+st <- 'primary'
+x <- all_schools %>%
+  filter(school_type == st) %>%
+  filter(!is.na(local_authority)) %>%
+  filter(!is.na(num_pupils)) %>%
+  filter(!is.na(capacity)) %>%
+  mutate(occupancy = 100.0 * num_pupils / capacity)
+# correlation coefficients by year
+y <- x %>%
+  group_by(year) %>%
+  mutate(coef = cor(occupancy, per_pupil_funding, method = "pearson", use = "complete.obs")) %>%
+  select(c(year, coef)) %>%
+  distinct()
+y
+coef <- cor(x$occupancy, x$per_pupil_funding, method = "pearson", use = "complete.obs")
+x <- x %>%
+  filter(year == LATEST_NUM_PUPILS_YEAR)
+coef <- cor(x$occupancy, x$per_pupil_funding, method = "pearson", use = "complete.obs")
+x %>%
+  ggplot(aes(x=occupancy, y=per_pupil_funding)) +
+  geom_point() +
+  geom_smooth(method=lm) +
+  labs(title = "Relationship between per-pupil funding and occupancy",
+       subtitle = paste0("All Wales, ", st, ", correlation ", round(coef, 2)))
+

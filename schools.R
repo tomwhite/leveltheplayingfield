@@ -192,7 +192,7 @@ plot_school_vs_budget_outturn_change <- function(schools_tidy, st, la, save_to_f
   plot
 }
 
-plot_percentage_of_pupils_in_ppf_bands_by_la <- function(schools_tidy, st, order='q1', save_to_file=FALSE) {
+plot_percentage_of_pupils_in_ppf_bands_by_la <- function(schools_tidy, st, order='q1', fsm_only=FALSE, save_to_file=FALSE) {
   # Bar charts comparing PPF quartiles for each LA
   yr = LATEST_NUM_PUPILS_YEAR
   x <- schools_tidy %>%
@@ -212,8 +212,16 @@ plot_percentage_of_pupils_in_ppf_bands_by_la <- function(schools_tidy, st, order
   y <- x %>%
     mutate(per_pupil_funding_band = cut(per_pupil_funding, breaks=c(-Inf, q[['25%']], q[['50%']], q[['75%']], Inf), labels = c("q1", "q2", "q3", "q4"))) %>%
     mutate(per_pupil_funding_band = fct_rev(per_pupil_funding_band)) %>%
-    group_by(local_authority, per_pupil_funding_band) %>%
-    summarize(count=sum(num_pupils)) %>%
+    group_by(local_authority, per_pupil_funding_band)
+  
+  if (fsm_only) {
+    y <- y %>%
+      summarize(count=sum(num_pupils_on_fsm, na.rm=TRUE)) # count schools with no FSM numbers as 0
+  } else {
+    y <- y %>%
+      summarize(count=sum(num_pupils))
+  }
+  y <- y %>%
     group_by(local_authority) %>%
     mutate(perc= 100 * count/sum(count)) %>%
     ungroup()
@@ -230,16 +238,28 @@ plot_percentage_of_pupils_in_ppf_bands_by_la <- function(schools_tidy, st, order
       pull(local_authority)
   }
   
+  if (fsm_only) {
+    who <- "FSM pupils"
+  } else {
+    who <- "pupils"
+  }
+  
   plot <- y %>%
     mutate(local_authority = fct_relevel(local_authority, la_order)) %>% # sort
     ggplot(aes(local_authority, perc, fill=per_pupil_funding_band)) +
     geom_bar(position="stack", stat="identity") +
     scale_fill_manual(values=rev(SCHOOL_SIZE_QUARTILE_COLOURS), labels=rev(SCHOOL_SIZE_QUARTILE_LABELS), name="Per-pupil funding band") +
     xlab("Local authority") +
-    ylab("Percentage of pupils") +
+    ylab(paste0("Percentage of ", who)) +
+    labs(title = paste("Proportion of", st, who, "by funding band for each local authority")) +
     theme(axis.text.x  = element_text(angle=90, vjust=0.5))
   if (save_to_file) {
-    ggsave(report_file_name(NULL, st, paste0("percentage_of_pupils_in_ppf_bands_by_la_", order), yr, ".png"))
+    if (fsm_only) {
+      who <- "fsm_pupils"
+    } else {
+      who <- "pupils"
+    }
+    ggsave(report_file_name(NULL, st, paste0("percentage_of_", who, "_in_ppf_bands_by_la_", order), yr, ".png"))
   }
   plot
 }

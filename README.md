@@ -26,6 +26,9 @@ more information) and combined with data from the Stats Wales site to give a per
 This data is stored in Google Sheets, but a local copy is provided in _data/sheets_ to make
 it possible to reproduce all the analyses.
 
+Starting from 2019, the school support category data was downloaded from [gov.wales](https://gov.wales/national-school-categorisation-system-support-categories?_ga=2.207195155.1087568766.1580471338-638608250.1543144354)
+in XLSX format and saved as CSV files in the _data/support-category_ directory.
+
 ## Running
 
 In RStudio, run _batch.R_ to generate all the reports in the _docs_ directory. These are hosted on the main website at

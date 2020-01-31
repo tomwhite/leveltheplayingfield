@@ -16,7 +16,9 @@ load_primaries <- function() {
   school_spreadsheets = list()
   i <- 1
   for (local_authority in LOCAL_AUTHORITIES) {
-    school_spreadsheets[[i]] <- tidy_raw_data(load_google_sheet_locally(paste(local_authority, "Primary Schools")))
+    school_spreadsheets[[i]] <- load_google_sheet_locally(paste(local_authority, "Primary Schools")) %>%
+      add_support_categories_2019() %>%
+      tidy_raw_data()
     i <- i + 1
   }
   schools_tidy <- add_school_locations(bind_rows(school_spreadsheets)) %>%
@@ -38,7 +40,9 @@ load_primaries <- function() {
 }
 
 load_secondaries <- function() {
-  secondaries_tidy <- tidy_raw_data(load_google_sheet_locally("Wales Secondary Schools")) %>%
+  secondaries_tidy <- load_google_sheet_locally("Wales Secondary Schools") %>%
+    add_support_categories_2019() %>%
+    tidy_raw_data() %>%
     add_school_locations() %>%
     mutate(school_type = 'secondary')
   
@@ -51,7 +55,9 @@ load_secondaries <- function() {
 }
 
 load_special_schools <- function() {
-  schools <- tidy_raw_data(load_google_sheet_locally("Wales Special Schools")) %>%
+  schools <- load_google_sheet_locally("Wales Special Schools") %>%
+    add_support_categories_2019() %>%
+    tidy_raw_data() %>%
     add_school_locations() %>%
     mutate(school_type = 'special')
   
@@ -64,7 +70,9 @@ load_special_schools <- function() {
 }
 
 load_through_schools <- function() {
-  schools <- tidy_raw_data(load_google_sheet_locally("Wales Through Schools")) %>%
+  schools <- load_google_sheet_locally("Wales Through Schools") %>%
+    add_support_categories_2019() %>%
+    tidy_raw_data() %>%
     add_school_locations() %>%
     mutate(school_type = 'through')
   
@@ -90,6 +98,34 @@ load_school_locations <- function() {
            skip = 1,
            col_names = c('lea_code', 'latitude', 'longitude', 'easting', 'northing')) %>%
     select(c('lea_code', 'latitude', 'longitude'))
+}
+
+load_support_categories_2019 <- function() {
+  # From 2019, dowloaded from https://gov.wales/national-school-categorisation-system-support-categories?_ga=2.207195155.1087568766.1580471338-638608250.1543144354
+  # and converted to csv files that are loaded here
+  primary_support_category <- read_csv("data/support-category/national-school-categorisation-system-support-categories-2019-primary.csv",
+                                       skip = 7,
+                                       col_names = c('lea_code', 'school', 'local_authority', 'consortium', 'support_category', 'X6', 'X7', 'X8')) %>%
+    select(c('lea_code', 'support_category'))
+  secondary_support_category <- read_csv("data/support-category/national-school-categorisation-system-support-categories-2019-secondary.csv",
+                                         skip = 8,
+                                         col_names = c('lea_code', 'school', 'local_authority', 'consortium', 'support_category')) %>%
+    select(c('lea_code', 'support_category'))
+  special_support_category <- read_csv("data/support-category/national-school-categorisation-system-support-categories-2019-special.csv",
+                                       skip = 7,
+                                       col_names = c('lea_code', 'school', 'local_authority', 'consortium', 'support_category')) %>%
+    select(c('lea_code', 'support_category'))
+  primary_support_category %>%
+    union_all(secondary_support_category) %>%
+    union_all(special_support_category) %>%
+    mutate(`Support category 2019` = str_extract(support_category, "^[^/]+")) %>%
+    select(-c("support_category"))
+}
+
+add_support_categories_2019 <- function(schools_tidy) {
+  support_categories_2019 <- load_support_categories_2019()
+  schools_tidy %>%
+    left_join(support_categories_2019, by = c("LEA Code" = "lea_code"))
 }
 
 tidy_raw_data <- function(schools_raw) {

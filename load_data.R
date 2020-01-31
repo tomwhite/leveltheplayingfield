@@ -118,6 +118,7 @@ load_support_categories_2019 <- function() {
   primary_support_category %>%
     union_all(secondary_support_category) %>%
     union_all(special_support_category) %>%
+    distinct(lea_code, support_category) %>% # through schools are included in both primary and secondary
     mutate(`Support category 2019` = str_extract(support_category, "^[^/]+")) %>%
     select(-c("support_category"))
 }

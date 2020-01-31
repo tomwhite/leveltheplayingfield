@@ -3,7 +3,7 @@ import os, string
 LATEST_YEAR = '2018-19'
 LATEST_NUM_PUPILS_YEAR = '2019-20'
 LATEST_OUTTURN_YEAR = '2018-19'
-LATEST_SUPPORT_CATEGORY_YEAR = '2018'
+LATEST_SUPPORT_CATEGORY_YEAR = '2019'
 LATEST_FSM_YEAR = '2019-20'
 
 def pretty(name):
@@ -136,7 +136,7 @@ with open("docs/index.html", "w") as la_table:
         <td>-</td>
         <td>-</td>
 
-        <td><a href="wales/all_schools_support_category_2018.html">Y</a> (<a href="wales/all_schools_support_category_alt_2018.html">alt</a>)</td>
+        <td><a href="wales/all_schools_support_category_2019.html">Y</a> (<a href="wales/all_schools_support_category_alt_2019.html">alt</a>)</td>
         <td>-</td>
         <td>-</td>
 
@@ -164,7 +164,7 @@ with open("docs/index.html", "w") as la_table:
         <td>-</td>
         <td>-</td>
 
-        <td><a href="wales/all_schools_support_category_with_la_2018.html">Y</a></td>
+        <td><a href="wales/all_schools_support_category_with_la_2019.html">Y</a></td>
         <td>-</td>
         <td>-</td>
 

@@ -304,7 +304,7 @@ tabulate_general_summary <- function(schools_tidy, school_type, save_to_file=FAL
     group_by(local_authority) %>%
     summarize(mean=round(mean(support_category_days), 2)) %>%
     mutate(mean_rank = min_rank(mean)) %>%
-    rename("Local authority" = local_authority, "Mean support category days (2018)" = mean, "Mean support category days rank (2018)" = mean_rank)
+    rename("Local authority" = local_authority, "Mean support category days (2019)" = mean, "Mean support category days rank (2019)" = mean_rank)
   
   table <- summary_size %>%
     left_join(summary_support_category)

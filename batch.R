@@ -106,16 +106,6 @@ plot_summary_size_distribution(all_schools, "secondary", save_to_file = TRUE)
 plot_size_vs_fsm_interactive(all_schools, "primary", NULL, save_to_file = TRUE)
 plot_size_vs_fsm_interactive(all_schools, "secondary", NULL, save_to_file = TRUE, num_pupils_bin_size=100, num_pupils_limit=2400)
 
-plot_percentage_of_pupils_in_ppf_bands_by_la(all_schools, 'primary', order = 'q1', save_to_file = TRUE)
-plot_percentage_of_pupils_in_ppf_bands_by_la(all_schools, 'primary', order = 'q4', save_to_file = TRUE)
-plot_percentage_of_pupils_in_ppf_bands_by_la(all_schools, 'secondary', order = 'q1', save_to_file = TRUE)
-plot_percentage_of_pupils_in_ppf_bands_by_la(all_schools, 'secondary', order = 'q4', save_to_file = TRUE)
-
-plot_percentage_of_pupils_in_ppf_bands_by_la(all_schools, 'primary', order = 'q1', fsm_only = TRUE, save_to_file = TRUE)
-plot_percentage_of_pupils_in_ppf_bands_by_la(all_schools, 'primary', order = 'q4', fsm_only = TRUE, save_to_file = TRUE)
-plot_percentage_of_pupils_in_ppf_bands_by_la(all_schools, 'secondary', order = 'q1', fsm_only = TRUE, save_to_file = TRUE)
-plot_percentage_of_pupils_in_ppf_bands_by_la(all_schools, 'secondary', order = 'q4', fsm_only = TRUE, save_to_file = TRUE)
-
 # Maps
 map_support_categories_by_local_authority(all_schools, 'secondary', save_to_file = TRUE)
 map_outturn_surplus_or_deficit_by_year(all_schools, school_type='secondary', save_to_file = TRUE)

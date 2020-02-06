@@ -80,7 +80,7 @@ with open("docs/index.html", "w") as la_table:
     <tr>
         <th>Local Authority</th>
 
-        <th colspan="3">Population Trends</th>
+        <th colspan="6">Population Trends</th>
         <th colspan="6">School Funding</th>
         <th colspan="4">School Finance</th>
         <th colspan="3">School Support Categories</th>
@@ -94,6 +94,9 @@ with open("docs/index.html", "w") as la_table:
         <th>Chart</th>
         <th>Chart</th>
         <th>Map</th>
+        <th>Map (Pri)</th>
+        <th>Map (Sec)</th>
+        <th>Map (Thr)</th>
 
         <th>Chart 1</th>
         <th>Chart 2</th>
@@ -123,6 +126,9 @@ with open("docs/index.html", "w") as la_table:
         <td>-</td>
         <td>-</td>
         <td><a href="wales/all_schools_occupancy_2019-20.html">Y</a> (<a href="wales/all_schools_occupancy_alt_2019-20.html">alt</a>)</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
 
         <td>-</td>
         <td>-</td>
@@ -146,12 +152,46 @@ with open("docs/index.html", "w") as la_table:
         <td><a href="wales/all_schools_language_2018-19.html">Y</a> (<a href="wales/all_schools_language_alt_2018-19.html">alt</a>)</td>
     </tr>
     <tr>
+        <td>All Wales (by school size)</td>
+
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td><a href="wales/primary_occupancy_with_school_size_2019-20.html">Y</a></td>
+        <td><a href="wales/secondary_occupancy_with_school_size_2019-20.html">Y</a></td>
+        <td><a href="wales/through_occupancy_with_school_size_2019-20.html">Y</a></td>
+
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+
+        <td>-</td>
+        <td>-</td>
+
+        <td>-</td>
+    </tr>
+    <tr>
         <td>All Wales (by LA)</td>
 
         <td>-</td>
         <td>-</td>
         <td><a href="wales/all_schools_occupancy_with_la_2019-20.html">Y</a></td>
-
+        <td>-</td>
+        <td>-</td>
+        <td>-</td>
+        
         <td>-</td>
         <td>-</td>
         <td>-</td>
@@ -182,6 +222,9 @@ with open("docs/index.html", "w") as la_table:
         <td><a href="{}">Y</a></td>
         <td><a href="{}">Y</a></td>
         <td><a href="{}">Y</a></td>
+        <td><a href="{}">Y</a></td>
+        <td><a href="{}">Y</a></td>
+        <td>-</td>
 
         <td><a href="{}">Y</a></td>
         <td><a href="{}">Y</a></td>
@@ -209,6 +252,8 @@ with open("docs/index.html", "w") as la_table:
            "local_authorities/{}/{}_total_population_vs_year.png".format(la, la),
            "local_authorities/{}/{}_total_population_with_age_vs_year.png".format(la, la),
            "local_authorities/{}/{}_all_schools_occupancy_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
+           "local_authorities/{}/{}_primary_occupancy_with_school_size_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
+           "local_authorities/{}/{}_secondary_occupancy_with_school_size_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
 
            "local_authorities/{}/{}_all_schools_delegation_rate_vs_year.png".format(la, la),
            "local_authorities/{}/{}_all_schools_delegated_school_budget_per_pupil_vs_year.png".format(la, la),

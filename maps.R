@@ -390,6 +390,46 @@ map_occupancy_by_school_size <- function(schools_tidy, school_type, la = NULL, s
   map
 }
 
+map_occupancy_by_school_capacity <- function(schools_tidy, school_type, la = NULL, save_to_file=FALSE) {
+  yr = LATEST_NUM_PUPILS_YEAR
+  st = school_type
+  html_legend <- "Occupancy</br>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>&lt;50%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png' width='12' height='20'>50-75%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png' width='12' height='20'>75-100%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png' width='12' height='20'>&gt;100%"
+  if (school_type == 'primary') {
+    size_breaks = c(-Inf, 60, 120, 180, 240, 300, 360, 420, Inf)
+    size_bands <- c("<60","60-120", "120-180", "180-240", "240-300", "300-360", "360-420", ">420")
+  } else {
+    size_breaks = c(-Inf, 600, 1200, 1800, 2400)
+    size_bands <- c("<600","600-1200", "1200-1800", "1800-2400")
+  }
+  schools_tidy_filtered <- schools_tidy %>%
+    filter(school_type == st) %>%
+    filter(if (!is.null(la)) local_authority == la else TRUE) %>%
+    filter(year == yr) %>%
+    filter(!is.na(num_pupils)) %>% # drop rows with no num_pupils
+    filter(!is.na(capacity)) %>% # drop rows with no capacity
+    mutate(occupancy = 100.0 * num_pupils / capacity) %>%
+    mutate(occupancy_band = cut(occupancy, breaks=c(-Inf, 50, 75, 100, Inf), labels=c("<50%","50-75%", "75-100%", ">100%"))) %>%
+    mutate(size_band=cut(capacity, breaks=size_breaks, labels=size_bands))
+  map <- schools_tidy_filtered %>%
+    leaflet() %>%
+    addTiles()
+  for (sb in size_bands) {
+    d = schools_tidy_filtered[schools_tidy_filtered$size_band == sb,]
+    map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste0(school, ', ', round(occupancy, 1), '%, capacity ', capacity), icon=~occupancy_band_icons[occupancy_band], group = sb)
+  }
+  map <- map %>%
+    addLayersControl(overlayGroups = size_bands, options = layersControlOptions(collapsed = FALSE)) %>%
+    addControl(html = html_legend)
+  if (save_to_file) {
+    saveWidgetFix(map, report_file_name(la, school_type, "occupancy_with_school_capacity", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+  }
+  map
+}
+
 map_occupancy_by_local_authority <- function(schools_tidy, save_to_file=FALSE) {
   yr = LATEST_NUM_PUPILS_YEAR
   html_legend <- "Occupancy</br>

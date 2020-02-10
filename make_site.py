@@ -157,9 +157,9 @@ with open("docs/index.html", "w") as la_table:
         <td>-</td>
         <td>-</td>
         <td>-</td>
-        <td><a href="wales/primary_occupancy_with_school_size_2019-20.html">Y</a></td>
-        <td><a href="wales/secondary_occupancy_with_school_size_2019-20.html">Y</a></td>
-        <td><a href="wales/through_occupancy_with_school_size_2019-20.html">Y</a></td>
+        <td><a href="wales/primary_occupancy_with_school_size_2019-20.html">Y</a> (<a href="wales/primary_occupancy_with_school_capacity_2019-20.html">cap</a>)</td>
+        <td><a href="wales/secondary_occupancy_with_school_size_2019-20.html">Y</a> (<a href="wales/secondary_occupancy_with_school_capacity_2019-20.html">cap</a>)</td>
+        <td><a href="wales/through_occupancy_with_school_size_2019-20.html">Y</a> (<a href="wales/through_occupancy_with_school_capacity_2019-20.html">cap</a>)</td>
 
         <td>-</td>
         <td>-</td>
@@ -222,8 +222,8 @@ with open("docs/index.html", "w") as la_table:
         <td><a href="{}">Y</a></td>
         <td><a href="{}">Y</a></td>
         <td><a href="{}">Y</a></td>
-        <td><a href="{}">Y</a></td>
-        <td><a href="{}">Y</a></td>
+        <td><a href="{}">Y</a> (<a href="{}">cap</a>)</td>
+        <td><a href="{}">Y</a> (<a href="{}">cap</a>)</td>
         <td>-</td>
 
         <td><a href="{}">Y</a></td>
@@ -253,7 +253,9 @@ with open("docs/index.html", "w") as la_table:
            "local_authorities/{}/{}_total_population_with_age_vs_year.png".format(la, la),
            "local_authorities/{}/{}_all_schools_occupancy_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
            "local_authorities/{}/{}_primary_occupancy_with_school_size_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
+           "local_authorities/{}/{}_primary_occupancy_with_school_capacity_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
            "local_authorities/{}/{}_secondary_occupancy_with_school_size_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
+           "local_authorities/{}/{}_secondary_occupancy_with_school_capacity_{}.html".format(la, la, LATEST_NUM_PUPILS_YEAR),
 
            "local_authorities/{}/{}_all_schools_delegation_rate_vs_year.png".format(la, la),
            "local_authorities/{}/{}_all_schools_delegated_school_budget_per_pupil_vs_year.png".format(la, la),

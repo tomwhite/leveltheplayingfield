@@ -37,6 +37,13 @@ plot_percentage_of_pupils_in_ppf_bands_by_la <- function(schools_tidy, st, order
     y <- y %>%
       summarize(count=sum(num_pupils))
   }
+  all_wales <- y %>%
+    group_by(per_pupil_funding_band) %>%
+    summarize(count=sum(count)) %>%
+    ungroup() %>%
+    mutate(local_authority = "All Wales")
+  y <- union(y, all_wales)
+  
   y <- y %>%
     group_by(local_authority) %>%
     mutate(perc= 100 * count/sum(count)) %>%
@@ -59,7 +66,7 @@ plot_percentage_of_pupils_in_ppf_bands_by_la <- function(schools_tidy, st, order
   } else {
     who <- "pupils"
   }
-  
+    
   plot <- y %>%
     mutate(local_authority = fct_relevel(local_authority, la_order)) %>% # sort
     ggplot(aes(local_authority, perc, fill=per_pupil_funding_band)) +
@@ -76,6 +83,13 @@ plot_percentage_of_pupils_in_ppf_bands_by_la <- function(schools_tidy, st, order
       who <- "pupils"
     }
     ggsave(blog_post_file_name(PREFIX, NULL, st, paste0("percentage_of_", who, "_in_ppf_bands_by_la_", order), yr, ".png"))
+    if (order == 'q1') {
+      dt <- datatable(y, rownames= FALSE, options = list(
+        pageLength = 100,
+        order = list(list(0, 'asc'))
+      ))
+      saveWidgetFix(dt, blog_post_file_name(PREFIX, NULL, st, paste0("percentage_of_", who, "_in_ppf_bands_by_la"), yr, ".html"))
+    }
   }
   plot
 }

@@ -272,3 +272,8 @@ x %>%
   labs(title = "Relationship between per-pupil funding and occupancy",
        subtitle = paste0("All Wales, ", st, ", correlation ", round(coef, 2)))
 
+x %>%
+  ggplot(aes(x=occupancy, y=capacity)) +
+  geom_point() +
+  geom_smooth(method=lm)
+  

@@ -277,3 +277,42 @@ x %>%
   geom_point() +
   geom_smooth(method=lm)
   
+#
+# Occupancy maps - a look at Powys primaries and language provision
+#
+map_occupancy_by_language <- function(schools_tidy, school_type, la = NULL, save_to_file=FALSE) {
+  yr = LATEST_NUM_PUPILS_YEAR
+  st = school_type
+  html_legend <- "Occupancy</br>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>&lt;50%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png' width='12' height='20'>50-75%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png' width='12' height='20'>75-100%<br/>
+  <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png' width='12' height='20'>&gt;100%"
+  schools_tidy_filtered <- schools_tidy %>%
+    filter(school_type == st) %>%
+    filter(if (!is.null(la)) local_authority == la else TRUE) %>%
+    filter(year == yr) %>%
+    filter(!is.na(num_pupils)) %>% # drop rows with no num_pupils
+    filter(!is.na(capacity)) %>% # drop rows with no capacity
+    mutate(occupancy = 100.0 * num_pupils / capacity) %>%
+    mutate(occupancy_band = cut(occupancy, breaks=c(-Inf, 50, 75, 100, Inf), labels=c("<50%","50-75%", "75-100%", ">100%")))
+  langs <- as.character(unique(schools_tidy_filtered$language))
+  map <- schools_tidy_filtered %>%
+    leaflet() %>%
+    addTiles()
+  for (lang in langs) {
+    d = schools_tidy_filtered[schools_tidy_filtered$language == lang,]
+    map = map %>% addMarkers(data = d, ~longitude, ~latitude, popup = ~school, label=~paste0(school, ', ', round(occupancy, 1), '%, ', num_pupils, ' pupils'), icon=~occupancy_band_icons[occupancy_band], group = lang)
+  }
+  map <- map %>%
+    addLayersControl(overlayGroups = langs, options = layersControlOptions(collapsed = FALSE)) %>%
+    addControl(html = html_legend)
+  if (save_to_file) {
+    saveWidgetFix(map, report_file_name(la, school_type, "occupancy_with_language", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+  }
+  map
+}
+
+map_occupancy_by_language(all_schools, 'primary', 'Powys')
+
+

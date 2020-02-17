@@ -15,7 +15,8 @@ compute_school_funding_redistribution  <- function(schools_tidy, st, la, yr) {
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
     filter(year == yr) %>%
     filter(!is.na(num_pupils)) %>%
-    filter(!is.na(total_school_delegated_budget))
+    filter(!is.na(total_school_delegated_budget)) %>%
+    mutate(school = str_replace(school, "Ysgol Trefonnen Church in Wales Community Primary/Llandrindod Wells C.I.W. School", "Ysgol Trefonnen C.I.W. Community Primary"))
   
   total_delegated_budget <- schools_tidy_filtered %>%
     group_by(local_authority) %>%
@@ -68,7 +69,28 @@ plot_school_funding_redistribution_pct <- function(schools_tidy, st, la, yr=LATE
   plot
 }
 
+# Tweaked for primary - should merge into similar fn above
+plot_school_funding_redistribution_pct_pri <- function(schools_tidy, st, la, yr=LATEST_NUM_PUPILS_YEAR, save_to_file=FALSE) {
+  plot <- compute_school_funding_redistribution(schools_tidy, st, la, yr) %>%
+    ggplot(aes(reorder(school, budget_difference_pct), budget_difference_pct)) +
+    geom_bar(stat = "identity") +
+    coord_flip() +
+    ylab("Actual weighted redistribution as percentage of budget") +
+    labs(title = paste0("Actual weighted redistribution of funding based on ", la, " formula (", yr, ")"),
+         subtitle = paste0(la, " ", st, " schools")) +
+    theme(axis.title.y=element_blank(),
+          axis.text.y=element_text(size=7)) +
+    scale_y_continuous(labels = comma) +
+    ylim(-30, 55)
+  if (save_to_file) {
+    ggsave(blog_post_file_name(PREFIX, la, st[1][1], "school_funding_redistribution_pct", yr, ".png"))
+  }
+  plot
+}
+
 for (yr in c("2016-17", "2019-20")) {
+  plot_school_funding_redistribution_pct_pri(all_schools, c('primary'), 'Powys', yr, save_to_file=TRUE)
+
   plot_school_funding_redistribution(all_schools, c('secondary', 'through'), 'Powys', yr, save_to_file=TRUE)
   plot_school_funding_redistribution(all_schools, c('secondary', 'through'), 'Gwynedd', yr, save_to_file=TRUE)
   

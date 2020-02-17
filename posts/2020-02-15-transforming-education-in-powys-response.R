@@ -9,13 +9,13 @@ source('utils.R')
 
 PREFIX = "2020-02-15-transforming-education-in-powys-response"
 
-compute_school_funding_redistribution  <- function(schools_tidy, st, la) {
-  yr = LATEST_NUM_PUPILS_YEAR
-  
+compute_school_funding_redistribution  <- function(schools_tidy, st, la, yr) {
   schools_tidy_filtered <- schools_tidy %>%
     filter(school_type %in% st) %>%
     filter(if (!is.null(la)) local_authority == la else TRUE) %>%
-    filter(year == yr)
+    filter(year == yr) %>%
+    filter(!is.na(num_pupils)) %>%
+    filter(!is.na(total_school_delegated_budget))
   
   total_delegated_budget <- schools_tidy_filtered %>%
     group_by(local_authority) %>%
@@ -34,43 +34,44 @@ compute_school_funding_redistribution  <- function(schools_tidy, st, la) {
     mutate(budget_difference_pct = 100 * budget_difference / total_school_delegated_budget)  
 }
 
-plot_school_funding_redistribution <- function(schools_tidy, st, la, save_to_file=FALSE) {
-  plot <- compute_school_funding_redistribution(schools_tidy, st, la) %>%
+plot_school_funding_redistribution <- function(schools_tidy, st, la, yr=LATEST_NUM_PUPILS_YEAR, save_to_file=FALSE) {
+  plot <- compute_school_funding_redistribution(schools_tidy, st, la, yr) %>%
     ggplot(aes(reorder(school, budget_difference), budget_difference)) +
     geom_bar(stat = "identity") +
     coord_flip() +
     ylab("Actual weighted redistribution (£)") +
-    labs(title = paste0("Actual weighted redistribution of funding based on ", la, " funding formula (", yr, ")"),
+    labs(title = paste0("Actual weighted redistribution of funding based on ", la, " formula (", yr, ")"),
          subtitle = paste0(la, " ", st, " schools")) +
     theme(axis.title.y=element_blank()) +
     scale_y_continuous(labels = comma) +
     ylim(-1400000, 700000)
   if (save_to_file) {
-    ggsave(blog_post_file_name(PREFIX, la, st, "school_funding_redistribution", yr, ".png"))
+    ggsave(blog_post_file_name(PREFIX, la, st[1][1], "school_funding_redistribution", yr, ".png"))
   }
   plot
 }
 
-plot_school_funding_redistribution_pct <- function(schools_tidy, st, la, save_to_file=FALSE) {
-  plot <- compute_school_funding_redistribution(schools_tidy, st, la) %>%
+plot_school_funding_redistribution_pct <- function(schools_tidy, st, la, yr=LATEST_NUM_PUPILS_YEAR, save_to_file=FALSE) {
+  plot <- compute_school_funding_redistribution(schools_tidy, st, la, yr) %>%
     ggplot(aes(reorder(school, budget_difference_pct), budget_difference_pct)) +
     geom_bar(stat = "identity") +
     coord_flip() +
     ylab("Actual weighted redistribution as percentage of budget") +
-    labs(title = paste0("Actual weighted redistribution of funding based on ", la, " funding formula (", yr, ")"),
+    labs(title = paste0("Actual weighted redistribution of funding based on ", la, " formula (", yr, ")"),
          subtitle = paste0(la, " ", st, " schools")) +
     theme(axis.title.y=element_blank()) +
     scale_y_continuous(labels = comma) +
     ylim(-40, 30)
   if (save_to_file) {
-    ggsave(blog_post_file_name(PREFIX, la, st, "school_funding_redistribution_pct", yr, ".png"))
+    ggsave(blog_post_file_name(PREFIX, la, st[1][1], "school_funding_redistribution_pct", yr, ".png"))
   }
   plot
 }
 
-plot_school_funding_redistribution(all_schools, c('secondary', 'through'), 'Powys')
-plot_school_funding_redistribution(all_schools, c('secondary', 'through'), 'Gwynedd')
-
-plot_school_funding_redistribution_pct(all_schools, c('secondary', 'through'), 'Powys')
-plot_school_funding_redistribution_pct(all_schools, c('secondary', 'through'), 'Gwynedd')
-
+for (yr in c("2016-17", "2019-20")) {
+  plot_school_funding_redistribution(all_schools, c('secondary', 'through'), 'Powys', yr, save_to_file=TRUE)
+  plot_school_funding_redistribution(all_schools, c('secondary', 'through'), 'Gwynedd', yr, save_to_file=TRUE)
+  
+  plot_school_funding_redistribution_pct(all_schools, c('secondary', 'through'), 'Powys', yr, save_to_file=TRUE)
+  plot_school_funding_redistribution_pct(all_schools, c('secondary', 'through'), 'Gwynedd', yr, save_to_file=TRUE)
+}

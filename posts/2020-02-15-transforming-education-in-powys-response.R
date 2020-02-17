@@ -97,3 +97,30 @@ for (yr in c("2016-17", "2019-20")) {
   plot_school_funding_redistribution_pct(all_schools, c('secondary', 'through'), 'Powys', yr, save_to_file=TRUE)
   plot_school_funding_redistribution_pct(all_schools, c('secondary', 'through'), 'Gwynedd', yr, save_to_file=TRUE)
 }
+
+map_language_welsh_or_bilingual <- function(schools_tidy, st, la = NULL, save_to_file=FALSE) {
+  yr = LATEST_YEAR
+  html_legend <- "Language Provision</br>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>Welsh<br/>
+<img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-violet.png' width='12' height='20'>Bilingual<br/>"
+  schools_tidy_filtered <- schools_tidy %>%
+    filter(if (!is.null(la)) local_authority == la else TRUE) %>%
+    filter(year == yr) %>%
+    filter(school_type != 'special') %>% # special schools don't have a language
+    filter(!is.na(language)) %>%
+    filter(school_type == st) %>%
+    filter(language %in% c("Welsh", "Dual", "Bilingual"))
+  school_types <- as.character(unique(schools_tidy_filtered$school_type))
+  map <- schools_tidy_filtered %>%
+    leaflet() %>%
+    addTiles() %>%
+    addMarkers(~longitude, ~latitude, popup = ~school, label=~school, icon=~language_icons[language])
+  map <- map %>%
+    addControl(html = html_legend)
+  if (save_to_file) {
+    saveWidgetFix(map, blog_post_file_name(PREFIX, la, st, "language_welsh_or_bilingual", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+  }
+  map
+}
+
+map_language_welsh_or_bilingual(all_schools, 'primary', 'Powys')

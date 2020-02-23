@@ -118,9 +118,9 @@ map_language_welsh_or_bilingual <- function(schools_tidy, st, la = NULL, save_to
   map <- map %>%
     addControl(html = html_legend)
   if (save_to_file) {
-    saveWidgetFix(map, blog_post_file_name(PREFIX, la, st, "language_welsh_or_bilingual", yr, ".html"), selfcontained = FALSE, libdir = "lib")
+    saveWidgetFix(map, blog_post_file_name(PREFIX, la, st, "language_welsh_or_bilingual", yr, ".html"))
   }
   map
 }
 
-map_language_welsh_or_bilingual(all_schools, 'primary', 'Powys')
+map_language_welsh_or_bilingual(all_schools, 'primary', 'Powys', save_to_file=TRUE)

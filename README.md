@@ -10,6 +10,7 @@ CSV files in the _data_ directory were downloaded from the Stats Wales website, 
 after the final part of the Stats Wales URL.
 
 * https://statswales.gov.wales/Catalogue/Population-and-Migration/Population/Estimates/Local-Authority/populationestimates-by-localauthority-year
+    * _Note: Make sure Wales is the only expanded country. Click on Year dropdown, and Show All to get all years_. Also one export per age group too.
 * https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Delegated-School-Budgets/delegatedschoolbudgetsperpupil-by-sector (Individual schools budget per pupil, and Number of pupils)
 * https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Delegated-School-Outturn/levelofreservescarriedforward-by-sector
 

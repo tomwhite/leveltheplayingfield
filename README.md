@@ -2,6 +2,8 @@
 
 Analysis of school funding in Wales http://leveltheplayingfield.wales/
 
+Due to Covid-19, some data sources were not updated in 2020 (see notes below). Therefore some charts and tables cannot be updated for the latest school year.
+
 ## Data sources
 
 The majority of the data is from [Stats Wales](https://statswales.gov.wales/).
@@ -13,6 +15,9 @@ after the final part of the Stats Wales URL.
     * _Note: Make sure Wales is the only expanded country. Click on Year dropdown, and Show All to get all years_. Also one export per age group too.
 * https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Delegated-School-Budgets/delegatedschoolbudgetsperpupil-by-sector (Individual schools budget per pupil, and Number of pupils)
 * https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Delegated-School-Outturn/levelofreservescarriedforward-by-sector
+    * _Not updated in 2020_
+* https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Delegated-School-Budgets/delegatedschoolbudgetsperpupil-by-school (Individual schools budget per pupil, and Number of pupils)
+    * _From 2020-21. This data was previously entered into Google Sheets_
 
 ### Address data
 
@@ -29,6 +34,7 @@ it possible to reproduce all the analyses.
 
 Starting from 2019, the school support category data was downloaded from [gov.wales](https://gov.wales/national-school-categorisation-system-support-categories?_ga=2.207195155.1087568766.1580471338-638608250.1543144354)
 in XLSX format and saved as CSV files in the _data/support-category_ directory.
+    * _Not updated in 2020, and will not be assessed for 5 years._
 
 ## Running
 

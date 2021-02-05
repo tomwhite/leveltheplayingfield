@@ -5,6 +5,8 @@
 library(googledrive)
 library(googlesheets4)
 
+source('utils.R')
+
 #gs4_auth() # authorize with google
 
 load_google_sheet <- function(title) {

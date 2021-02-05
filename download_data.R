@@ -2,11 +2,13 @@
 # Most users should not need to run this.
 # Note that this requires read permission.
 
-library(googlesheets)
+library(googledrive)
+library(googlesheets4)
+
+#gs4_auth() # authorize with google
 
 load_google_sheet <- function(title) {
-  gs_auth() # authorize with google
-  gs_title(title) %>% gs_read(ws = "Sheet1")
+  drive_get(title) %>% read_sheet(sheet = "Sheet1")
 }
 
 save_google_sheet_locally <- function(title) {

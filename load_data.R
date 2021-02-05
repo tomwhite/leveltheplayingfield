@@ -168,6 +168,7 @@ tidy_raw_data <- function(schools_raw) {
     rename_all(gsub, pattern = '^FSM rate 2019$', replacement = 'fsm_rate#2019-20') %>% # assume 2019 is 2019-20
     rename_all(gsub, pattern = '^Support category (20.+)$', replacement = 'support_category#\\1') %>%
     select(-starts_with('X')) %>% # drop any extra X columns
+    select(-starts_with('...')) %>% # drop any extra ... columns
     filter(!is.na(school)) %>% # drop rows with no school name
     filter(!is.na(lea_code)) %>% # and no LEA code
     na_if('.') %>% # dots are NA

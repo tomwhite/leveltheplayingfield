@@ -98,3 +98,30 @@ saveWidgetFix <- function (widget,file,...) {
   setwd(outDir);
   saveWidget(widget,file=file,...)
 }
+
+to_lea_code <- function(stats_wales_code) {
+  str_replace_all(stats_wales_code, c("^545" = "677", # Blaenau Gwent
+                                      "^536" = "672", # Bridgend
+                                      "^544" = "676", # Caerphilly
+                                      "^552" = "681", # Cardiff
+                                      "^530" = "669", # Carmarthenshire
+                                      "^526" = "667", # Ceredigion
+                                      "^516" = "662", # Conwy
+                                      "^518" = "663", # Denbighshire
+                                      "^520" = "664", # Flintshire
+                                      "^514" = "661", # Gwynedd
+                                      "^512" = "660", # Isle of Anglesey
+                                      "^542" = "675", # Merthyr Tydfil
+                                      "^548" = "679", # Monmouthshire
+                                      "^534" = "671", # Neath Port Talbot
+                                      "^550" = "680", # Newport
+                                      "^528" = "668", # Pembrokeshire
+                                      "^524" = "666", # Powys
+                                      "^540" = "674", # Rhondda Cynon Taf
+                                      "^532" = "670", # Swansea
+                                      "^546" = "678", # Torfaen
+                                      "^538" = "673", # Vale of Glamorgan
+                                      "^522" = "665"  # Wrexham
+                                      )
+                  )
+}

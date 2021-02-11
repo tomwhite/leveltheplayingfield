@@ -135,7 +135,7 @@ load_num_pupils <- function() {
     select(-c(X1, X2, X3)) %>%
     na_if('.') %>% # dots are NA
     drop_na(X4) %>%
-    separate(X4, c("stats_wales_code", "school"), " - ?") %>% # split code from school name
+    separate(X4, c("stats_wales_code", "school"), " - ?", extra = "merge") %>% # split code from school name
     na_if('Unallocated resources') %>% # dots are NA
     drop_na(stats_wales_code) %>%
     mutate(lea_code = to_lea_code(stats_wales_code)) %>%

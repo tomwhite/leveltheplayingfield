@@ -80,11 +80,9 @@ load_secondaries <- function() {
 }
 
 load_special_schools <- function() {
-  schools <- load_google_sheet_locally("Wales Special Schools") %>%
-    add_support_categories_2019() %>%
+  schools <- load_consolidated_data("Wales Special Schools", "special") %>%
     tidy_raw_data() %>%
-    add_school_locations() %>%
-    mutate(school_type = 'special')
+    add_school_locations()
   
   # QC
   # Find schools with no location

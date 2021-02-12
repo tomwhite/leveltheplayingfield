@@ -129,13 +129,18 @@ add_support_categories_2019 <- function(schools_tidy) {
     left_join(support_categories_2019, by = c("LEA Code" = "lea_code"))
 }
 
-# currently only used for 2020-21 (and onwards in future)
-load_num_pupils <- function() {
-  read_csv("data/delegatedschoolbudgetsperpupil-by-school-num-pupils.csv") %>%
+# Load school-level CSV file downloaded from Stats Wales site
+load_stats_wales_school_csv <- function(csv) {
+  read_csv(csv) %>%
     select(-c(X1, X2, X3)) %>%
     na_if('.') %>% # dots are NA
     drop_na(X4) %>%
-    separate(X4, c("stats_wales_code", "school"), " - ?", extra = "merge") %>% # split code from school name
+    separate(X4, c("stats_wales_code", "school"), " - ?", extra = "merge") # split code from school name
+}
+
+# currently only used for 2020-21 (and onwards in future)
+load_num_pupils <- function() {
+  load_stats_wales_school_csv("data/delegatedschoolbudgetsperpupil-by-school-num-pupils.csv") %>%
     na_if('Unallocated resources') %>% # dots are NA
     drop_na(stats_wales_code) %>%
     mutate(lea_code = to_lea_code(stats_wales_code)) %>%

@@ -75,6 +75,7 @@ load_through_schools <- function() {
     add_num_pupils() %>%
     add_per_pupil_funding() %>%
     add_total_delegated_budget() %>%
+    add_budget_outturn() %>%
     tidy_raw_data() %>%
     add_school_locations() %>%
     mutate(school_type = 'through')
@@ -198,6 +199,24 @@ add_total_delegated_budget <- function(schools_tidy) {
     left_join(total_delegated_budget, by = c("LEA Code" = "lea_code"))
 }
 
+# currently only used for 2019-20 (and onwards in future)
+load_budget_outturn <- function() {
+  load_stats_wales_school_csv("data/levelofreservescarriedforward-by-school.csv") %>%
+    na_if('Unallocated resources') %>% # dots are NA
+    drop_na(stats_wales_code) %>%
+    mutate(lea_code = to_lea_code(stats_wales_code)) %>%
+    drop_na(`2019-20`) %>%
+    mutate_at(c('2019-20', 'lea_code'), as_numeric_ignore_commas) %>%
+    mutate_at(c('2019-20'), ~.*1000) %>% # multiply to get values in £
+    mutate(`Budget outturn 2019-20` = `2019-20`) %>%
+    select(c(lea_code, `Budget outturn 2019-20`))
+}
+
+add_budget_outturn <- function(schools_tidy) {
+  budget_outturn <- load_budget_outturn()
+  schools_tidy %>%
+    left_join(budget_outturn, by = c("LEA Code" = "lea_code"))
+}
 
 tidy_raw_data <- function(schools_raw) {
   schools_raw %>%

@@ -74,6 +74,7 @@ load_through_schools <- function() {
     add_support_categories_2019() %>%
     add_num_pupils() %>%
     add_per_pupil_funding() %>%
+    add_total_delegated_budget() %>%
     tidy_raw_data() %>%
     add_school_locations() %>%
     mutate(school_type = 'through')
@@ -177,6 +178,26 @@ add_per_pupil_funding <- function(schools_tidy) {
   schools_tidy %>%
     left_join(per_pupil_funding, by = c("LEA Code" = "lea_code"))
 }
+
+# currently only used for 2020-21 (and onwards in future)
+load_total_delegated_budget <- function() {
+  load_stats_wales_school_csv("data/delegatedschoolbudgetsperpupil-by-school-total-budget.csv") %>%
+    na_if('Unallocated resources') %>% # dots are NA
+    drop_na(stats_wales_code) %>%
+    mutate(lea_code = to_lea_code(stats_wales_code)) %>%
+    drop_na(`2020-21`) %>%
+    mutate_at(c('2020-21', 'lea_code'), as_numeric_ignore_commas) %>%
+    mutate_at(c('2020-21'), ~.*1000) %>% # multiply to get values in £
+    mutate(`Total delegated budget 2020-21` = `2020-21`) %>%
+    select(c(lea_code, `Total delegated budget 2020-21`))
+}
+
+add_total_delegated_budget <- function(schools_tidy) {
+  total_delegated_budget <- load_total_delegated_budget()
+  schools_tidy %>%
+    left_join(total_delegated_budget, by = c("LEA Code" = "lea_code"))
+}
+
 
 tidy_raw_data <- function(schools_raw) {
   schools_raw %>%

@@ -65,11 +65,13 @@ load_primaries <- function() {
 }
 
 load_secondaries <- function() {
-  secondaries_tidy <- load_google_sheet_locally("Wales Secondary Schools") %>%
-    add_support_categories_2019() %>%
+  secondaries_tidy <- load_consolidated_data("Wales Secondary Schools", "secondary") %>%
+    # remove unused columns
+    select(-starts_with("Local authority FSM rate")) %>%
+    select(-starts_with("Wales FSM rate")) %>%
+    select(-starts_with("Occupancy")) %>%
     tidy_raw_data() %>%
-    add_school_locations() %>%
-    mutate(school_type = 'secondary')
+    add_school_locations()
   
   # QC
   # Find schools with no location (should be none)

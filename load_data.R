@@ -12,6 +12,45 @@ load_google_sheet_locally <- function(title) {
 
 # Schools data
 
+load_google_sheet_locally_and_normalize <- function(sheet, school_type) {
+  load_google_sheet_locally(sheet) %>%
+    mutate(`School type` = school_type) %>%
+    select(-starts_with('X')) %>% # drop any extra X columns
+    select(-starts_with('...')) %>% # drop any extra ... columns
+    filter(!is.na(`Name of school`)) %>% # drop rows with no school name
+    filter(!is.na(`LEA Code`)) %>% # and no LEA code
+    na_if('.') # dots are NA
+}
+
+load_merged_google_sheets <- function() {
+  school_spreadsheets = list()
+  i <- 1
+  for (local_authority in LOCAL_AUTHORITIES) {
+    school_spreadsheets[[i]] <- load_google_sheet_locally_and_normalize(paste(local_authority, "Primary Schools"), "primary") %>%
+      # remove unused columns
+      select(-starts_with("Local authority FSM rate")) %>%
+      select(-starts_with("Wales FSM rate"))
+    #print(local_authority)
+    #print(ncol(school_spreadsheets[[i]]))
+    i <- i + 1
+  }
+  
+  primary <- do.call("rbind", school_spreadsheets)
+  
+  
+  secondary <- load_google_sheet_locally_and_normalize("Wales Secondary Schools", "secondary") %>%
+    # remove unused columns
+    select(-c("Pupil numbers 2015-16", "Total delegated budget 2015-16", "Per pupil funding 2015-16")) %>%
+    select(-starts_with("Local authority FSM rate")) %>%
+    select(-starts_with("Wales FSM rate")) %>%
+    select(-starts_with("Occupancy"))
+  special <- load_google_sheet_locally_and_normalize("Wales Special Schools", "special")
+  through <- load_google_sheet_locally_and_normalize("Wales Through Schools", "through")
+
+  rbind(primary, secondary, special, through)
+
+}
+
 load_consolidated_data <- function(sheet, school_type) {
   load_google_sheet_locally(sheet) %>%
     mutate(`School type` = school_type) %>%

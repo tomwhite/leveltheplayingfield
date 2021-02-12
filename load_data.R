@@ -12,6 +12,31 @@ load_google_sheet_locally <- function(title) {
 
 # Schools data
 
+load_consolidated_data <- function(sheet, school_type) {
+  load_google_sheet_locally(sheet) %>%
+    mutate(`School type` = school_type) %>%
+    select(-starts_with('X')) %>% # drop any extra X columns
+    select(-starts_with('...')) %>% # drop any extra ... columns
+    filter(!is.na(`Name of school`)) %>% # drop rows with no school name
+    filter(!is.na(`LEA Code`)) %>% # and no LEA code
+    na_if('.') %>% # dots are NA
+    add_support_categories_2019() %>%
+    add_num_pupils() %>%
+    add_per_pupil_funding() %>%
+    add_total_delegated_budget() %>%
+    add_budget_outturn() %>%
+    # reorder columns
+    relocate(`School type`) %>%
+    relocate(starts_with('Support category'), .after=`Name of school`) %>%
+    relocate(starts_with('FSM rate'), .after=`Name of school`) %>%
+    relocate(starts_with('Budget outturn'), .after=`Name of school`) %>%
+    relocate(starts_with('Per pupil funding'), .after=`Name of school`) %>%
+    relocate(starts_with('Total delegated budget'), .after=`Name of school`) %>%
+    relocate(starts_with('Pupil numbers'), .after=`Name of school`) %>%
+    # reorder rows
+    arrange(`School type`, `Local authority`, `Name of school`)
+}
+
 load_primaries <- function() {
   school_spreadsheets = list()
   i <- 1
@@ -70,15 +95,9 @@ load_special_schools <- function() {
 }
 
 load_through_schools <- function() {
-  schools <- load_google_sheet_locally("Wales Through Schools") %>%
-    add_support_categories_2019() %>%
-    add_num_pupils() %>%
-    add_per_pupil_funding() %>%
-    add_total_delegated_budget() %>%
-    add_budget_outturn() %>%
+  schools <- load_consolidated_data("Wales Through Schools", "through") %>%
     tidy_raw_data() %>%
-    add_school_locations() %>%
-    mutate(school_type = 'through')
+    add_school_locations()
   
   # QC
   # Find schools with no location
@@ -220,7 +239,8 @@ add_budget_outturn <- function(schools_tidy) {
 
 tidy_raw_data <- function(schools_raw) {
   schools_raw %>%
-    rename(local_authority = `Local authority`,
+    rename(school_type = `School type`,
+           local_authority = `Local authority`,
            lea_code = `LEA Code`,
            school = `Name of school`,
            language = `Welsh Medium`,
@@ -239,7 +259,7 @@ tidy_raw_data <- function(schools_raw) {
     filter(!is.na(school)) %>% # drop rows with no school name
     filter(!is.na(lea_code)) %>% # and no LEA code
     na_if('.') %>% # dots are NA
-    gather(element_year, value, -c(local_authority, lea_code, school, capacity, rural_school, language)) %>%
+    gather(element_year, value, -c(school_type, local_authority, lea_code, school, capacity, rural_school, language)) %>%
     separate(element_year, c("element", "year"), sep = "#") %>%
     spread(element, value) %>%
     mutate_at(c('budget_outturn', 'fsm_rate', 'num_pupils', 'per_pupil_funding', 'total_school_delegated_budget'), as_numeric_ignore_commas) %>%

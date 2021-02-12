@@ -72,6 +72,7 @@ load_special_schools <- function() {
 load_through_schools <- function() {
   schools <- load_google_sheet_locally("Wales Through Schools") %>%
     add_support_categories_2019() %>%
+    add_num_pupils() %>%
     tidy_raw_data() %>%
     add_school_locations() %>%
     mutate(school_type = 'through')
@@ -171,6 +172,7 @@ tidy_raw_data <- function(schools_raw) {
     rename_all(gsub, pattern = '^Budget outturn (20.+)$', replacement = 'budget_outturn#\\1') %>%
     rename_all(gsub, pattern = '^FSM rate 2018$', replacement = 'fsm_rate#2018-19') %>% # assume 2018 is 2018-19
     rename_all(gsub, pattern = '^FSM rate 2019$', replacement = 'fsm_rate#2019-20') %>% # assume 2019 is 2019-20
+    rename_all(gsub, pattern = '^FSM rate 2020$', replacement = 'fsm_rate#2020-21') %>% # assume 2020 is 2020-21
     rename_all(gsub, pattern = '^Support category (20.+)$', replacement = 'support_category#\\1') %>%
     select(-starts_with('X')) %>% # drop any extra X columns
     select(-starts_with('...')) %>% # drop any extra ... columns
@@ -192,7 +194,7 @@ tidy_raw_data <- function(schools_raw) {
                                              support_category == 'Amber' ~ 15,
                                              support_category == 'Red' ~ 25,
                                              TRUE ~ NA_real_)) %>%
-    filter(!is.na(year) & year != '2020-21' & year != '2021-22') # drop blank years and years with no data
+    filter(!is.na(year) & year != '2021-22') # drop blank years and years with no data
 }
 
 add_school_locations <- function(schools_tidy) {

@@ -12,6 +12,7 @@ load_google_sheet_locally <- function(title) {
 
 # Schools data
 
+# Load sheet and drop unused columns, fix types, etc.
 load_google_sheet_locally_and_normalize <- function(sheet, school_type) {
   load_google_sheet_locally(sheet) %>%
     mutate(`School type` = school_type) %>%
@@ -19,9 +20,16 @@ load_google_sheet_locally_and_normalize <- function(sheet, school_type) {
     select(-starts_with('...')) %>% # drop any extra ... columns
     filter(!is.na(`Name of school`)) %>% # drop rows with no school name
     filter(!is.na(`LEA Code`)) %>% # and no LEA code
-    na_if('.') # dots are NA
+    na_if('.') %>% # dots are NA
+    mutate_at(vars(starts_with("Pupil numbers")), as_numeric_ignore_commas) %>%
+    mutate_at(vars(starts_with("Total delegated budget")), as_numeric_ignore_commas) %>%
+    mutate_at(vars(starts_with("Per pupil funding")), as_numeric_ignore_commas) %>%
+    mutate_at(vars(starts_with("Budget outturn")), as_numeric_ignore_commas) %>%
+    mutate_at(vars(starts_with("FSM rate")), as_numeric_ignore_commas) %>%
+    mutate_at(vars(starts_with("Capacity")), as_numeric_ignore_commas)
 }
 
+# Merge all the Google sheets into a single dataframe
 load_merged_google_sheets <- function() {
   school_spreadsheets = list()
   i <- 1
@@ -35,8 +43,8 @@ load_merged_google_sheets <- function() {
     i <- i + 1
   }
   
+  # Use rbind to detect when columns don't match
   primary <- do.call("rbind", school_spreadsheets)
-  
   
   secondary <- load_google_sheet_locally_and_normalize("Wales Secondary Schools", "secondary") %>%
     # remove unused columns
@@ -48,7 +56,26 @@ load_merged_google_sheets <- function() {
   through <- load_google_sheet_locally_and_normalize("Wales Through Schools", "through")
 
   rbind(primary, secondary, special, through)
+}
 
+# Merge all schools data into a single dataframe - this is a good view to export as a spreadsheet for manual checking
+load_merged_data <- function() {
+  load_merged_google_sheets() %>%
+    add_support_categories_2019() %>%
+    add_num_pupils() %>%
+    add_per_pupil_funding() %>%
+    add_total_delegated_budget() %>%
+    add_budget_outturn() %>%
+    # reorder columns
+    relocate(`School type`) %>%
+    relocate(starts_with('Support category'), .after=`Name of school`) %>%
+    relocate(starts_with('FSM rate'), .after=`Name of school`) %>%
+    relocate(starts_with('Budget outturn'), .after=`Name of school`) %>%
+    relocate(starts_with('Per pupil funding'), .after=`Name of school`) %>%
+    relocate(starts_with('Total delegated budget'), .after=`Name of school`) %>%
+    relocate(starts_with('Pupil numbers'), .after=`Name of school`) %>%
+    # reorder rows
+    arrange(`School type`, `Local authority`, `Name of school`)
 }
 
 load_consolidated_data <- function(sheet, school_type) {

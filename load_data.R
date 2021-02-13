@@ -61,6 +61,7 @@ load_merged_google_sheets <- function() {
 # Merge all schools data into a single dataframe - this is a good view to export as a spreadsheet for manual checking
 load_merged_data <- function() {
   load_merged_google_sheets() %>%
+    add_school_locations2() %>%
     add_support_categories_2019() %>%
     add_num_pupils() %>%
     add_per_pupil_funding() %>%
@@ -77,6 +78,9 @@ load_merged_data <- function() {
     # reorder rows
     arrange(`School type`, `Local authority`, `Name of school`)
 }
+
+#all <- load_merged_data()
+#all %>% write_csv("schools.csv", na="")
 
 load_consolidated_data <- function(sheet, school_type) {
   load_google_sheet_locally(sheet) %>%
@@ -347,6 +351,12 @@ add_school_locations <- function(schools_tidy) {
   school_locations <- load_school_locations()
   schools_tidy %>%
     left_join(school_locations)
+}
+
+add_school_locations2 <- function(schools) {
+  school_locations <- load_school_locations()
+  schools %>%
+    left_join(school_locations, by = c("LEA Code" = "lea_code"))
 }
 
 all_schools <- load_all_schools()

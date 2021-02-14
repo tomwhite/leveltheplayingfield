@@ -26,8 +26,10 @@ school_list_from_outturn <- load_stats_wales_school_csv("data/levelofreservescar
 school_list_from_stats_wales = union(school_list_from_delegated, school_list_from_outturn)
 
 # Add these missing schools to sheets
-missing_schools <- school_list_from_stats_wales %>%
+# NB: only look at num pupils data since this is the only way to see if a school is actually open!
+missing_schools <- school_list_from_delegated %>%
   anti_join(sheets, by = c("lea_code" = "LEA Code")) %>%
+  filter(as.integer(substr(lea_code, 4, 4)) != 1) %>% # ignore nurseries
   arrange(lea_code)
 missing_schools %>% write_csv("missing_schools.csv")
 

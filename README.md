@@ -25,7 +25,7 @@ after the final part of the Stats Wales URL.
 
 ### Address data
 
-Data in the _data/geo_ directory is from https://gweddill.gov.wales/statistics-and-research/address-list-of-schools/?lang=en.
+Data in the _data/geo_ directory is from https://gov.wales/address-list-schools.
 Postcode to lat/long conversion was carried out using https://www.doogal.co.uk/BatchGeocoding.php.
 
 ### School-level data

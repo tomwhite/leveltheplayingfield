@@ -272,7 +272,7 @@ load_stats_wales_school_csv <- function(csv) {
 # currently only used for 2020-21 (and onwards in future)
 load_num_pupils <- function() {
   load_stats_wales_school_csv("data/delegatedschoolbudgetsperpupil-by-school-num-pupils.csv") %>%
-    na_if('Unallocated resources') %>% # dots are NA
+    filter(!grepl('Unallocated resources', school)) %>%
     drop_na(stats_wales_code) %>%
     mutate(lea_code = to_lea_code(stats_wales_code)) %>%
     drop_na(`2020-21`) %>%
@@ -288,6 +288,19 @@ add_num_pupils <- function(schools_tidy) {
     left_join(num_pupils, by = c("LEA Code" = "lea_code"))
 }
 
+# TODO use this to load all num pupils data (not just one year)
+load_num_pupils_all <- function() {
+  num_pupils <- load_stats_wales_school_csv("data/delegatedschoolbudgetsperpupil-by-school-num-pupils.csv") %>%
+    filter(!grepl('Unallocated resources', school)) %>%
+    drop_na(stats_wales_code) %>%
+    mutate(lea_code = to_lea_code(stats_wales_code)) %>%
+    mutate_at("lea_code", as_numeric_ignore_commas) %>%
+    mutate_at(vars(starts_with("20")), as_numeric_ignore_commas) %>%
+    mutate_at(vars(starts_with("20")), round) %>%
+    rename_at(vars(starts_with("20")), function(x){paste0("Pupil numbers ", x)}) %>%
+    select(-c("stats_wales_code", "school"))
+}
+  
 # currently only used for 2020-21 (and onwards in future)
 load_per_pupil_funding <- function() {
   load_stats_wales_school_csv("data/delegatedschoolbudgetsperpupil-by-school.csv") %>%
@@ -310,7 +323,7 @@ add_per_pupil_funding <- function(schools_tidy) {
 # currently only used for 2020-21 (and onwards in future)
 load_total_delegated_budget <- function() {
   load_stats_wales_school_csv("data/delegatedschoolbudgetsperpupil-by-school-total-budget.csv") %>%
-    na_if('Unallocated resources') %>% # dots are NA
+    filter(!grepl('Unallocated resources', school)) %>%
     drop_na(stats_wales_code) %>%
     mutate(lea_code = to_lea_code(stats_wales_code)) %>%
     drop_na(`2020-21`) %>%
@@ -329,7 +342,7 @@ add_total_delegated_budget <- function(schools_tidy) {
 # currently only used for 2019-20 (and onwards in future)
 load_budget_outturn <- function() {
   load_stats_wales_school_csv("data/levelofreservescarriedforward-by-school.csv") %>%
-    na_if('Unallocated resources') %>% # dots are NA
+    filter(!grepl('Unallocated resources', school)) %>%
     drop_na(stats_wales_code) %>%
     mutate(lea_code = to_lea_code(stats_wales_code)) %>%
     drop_na(`2019-20`) %>%

@@ -55,7 +55,12 @@ load_merged_google_sheets <- function() {
   special <- load_google_sheet_locally_and_normalize("Wales Special Schools", "special")
   through <- load_google_sheet_locally_and_normalize("Wales Through Schools", "through")
 
-  rbind(primary, secondary, special, through)
+  rbind(primary, secondary, special, through) %>%
+    # remove columns that we get from Stats Wales directly now
+    select(-starts_with('Pupil numbers')) %>%
+    select(-starts_with('Total delegated budget')) %>%
+    select(-starts_with('Per pupil funding')) %>%
+    select(-starts_with('Budget outturn'))
 }
 
 # Merge all schools data into a single dataframe - this is a good view to export as a spreadsheet for manual checking
@@ -271,6 +276,7 @@ load_stats_wales_school_csv <- function(csv) {
     separate(X4, c("stats_wales_code", "school"), " - ?", extra = "merge") # split code from school name
 }
 
+# Some data fixes
 fix_stats_wales_schools <- function(stats_wales_schools) {
   stats_wales_schools %>%
     # Stats Wales has the old code for Banw/Llanerfyl New School
@@ -284,29 +290,8 @@ fix_stats_wales_schools <- function(stats_wales_schools) {
     distinct(stats_wales_code, .keep_all = TRUE)
 }
 
-# currently only used for 2020-21 (and onwards in future)
 load_num_pupils <- function() {
   load_stats_wales_school_csv("data/delegatedschoolbudgetsperpupil-by-school-num-pupils.csv") %>%
-    fix_stats_wales_schools() %>%
-    filter(!grepl('Unallocated resources', school)) %>%
-    drop_na(stats_wales_code) %>%
-    mutate(lea_code = to_lea_code(stats_wales_code)) %>%
-    drop_na(`2020-21`) %>%
-    mutate_at(c('2020-21', 'lea_code'), as_numeric_ignore_commas) %>%
-    mutate_at(c('2020-21'), round) %>%
-    mutate(`Pupil numbers 2020-21` = `2020-21`) %>%
-    select(c(lea_code, `Pupil numbers 2020-21`))
-}
-
-add_num_pupils <- function(schools_tidy) {
-  num_pupils <- load_num_pupils()
-  schools_tidy %>%
-    left_join(num_pupils, by = c("LEA Code" = "lea_code"))
-}
-
-# TODO use this to load all num pupils data (not just one year)
-load_num_pupils_all <- function() {
-  num_pupils <- load_stats_wales_school_csv("data/delegatedschoolbudgetsperpupil-by-school-num-pupils.csv") %>%
     fix_stats_wales_schools() %>%
     filter(!grepl('Unallocated resources', school)) %>%
     drop_na(stats_wales_code) %>%
@@ -317,19 +302,24 @@ load_num_pupils_all <- function() {
     rename_at(vars(starts_with("20")), function(x){paste0("Pupil numbers ", x)}) %>%
     select(-c("stats_wales_code", "school"))
 }
+
+add_num_pupils <- function(schools_tidy) {
+  num_pupils <- load_num_pupils()
+  schools_tidy %>%
+    left_join(num_pupils, by = c("LEA Code" = "lea_code"))
+}
   
-# currently only used for 2020-21 (and onwards in future)
 load_per_pupil_funding <- function() {
   load_stats_wales_school_csv("data/delegatedschoolbudgetsperpupil-by-school.csv") %>%
     fix_stats_wales_schools() %>%
     na_if('Unallocated resources') %>% # dots are NA
     drop_na(stats_wales_code) %>%
     mutate(lea_code = to_lea_code(stats_wales_code)) %>%
-    drop_na(`2020-21`) %>%
-    mutate_at(c('2020-21', 'lea_code'), as_numeric_ignore_commas) %>%
-    mutate_at(c('2020-21'), round) %>%
-    mutate(`Per pupil funding 2020-21` = `2020-21`) %>%
-    select(c(lea_code, `Per pupil funding 2020-21`))
+    mutate_at("lea_code", as_numeric_ignore_commas) %>%
+    mutate_at(vars(starts_with("20")), as_numeric_ignore_commas) %>%
+    mutate_at(vars(starts_with("20")), round) %>%
+    rename_at(vars(starts_with("20")), function(x){paste0("Per pupil funding ", x)}) %>%
+    select(-c("stats_wales_code", "school"))
 }
 
 add_per_pupil_funding <- function(schools_tidy) {
@@ -338,18 +328,18 @@ add_per_pupil_funding <- function(schools_tidy) {
     left_join(per_pupil_funding, by = c("LEA Code" = "lea_code"))
 }
 
-# currently only used for 2020-21 (and onwards in future)
 load_total_delegated_budget <- function() {
   load_stats_wales_school_csv("data/delegatedschoolbudgetsperpupil-by-school-total-budget.csv") %>%
     fix_stats_wales_schools() %>%
     filter(!grepl('Unallocated resources', school)) %>%
     drop_na(stats_wales_code) %>%
     mutate(lea_code = to_lea_code(stats_wales_code)) %>%
-    drop_na(`2020-21`) %>%
-    mutate_at(c('2020-21', 'lea_code'), as_numeric_ignore_commas) %>%
-    mutate_at(c('2020-21'), ~.*1000) %>% # multiply to get values in £
-    mutate(`Total delegated budget 2020-21` = `2020-21`) %>%
-    select(c(lea_code, `Total delegated budget 2020-21`))
+    mutate_at("lea_code", as_numeric_ignore_commas) %>%
+    mutate_at(vars(starts_with("20")), as_numeric_ignore_commas) %>%
+    mutate_at(vars(starts_with("20")), ~.*1000) %>% # multiply to get values in £
+    mutate_at(vars(starts_with("20")), round) %>%
+    rename_at(vars(starts_with("20")), function(x){paste0("Total delegated budget ", x)}) %>%
+    select(-c("stats_wales_code", "school"))
 }
 
 add_total_delegated_budget <- function(schools_tidy) {
@@ -358,18 +348,18 @@ add_total_delegated_budget <- function(schools_tidy) {
     left_join(total_delegated_budget, by = c("LEA Code" = "lea_code"))
 }
 
-# currently only used for 2019-20 (and onwards in future)
 load_budget_outturn <- function() {
   load_stats_wales_school_csv("data/levelofreservescarriedforward-by-school.csv") %>%
     fix_stats_wales_schools() %>%
     filter(!grepl('Unallocated resources', school)) %>%
     drop_na(stats_wales_code) %>%
     mutate(lea_code = to_lea_code(stats_wales_code)) %>%
-    drop_na(`2019-20`) %>%
-    mutate_at(c('2019-20', 'lea_code'), as_numeric_ignore_commas) %>%
-    mutate_at(c('2019-20'), ~.*1000) %>% # multiply to get values in £
-    mutate(`Budget outturn 2019-20` = `2019-20`) %>%
-    select(c(lea_code, `Budget outturn 2019-20`))
+    mutate_at("lea_code", as_numeric_ignore_commas) %>%
+    mutate_at(vars(starts_with("20")), as_numeric_ignore_commas) %>%
+    mutate_at(vars(starts_with("20")), ~.*1000) %>% # multiply to get values in £
+    mutate_at(vars(starts_with("20")), round) %>%
+    rename_at(vars(starts_with("20")), function(x){paste0("Budget outturn ", x)}) %>%
+    select(-c("stats_wales_code", "school"))
 }
 
 add_budget_outturn <- function(schools_tidy) {

@@ -8,6 +8,7 @@ sheets <- load_merged_google_sheets()
 
 # schools from stats wales
 school_list_from_delegated <- load_stats_wales_school_csv("data/delegatedschoolbudgetsperpupil-by-school-num-pupils.csv") %>%
+  fix_stats_wales_schools() %>%
   filter(!grepl('Unallocated resources', school)) %>%
   drop_na(stats_wales_code) %>%
   mutate(lea_code = to_lea_code(stats_wales_code)) %>%
@@ -16,6 +17,7 @@ school_list_from_delegated <- load_stats_wales_school_csv("data/delegatedschoolb
   select(c(lea_code, stats_wales_code, school))
 
 school_list_from_outturn <- load_stats_wales_school_csv("data/levelofreservescarriedforward-by-school.csv") %>%
+  fix_stats_wales_schools() %>%
   filter(!grepl('Unallocated resources', school)) %>%
   drop_na(stats_wales_code) %>%
   mutate(lea_code = to_lea_code(stats_wales_code)) %>%
@@ -27,9 +29,12 @@ school_list_from_stats_wales = union(school_list_from_delegated, school_list_fro
 
 # Add these missing schools to sheets
 # NB: only look at num pupils data since this is the only way to see if a school is actually open!
-missing_schools <- school_list_from_delegated %>%
+missing_schools <- school_list_from_stats_wales %>%
   anti_join(sheets, by = c("lea_code" = "LEA Code")) %>%
   filter(as.integer(substr(lea_code, 4, 4)) != 1) %>% # ignore nurseries
+  filter(lea_code != "6602134") %>% # Bodorgan school closed and almalgamated into 6603037, Ysgol Santes Dwynwen
+  filter(!lea_code %in% c("6612035", "6692002", "6693002")) %>% # closed
+  filter(lea_code != "6742250") %>% # Garth Olwg almalgamted into 6745504 (through school)
   arrange(lea_code)
 missing_schools %>% write_csv("missing_schools.csv")
 

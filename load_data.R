@@ -464,6 +464,8 @@ population_with_age <- load_population_with_age()
 # Local authority delegated school budget data
 
 la_delegation_rates <- load_google_sheet_locally('Delegation rates %') %>%
+  select(-starts_with('X')) %>% # drop any extra X columns
+  select(-starts_with('...')) %>% # drop any extra ... columns
   rename(local_authority = Authority) %>%
   gather(year, delegation_rate_percent, -c(local_authority))
 

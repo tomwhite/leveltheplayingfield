@@ -15,7 +15,6 @@ after the final part of the Stats Wales URL.
   - _Note: Make sure Wales is the only expanded country. Click on Year dropdown, and Show All to get all years_. Also one export per age group too.
 - https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Delegated-School-Budgets/delegatedschoolbudgetsperpupil-by-sector (Individual schools budget per pupil, and Number of pupils)
 - https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Delegated-School-Outturn/levelofreservescarriedforward-by-sector
-  - _Not updated in 2020_
 - https://statswales.gov.wales/Catalogue/Local-Government/Finance/Revenue/Delegated-School-Budgets/delegatedschoolbudgetsperpupil-by-school (Individual schools budget, Individual schools budget per pupil, and Number of pupils)
   - _Note: Make sure Caerphilly Middle schools are expanded._
   - _From 2020-21. This data was previously entered into Google Sheets_

@@ -49,7 +49,7 @@ map_language(all_schools, NULL, save_to_file = TRUE)
 
 # Local authorities
 
-#for (la in LOCAL_AUTHORITIES) {
+for (la in LOCAL_AUTHORITIES) {
   print(la)
 
   # Population Trends
@@ -87,7 +87,7 @@ map_language(all_schools, NULL, save_to_file = TRUE)
   # Welsh Language Provision
   map_language_by_school_type(all_schools, la, save_to_file = TRUE)
 
-#}
+}
 
 #
 # Supporting or old reports - not used on website

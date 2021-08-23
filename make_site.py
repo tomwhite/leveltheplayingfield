@@ -1,6 +1,7 @@
 import os, string
 
 # These should match constants in utils.R
+# NB if updating these, also update hardcoded values below
 LATEST_YEAR = '2019-20'
 LATEST_NUM_PUPILS_YEAR = '2020-21'
 LATEST_OUTTURN_YEAR = '2019-20'
@@ -126,7 +127,7 @@ with open("docs_aug_2021/index.html", "w") as la_table:
 
         <td>-</td>
         <td>-</td>
-        <td><a href="wales/all_schools_occupancy_2019-20.html">Y</a> (<a href="wales/all_schools_occupancy_alt_2019-20.html">alt</a>)</td>
+        <td><a href="wales/all_schools_occupancy_2020-21.html">Y</a> (<a href="wales/all_schools_occupancy_alt_2020-21.html">alt</a>)</td>
         <td>-</td>
         <td>-</td>
         <td>-</td>
@@ -139,7 +140,7 @@ with open("docs_aug_2021/index.html", "w") as la_table:
         <td>-</td>
 
         <td>-</td>
-        <td><a href="wales/all_schools_outturn_surplus_or_deficit_2018-19.html">Y</a> (<a href="wales/all_schools_outturn_surplus_or_deficit_alt_2018-19.html">alt</a>)</td>
+        <td><a href="wales/all_schools_outturn_surplus_or_deficit_2019-20.html">Y</a> (<a href="wales/all_schools_outturn_surplus_or_deficit_alt_2019-20.html">alt</a>)</td>
         <td>-</td>
         <td>-</td>
 
@@ -150,7 +151,7 @@ with open("docs_aug_2021/index.html", "w") as la_table:
         <td>-</td>
         <td>-</td>
 
-        <td><a href="wales/all_schools_language_2018-19.html">Y</a> (<a href="wales/all_schools_language_alt_2018-19.html">alt</a>)</td>
+        <td><a href="wales/all_schools_language_2019-20.html">Y</a> (<a href="wales/all_schools_language_alt_2019-20.html">alt</a>)</td>
     </tr>
     <tr>
         <td>All Wales (by school size)</td>
@@ -158,9 +159,9 @@ with open("docs_aug_2021/index.html", "w") as la_table:
         <td>-</td>
         <td>-</td>
         <td>-</td>
-        <td><a href="wales/primary_occupancy_with_school_size_2019-20.html">Y</a> (<a href="wales/primary_occupancy_with_school_capacity_2019-20.html">cap</a>)</td>
-        <td><a href="wales/secondary_occupancy_with_school_size_2019-20.html">Y</a> (<a href="wales/secondary_occupancy_with_school_capacity_2019-20.html">cap</a>)</td>
-        <td><a href="wales/through_occupancy_with_school_size_2019-20.html">Y</a> (<a href="wales/through_occupancy_with_school_capacity_2019-20.html">cap</a>)</td>
+        <td><a href="wales/primary_occupancy_with_school_size_2020-21.html">Y</a> (<a href="wales/primary_occupancy_with_school_capacity_2020-21.html">cap</a>)</td>
+        <td><a href="wales/secondary_occupancy_with_school_size_2020-21.html">Y</a> (<a href="wales/secondary_occupancy_with_school_capacity_2020-21.html">cap</a>)</td>
+        <td><a href="wales/through_occupancy_with_school_size_2020-21.html">Y</a> (<a href="wales/through_occupancy_with_school_capacity_2020-21.html">cap</a>)</td>
 
         <td>-</td>
         <td>-</td>
@@ -188,7 +189,7 @@ with open("docs_aug_2021/index.html", "w") as la_table:
 
         <td>-</td>
         <td>-</td>
-        <td><a href="wales/all_schools_occupancy_with_la_2019-20.html">Y</a></td>
+        <td><a href="wales/all_schools_occupancy_with_la_2020-21.html">Y</a></td>
         <td>-</td>
         <td>-</td>
         <td>-</td>
@@ -197,11 +198,11 @@ with open("docs_aug_2021/index.html", "w") as la_table:
         <td>-</td>
         <td>-</td>
         <td>-</td>
-        <td><a href="wales/primary_per_pupil_funding_2019-20.html">Y</a></td>
-        <td><a href="wales/secondary_per_pupil_funding_2019-20.html">Y</a></td>
+        <td><a href="wales/primary_per_pupil_funding_2020-21.html">Y</a></td>
+        <td><a href="wales/secondary_per_pupil_funding_2020-21.html">Y</a></td>
 
         <td>-</td>
-        <td><a href="wales/all_schools_outturn_surplus_or_deficit_with_la_2018-19.html">Y</a></td>
+        <td><a href="wales/all_schools_outturn_surplus_or_deficit_with_la_2019-20.html">Y</a></td>
         <td>-</td>
         <td>-</td>
 
@@ -210,9 +211,9 @@ with open("docs_aug_2021/index.html", "w") as la_table:
         <td>-</td>
 
         <td>-</td>
-        <td><a href="wales/all_schools_fsm_with_la_2018-19.html">Y</a></td>
+        <td><a href="wales/all_schools_fsm_with_la_2019-20.html">Y</a></td>
 
-        <td><a href="wales/all_schools_language_with_la_2018-19.html">Y</a></td>
+        <td><a href="wales/all_schools_language_with_la_2019-20.html">Y</a></td>
     </tr>
 """)
 

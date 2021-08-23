@@ -127,108 +127,108 @@ tidy_merged_data <- function(schools_merged) {
     filter(!is.na(year) & year != '2021-22') # drop blank years and years with no data
 }
 
-load_consolidated_data <- function(sheet, school_type) {
-  load_google_sheet_locally(sheet) %>%
-    mutate(`School type` = school_type) %>%
-    select(-starts_with('X')) %>% # drop any extra X columns
-    select(-starts_with('...')) %>% # drop any extra ... columns
-    filter(!is.na(`Name of school`)) %>% # drop rows with no school name
-    filter(!is.na(`LEA Code`)) %>% # and no LEA code
-    na_if('.') %>% # dots are NA
-    add_support_categories_2019() %>%
-    add_num_pupils() %>%
-    add_per_pupil_funding() %>%
-    add_total_delegated_budget() %>%
-    add_budget_outturn() %>%
-    # reorder columns
-    relocate(`School type`) %>%
-    relocate(starts_with('Support category'), .after=`Name of school`) %>%
-    relocate(starts_with('FSM rate'), .after=`Name of school`) %>%
-    relocate(starts_with('Budget outturn'), .after=`Name of school`) %>%
-    relocate(starts_with('Per pupil funding'), .after=`Name of school`) %>%
-    relocate(starts_with('Total delegated budget'), .after=`Name of school`) %>%
-    relocate(starts_with('Pupil numbers'), .after=`Name of school`) %>%
-    # reorder rows
-    arrange(`School type`, `Local authority`, `Name of school`)
-}
-
-load_primaries <- function() {
-  school_spreadsheets = list()
-  i <- 1
-  for (local_authority in LOCAL_AUTHORITIES) {
-    school_spreadsheets[[i]] <- load_google_sheet_locally(paste(local_authority, "Primary Schools")) %>%
-      add_support_categories_2019() %>%
-      tidy_raw_data()
-    i <- i + 1
-  }
-  schools_tidy <- add_school_locations(bind_rows(school_spreadsheets)) %>%
-    mutate(school_type = 'primary')
-  
-  # QC
-  # Should give 5 rows - new schools that don't have a support category from My Local Schools
-  print("Schools that don't have a support category")
-  schools_tidy %>%
-    filter(year == LATEST_SUPPORT_CATEGORY_YEAR) %>%
-    filter(is.na(support_category)) %>%
-    print()
-  
-  # Find schools with no location
-  print("Primary schools with no location")
-  schools_tidy %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
-  
-  schools_tidy
-}
-
-load_secondaries <- function() {
-  secondaries_tidy <- load_consolidated_data("Wales Secondary Schools", "secondary") %>%
-    # remove unused columns
-    select(-starts_with("Local authority FSM rate")) %>%
-    select(-starts_with("Wales FSM rate")) %>%
-    select(-starts_with("Occupancy")) %>%
-    tidy_raw_data() %>%
-    add_school_locations()
-  
-  # QC
-  # Find schools with no location (should be none)
-  print("Secondary schools with no location")
-  secondaries_tidy %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
-  
-  secondaries_tidy
-}
-
-load_special_schools <- function() {
-  schools <- load_consolidated_data("Wales Special Schools", "special") %>%
-    tidy_raw_data() %>%
-    add_school_locations()
-  
-  # QC
-  # Find schools with no location
-  print("Special schools with no location")
-  schools %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
-  
-  schools
-}
-
-load_through_schools <- function() {
-  schools <- load_consolidated_data("Wales Through Schools", "through") %>%
-    tidy_raw_data() %>%
-    add_school_locations()
-  
-  # QC
-  # Find schools with no location
-  print("Through schools with no location")
-  schools %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
-  
-  schools
-}
-
-load_all_schools <- function() {
-  load_primaries() %>%
-    union_all(load_secondaries()) %>%
-    union_all(load_special_schools()) %>%
-    union_all(load_through_schools()) %>%
-    mutate_at(c('support_category'), as.factor)
-}
+# load_consolidated_data <- function(sheet, school_type) {
+#   load_google_sheet_locally(sheet) %>%
+#     mutate(`School type` = school_type) %>%
+#     select(-starts_with('X')) %>% # drop any extra X columns
+#     select(-starts_with('...')) %>% # drop any extra ... columns
+#     filter(!is.na(`Name of school`)) %>% # drop rows with no school name
+#     filter(!is.na(`LEA Code`)) %>% # and no LEA code
+#     na_if('.') %>% # dots are NA
+#     add_support_categories_2019() %>%
+#     add_num_pupils() %>%
+#     add_per_pupil_funding() %>%
+#     add_total_delegated_budget() %>%
+#     add_budget_outturn() %>%
+#     # reorder columns
+#     relocate(`School type`) %>%
+#     relocate(starts_with('Support category'), .after=`Name of school`) %>%
+#     relocate(starts_with('FSM rate'), .after=`Name of school`) %>%
+#     relocate(starts_with('Budget outturn'), .after=`Name of school`) %>%
+#     relocate(starts_with('Per pupil funding'), .after=`Name of school`) %>%
+#     relocate(starts_with('Total delegated budget'), .after=`Name of school`) %>%
+#     relocate(starts_with('Pupil numbers'), .after=`Name of school`) %>%
+#     # reorder rows
+#     arrange(`School type`, `Local authority`, `Name of school`)
+# }
+#
+# load_primaries <- function() {
+#   school_spreadsheets = list()
+#   i <- 1
+#   for (local_authority in LOCAL_AUTHORITIES) {
+#     school_spreadsheets[[i]] <- load_google_sheet_locally(paste(local_authority, "Primary Schools")) %>%
+#       add_support_categories_2019() %>%
+#       tidy_raw_data()
+#     i <- i + 1
+#   }
+#   schools_tidy <- add_school_locations(bind_rows(school_spreadsheets)) %>%
+#     mutate(school_type = 'primary')
+#   
+#   # QC
+#   # Should give 5 rows - new schools that don't have a support category from My Local Schools
+#   print("Schools that don't have a support category")
+#   schools_tidy %>%
+#     filter(year == LATEST_SUPPORT_CATEGORY_YEAR) %>%
+#     filter(is.na(support_category)) %>%
+#     print()
+#   
+#   # Find schools with no location
+#   print("Primary schools with no location")
+#   schools_tidy %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
+#   
+#   schools_tidy
+# }
+# 
+# load_secondaries <- function() {
+#   secondaries_tidy <- load_consolidated_data("Wales Secondary Schools", "secondary") %>%
+#     # remove unused columns
+#     select(-starts_with("Local authority FSM rate")) %>%
+#     select(-starts_with("Wales FSM rate")) %>%
+#     select(-starts_with("Occupancy")) %>%
+#     tidy_raw_data() %>%
+#     add_school_locations()
+#   
+#   # QC
+#   # Find schools with no location (should be none)
+#   print("Secondary schools with no location")
+#   secondaries_tidy %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
+#   
+#   secondaries_tidy
+# }
+# 
+# load_special_schools <- function() {
+#   schools <- load_consolidated_data("Wales Special Schools", "special") %>%
+#     tidy_raw_data() %>%
+#     add_school_locations()
+#   
+#   # QC
+#   # Find schools with no location
+#   print("Special schools with no location")
+#   schools %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
+#   
+#   schools
+# }
+# 
+# load_through_schools <- function() {
+#   schools <- load_consolidated_data("Wales Through Schools", "through") %>%
+#     tidy_raw_data() %>%
+#     add_school_locations()
+#   
+#   # QC
+#   # Find schools with no location
+#   print("Through schools with no location")
+#   schools %>% filter(year == LATEST_YEAR) %>% filter(is.na(longitude)) %>% print()
+#   
+#   schools
+# }
+# 
+# load_all_schools <- function() {
+#   load_primaries() %>%
+#     union_all(load_secondaries()) %>%
+#     union_all(load_special_schools()) %>%
+#     union_all(load_through_schools()) %>%
+#     mutate_at(c('support_category'), as.factor)
+# }
 
 load_school_locations <- function() {
   # This was batch geocoded using https://www.doogal.co.uk/BatchGeocoding.php

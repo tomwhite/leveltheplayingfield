@@ -1,21 +1,22 @@
 import os, string
 
-LATEST_YEAR = '2018-19'
-LATEST_NUM_PUPILS_YEAR = '2019-20'
-LATEST_OUTTURN_YEAR = '2018-19'
+# These should match constants in utils.R
+LATEST_YEAR = '2019-20'
+LATEST_NUM_PUPILS_YEAR = '2020-21'
+LATEST_OUTTURN_YEAR = '2019-20'
 LATEST_SUPPORT_CATEGORY_YEAR = '2019'
-LATEST_FSM_YEAR = '2019-20'
+LATEST_FSM_YEAR = '2020-21'
 
 def pretty(name):
     return string.capwords(name.replace('_', ' '))
 
 las = []
-for f in os.listdir('docs/local_authorities'):
+for f in os.listdir('docs_aug_2021/local_authorities'):
     las.append(f)
 las.sort()
 
 for la in las:
-    index_filename = "docs/local_authorities/{}/index.html".format(la)
+    index_filename = "docs_aug_2021/local_authorities/{}/index.html".format(la)
     with open(index_filename, "w") as index_file:
         index_file.write("""<html>
 <head>
@@ -35,7 +36,7 @@ for la in las:
 </body>
 """)
 
-with open("docs/la_table.html", "w") as la_table:
+with open("docs_aug_2021/la_table.html", "w") as la_table:
     la_table.write("""<html>
 <head>
     <title>Level The Playing Field</title>
@@ -66,7 +67,7 @@ with open("docs/la_table.html", "w") as la_table:
 </body>
 """)
 
-with open("docs/index.html", "w") as la_table:
+with open("docs_aug_2021/index.html", "w") as la_table:
     la_table.write("""<html>
 <head>
     <title>Level The Playing Field Reports</title>

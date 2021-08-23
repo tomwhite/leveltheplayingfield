@@ -87,8 +87,8 @@ load_merged_data <- function() {
 #all <- load_merged_data()
 #all %>% write_csv("schools.csv", na="")
 
-#all_schools2 <- load_merged_data() %>%
-#  tidy_merged_data()
+all_schools2 <- load_merged_data() %>%
+  tidy_merged_data()
 
 # Tidy merged data so it is in a form to run analyses
 tidy_merged_data <- function(schools_merged) {
@@ -420,7 +420,8 @@ add_school_locations2 <- function(schools) {
     left_join(school_locations, by = c("LEA Code" = "lea_code"))
 }
 
-all_schools <- load_all_schools()
+#all_schools <- load_all_schools()
+all_schools <- all_schools2
 
 # Population data
 

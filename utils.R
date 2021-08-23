@@ -1,6 +1,6 @@
 # Constants and utility functions
 
-REPORTS_DIR = "./docs"
+REPORTS_DIR = "./docs_aug_2021"
 POSTS_DIR = paste0(REPORTS_DIR, "/posts")
 
 LOCAL_AUTHORITIES = c("Blaenau Gwent",
@@ -26,11 +26,11 @@ LOCAL_AUTHORITIES = c("Blaenau Gwent",
                       "Vale of Glamorgan",
                       "Wrexham")
 
-LATEST_YEAR = '2018-19'
-LATEST_NUM_PUPILS_YEAR = '2019-20'
-LATEST_OUTTURN_YEAR = '2018-19'
+LATEST_YEAR = '2019-20'
+LATEST_NUM_PUPILS_YEAR = '2020-21'
+LATEST_OUTTURN_YEAR = '2019-20'
 LATEST_SUPPORT_CATEGORY_YEAR = '2019'
-LATEST_FSM_YEAR = '2019-20'
+LATEST_FSM_YEAR = '2020-21'
 
 round_df <- function(x, digits) {
   # round all numeric variables

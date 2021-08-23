@@ -1,6 +1,6 @@
 # Constants and utility functions
 
-REPORTS_DIR = "./docs_aug_2021"
+REPORTS_DIR = "./docs"
 POSTS_DIR = paste0(REPORTS_DIR, "/posts")
 
 LOCAL_AUTHORITIES = c("Blaenau Gwent",

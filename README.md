@@ -63,5 +63,5 @@ To update the reports every year:
 - Add FSM numbers from My Local School to the spreadsheets in Google Sheets. (This data is not available on Stats Wales)
 - Run _download_data.R_.
 - Run _batch.R_.
-- Run `python make_site.py`, and compare the local site to the live one.
+- Run `python3 make_site.py`, and compare the local site to the live one.
 - Upload the new site.

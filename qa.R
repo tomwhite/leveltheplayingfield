@@ -45,12 +45,15 @@ school_list_from_address_list_20190318 <- read_csv("data/geo/address-list-school
 school_list_from_address_list_20210204 <- read_csv("data/geo/address-list-schools-wales-maintained-20210204.csv") %>%
   select(c(`School Number`, `School Name`, Postcode)) %>%
   drop_na(`School Number`)
-new_schools_from_address_list <- school_list_from_address_list_20210204 %>%
-  anti_join(school_list_from_address_list_20190318, by = c("School Number"))
-closed_schools_from_address_list <- school_list_from_address_list_20190318 %>%
+school_list_from_address_list_20210825 <- read_csv("data/geo/address-list-schools-wales-maintained-20210825.csv") %>%
+  select(c(`School Number`, `School Name`, Postcode)) %>%
+  drop_na(`School Number`)
+new_schools_from_address_list <- school_list_from_address_list_20210825 %>%
   anti_join(school_list_from_address_list_20210204, by = c("School Number"))
+closed_schools_from_address_list <- school_list_from_address_list_20210204 %>%
+  anti_join(school_list_from_address_list_20210825, by = c("School Number"))
 
-school_list_from_address_list = union(school_list_from_address_list_20190318, school_list_from_address_list_20210204)
+school_list_from_address_list = union(school_list_from_address_list_20190318, school_list_from_address_list_20210204, school_list_from_address_list_20210825)
 
 # See if you can find these addresses independently?
 schools_missing_from_address_list <- sheets %>%

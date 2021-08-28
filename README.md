@@ -25,6 +25,7 @@ after the final part of the Stats Wales URL.
 ### Address data
 
 Data in the _data/geo_ directory is from https://gov.wales/address-list-schools.
+Download the latest ODS file, and export the "Maintained" sheet to CSV (using OpenOffice).
 Postcode to lat/long conversion was carried out using https://www.doogal.co.uk/BatchGeocoding.php.
 
 ### School-level data

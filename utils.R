@@ -26,11 +26,12 @@ LOCAL_AUTHORITIES = c("Blaenau Gwent",
                       "Vale of Glamorgan",
                       "Wrexham")
 
-LATEST_YEAR = '2019-20'
-LATEST_NUM_PUPILS_YEAR = '2020-21'
+LATEST_YEAR = '2019-20' # old
+LATEST_NUM_PUPILS_YEAR = '2021-22'
 LATEST_OUTTURN_YEAR = '2019-20'
 LATEST_SUPPORT_CATEGORY_YEAR = '2019'
 LATEST_FSM_YEAR = '2020-21'
+LATEST_LANGUAGE_YEAR = '2019-20'
 
 round_df <- function(x, digits) {
   # round all numeric variables

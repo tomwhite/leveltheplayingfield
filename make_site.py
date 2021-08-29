@@ -1,20 +1,20 @@
 import os, string
 
 # These should match constants in utils.R
-LATEST_YEAR = '2019-20'
-LATEST_NUM_PUPILS_YEAR = '2020-21'
+LATEST_NUM_PUPILS_YEAR = '2021-22'
 LATEST_OUTTURN_YEAR = '2019-20'
 LATEST_SUPPORT_CATEGORY_YEAR = '2019'
 LATEST_FSM_YEAR = '2020-21'
+LATEST_LANGUAGE_YEAR = '2019-20'
 
 REPORTS_DIR = "docs"
 
 YEARS = {
-    "LATEST_YEAR": LATEST_YEAR,
     "LATEST_NUM_PUPILS_YEAR": LATEST_NUM_PUPILS_YEAR,
     "LATEST_OUTTURN_YEAR": LATEST_OUTTURN_YEAR,
     "LATEST_SUPPORT_CATEGORY_YEAR": LATEST_SUPPORT_CATEGORY_YEAR,
     "LATEST_FSM_YEAR": LATEST_FSM_YEAR,
+    "LATEST_LANGUAGE_YEAR": LATEST_LANGUAGE_YEAR
 }
 
 def pretty(name):
@@ -160,7 +160,7 @@ with open(f"{REPORTS_DIR}/index.html", "w") as la_table:
         <td>-</td>
         <td>-</td>
 
-        <td><a href="wales/all_schools_language_{LATEST_YEAR}.html">Y</a> (<a href="wales/all_schools_language_alt_{LATEST_YEAR}.html">alt</a>)</td>
+        <td><a href="wales/all_schools_language_{LATEST_LANGUAGE_YEAR}.html">Y</a> (<a href="wales/all_schools_language_alt_{LATEST_LANGUAGE_YEAR}.html">alt</a>)</td>
     </tr>
     <tr>
         <td>All Wales (by school size)</td>
@@ -222,7 +222,7 @@ with open(f"{REPORTS_DIR}/index.html", "w") as la_table:
         <td>-</td>
         <td><a href="wales/all_schools_fsm_with_la_{LATEST_FSM_YEAR}.html">Y</a></td>
 
-        <td><a href="wales/all_schools_language_with_la_{LATEST_YEAR}.html">Y</a></td>
+        <td><a href="wales/all_schools_language_with_la_{LATEST_LANGUAGE_YEAR}.html">Y</a></td>
     </tr>
 """.format(**YEARS))
 
@@ -262,7 +262,7 @@ with open(f"{REPORTS_DIR}/index.html", "w") as la_table:
         <td><a href="local_authorities/{LA}/{LA}_primary_pupil_funding_vs_fsm_{LATEST_FSM_YEAR}.png">Y</a></td>
         <td><a href="local_authorities/{LA}/{LA}_all_schools_fsm_{LATEST_FSM_YEAR}.html">Y</a></td>
 
-        <td><a href="local_authorities/{LA}/{LA}_all_schools_language_{LATEST_YEAR}.html">Y</a></td>
+        <td><a href="local_authorities/{LA}/{LA}_all_schools_language_{LATEST_LANGUAGE_YEAR}.html">Y</a></td>
     </tr>
 """.format(**la_vars))
 

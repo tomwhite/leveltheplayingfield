@@ -491,7 +491,7 @@ map_occupancy <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
 }
 
 map_language_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
-  yr = LATEST_YEAR
+  yr = LATEST_LANGUAGE_YEAR
   html_legend <- "Language Provision</br>
 <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>Welsh<br/>
 <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png' width='12' height='20'>English<br/>
@@ -519,7 +519,7 @@ map_language_by_school_type <- function(schools_tidy, la = NULL, save_to_file=FA
 }
 
 map_language_by_local_authority <- function(schools_tidy, save_to_file=FALSE) {
-  yr = LATEST_YEAR
+  yr = LATEST_LANGUAGE_YEAR
   html_legend <- "Language Provision</br>
   <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>Welsh<br/>
   <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png' width='12' height='20'>English<br/>
@@ -546,7 +546,7 @@ map_language_by_local_authority <- function(schools_tidy, save_to_file=FALSE) {
 }
 
 map_language <- function(schools_tidy, la = NULL, save_to_file=FALSE) {
-  yr = LATEST_YEAR
+  yr = LATEST_LANGUAGE_YEAR
   html_legend <- "Language Provision</br>
 <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png' width='12' height='20'>Welsh<br/>
 <img src='https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png' width='12' height='20'>English<br/>

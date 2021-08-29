@@ -84,12 +84,6 @@ load_merged_data <- function() {
     arrange(`School type`, `Local authority`, `Name of school`)
 }
 
-#all <- load_merged_data()
-#all %>% write_csv("schools.csv", na="")
-
-all_schools2 <- load_merged_data() %>%
-  tidy_merged_data()
-
 # Tidy merged data so it is in a form to run analyses
 tidy_merged_data <- function(schools_merged) {
   schools_merged %>%
@@ -124,7 +118,7 @@ tidy_merged_data <- function(schools_merged) {
                                              support_category == 'Amber' ~ 15,
                                              support_category == 'Red' ~ 25,
                                              TRUE ~ NA_real_)) %>%
-    filter(!is.na(year) & year != '2021-22') # drop blank years and years with no data
+    filter(!is.na(year)) # drop blank years
 }
 
 # load_consolidated_data <- function(sheet, school_type) {
@@ -405,7 +399,7 @@ tidy_raw_data <- function(schools_raw) {
                                              support_category == 'Amber' ~ 15,
                                              support_category == 'Red' ~ 25,
                                              TRUE ~ NA_real_)) %>%
-    filter(!is.na(year) & year != '2021-22') # drop blank years and years with no data
+    filter(!is.na(year)) # drop blank years
 }
 
 add_school_locations <- function(schools_tidy) {
@@ -419,6 +413,12 @@ add_school_locations2 <- function(schools) {
   schools %>%
     left_join(school_locations, by = c("LEA Code" = "lea_code"))
 }
+
+#all <- load_merged_data()
+#all %>% write_csv("schools.csv", na="")
+
+all_schools2 <- load_merged_data() %>%
+  tidy_merged_data()
 
 #all_schools <- load_all_schools()
 all_schools <- all_schools2
